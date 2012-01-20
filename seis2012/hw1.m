@@ -20,12 +20,13 @@ figure;
 scatter(wrapTo360(lon(isort)),lat(isort),msize,dep(isort),'filled');
 axis([0 360 -90 90]);
 xlabel('Longitude'); ylabel('Latitutde');
+title(sprintf('GCMT catalog (%i events), colored by depth (km)',length(dep)));
 caxis([0 600]); colorbar
 
-figure;
-plot(wrapTo360(lon(dep > 600)),lat(dep > 600),'.');
-axis([0 360 -90 90]);
-xlabel('Longitude'); ylabel('Latitutde');
+%figure;
+%plot(wrapTo360(lon(dep > 600)),lat(dep > 600),'.');
+%axis([0 360 -90 90]);
+%xlabel('Longitude'); ylabel('Latitutde');
 
 %---------------------------
 
