@@ -34,6 +34,10 @@ set(gca,'ytick',10.^[-1:5],'yticklabel',{'0.1','1','10','100','1000','10000','10
 xlabel('Moment magnitude, Mw'); ylabel('Number of fake earthquakes');
 title('dummy plot to show one way of plotting multiple things with log-y axes');
 
+% an even simpler version (note: no 'hold on' is needed):
+%figure; semilogy(x,Nd,'bV',x,N,'k-',x,N2,'r-');
+%legend('fake data','cumulative fit','incremental fit');
+
 %---------------------------
 % HW1, Problem 1-1
 
