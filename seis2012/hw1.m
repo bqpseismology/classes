@@ -1,6 +1,8 @@
 %
 % hw1.m
+% Applied Seismology, Jan-2012
 % 
+% Starting script for Homework 1
 %
 %
 
@@ -9,42 +11,24 @@ clear
 close all
 
 %---------------------------
-
-% example to show one way to plot multiple items with log-scaled axes
-% (1) generate fake data and a best-fitting line
-% (2) plot lines
-n = 50;
-x = linspace(4,10,n)';
-b = 1;
-a = 9;
-e = 0.1;
-err = e*(-1+2*randn(n,1));
-Nd = 10.^(a-b*x + err);
-N  = 10.^(a-b*x);
-N2  = 10.^(a-1-b*x);
-
-figure;
-h1 = semilogy(x,Nd,'bV','markersize',8,'markerfacecolor','w');
-hold on;    % after this you do not need semilogy -- it is automatic
-h2 = plot(x,N,'k-');
-h3 = plot(x,N2,'r-');
-legend([h1 h2 h3],'fake data','cumulative fit','incremental fit');
-set(gca,'xtick',4:9);
-set(gca,'ytick',10.^[-1:5],'yticklabel',{'0.1','1','10','100','1000','10000','1000000'});
-xlabel('Moment magnitude, Mw'); ylabel('Number of fake earthquakes');
-title('dummy plot to show one way of plotting multiple things with log-y axes');
-
-% an even simpler version (note: no 'hold on' is needed):
-%figure; semilogy(x,Nd,'bV',x,N,'k-',x,N2,'r-');
-%legend('fake data','cumulative fit','incremental fit');
-
-%---------------------------
 % HW1, Problem 1-1
 
 % load GCMT catalog
+% M:     6 x n set of moment tensors
+% M0:    1 x n set of scalar seismic moments (derived from moment tensors)
+% Mw:    n x 1 set of moment magnitudes (derived from moment tensors)
+% dep:   n x 1 set of depths
+% eid:   n x 1 set of event IDs
+% lat:   n x 1 set of latitudes
+% lon:   n x 1 set of longitudes
+% otime: n x 1 set of origin times, in seconds (relative to Matlab t=0)
 idir = './data/';       % you might need to change the path to data
 load([idir 'cmtall_sub']);
 whos
+
+% duration of catalog, in years
+tran_yr = (max(otime) - min(otime))/365.25;
+disp(sprintf('GCMT catalog duration is %.3f years',tran_yr));
 
 % plot the catalog, colored by depth
 % note: use wrapTo360 to center the map on longitude=180
@@ -70,5 +54,39 @@ caxis([0 600]); colorbar
 dmag = 0.1;     % magnitude bin width
 % note: seis2GR.m is not a built-in matlab command
 [Ncum,N,Medges] = seis2GR(Mw,dmag);
+
+figure; semilogy(Medges,N,'bV',Medges,Ncum,'rs');
+
+%---------------------------
+
+if 0==1
+    % example to show one way to plot multiple items with log-scaled axes
+    % (1) generate fake data and a best-fitting line
+    % (2) plot lines
+    n = 50;
+    x = linspace(4,10,n)';
+    b = 1;
+    a = 9;
+    e = 0.1;
+    err = e*(-1+2*randn(n,1));
+    Nd = 10.^(a-b*x + err);
+    N  = 10.^(a-b*x);
+    N2  = 10.^(a-1-b*x);
+
+    figure;
+    h1 = semilogy(x,Nd,'bV','markersize',8,'markerfacecolor','w');
+    hold on;    % after this you do not need semilogy -- it is automatic
+    h2 = plot(x,N,'k-');
+    h3 = plot(x,N2,'r-');
+    legend([h1 h2 h3],'fake data','cumulative fit','incremental fit');
+    set(gca,'xtick',4:9);
+    set(gca,'ytick',10.^[-1:5],'yticklabel',{'0.1','1','10','100','1000','10000','1000000'});
+    xlabel('Moment magnitude, Mw'); ylabel('Number of fake earthquakes');
+    title('dummy plot to show one way of plotting multiple things with log-y axes');
+
+    % an even simpler version (note: no 'hold on' is needed):
+    %figure; semilogy(x,Nd,'bV',x,N,'k-',x,N2,'r-');
+    %legend('fake data','cumulative fit','incremental fit');
+end
 
 %==========================================================================
