@@ -28,8 +28,9 @@ Ncum = flipud(cumsum(flipud(N)));       % from right to left
 nbin = length(N);
 
 if idisplay == 1
+    disp('      M interval,   incremental N,   cumulative N');
     for ii=1:nbin-1
-        disp(sprintf('Mw = [%5.2f, %5.2f], N = %6.0f, cNL = %7.0f',...
+        disp(sprintf('M = [%5.2f, %5.2f], N = %6.0f, cNL = %7.0f',...
             Medges(ii),Medges(ii+1),N(ii),Ncum(ii)));
     end
 end
@@ -45,20 +46,6 @@ if ifigure == 1
         xlim([min(Medges) max(Medges)]); xlabel('Magnitude'); ylabel(ylab);
         h = findobj(gca,'Type','patch'); set(h,'FaceColor',[0 1 1],'EdgeColor','k');
     end
-end
-
-%==========================================================================
-% EXAMPLES
-
-if 0==1
-    % AEIC catalog (from UAF Linux network only)
-    catalog = aeic_catalog.get_total;
-    mag = catalog.prefMagnitude;
-    
-    DX = 0.2;
-    [Ncum,N,Medges] = seis2GR(mag,DX);
-    Mcenter = Medges(1:end-1) + DX;
-    Ncumcenter = Ncum(1:end-1);
 end
 
 %==========================================================================

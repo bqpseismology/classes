@@ -52,14 +52,12 @@ caxis([0 600]); colorbar
 % HW1, Problem 1-2
 
 dmag = 0.1;     % magnitude bin width
-% note: seis2GR.m is not a built-in matlab command
+% note: seis2GR.m is NOT a built-in matlab command
 [Ncum,N,Medges] = seis2GR(Mw,dmag);
-
-figure; semilogy(Medges,N,'bV',Medges,Ncum,'rs');
 
 %---------------------------
 
-if 0==1
+if 1==1
     % example to show one way to plot multiple items with log-scaled axes
     % (1) generate fake data and a best-fitting line
     % (2) plot lines
@@ -84,6 +82,12 @@ if 0==1
     xlabel('Moment magnitude, Mw'); ylabel('Number of fake earthquakes');
     title('dummy plot to show one way of plotting multiple things with log-y axes');
 
+    % set iprint=1 if you want to produce figures as postscript files
+    % note: type 'ps2pdf plot_example.ps' from the command line to make a pdf
+    iprint = 1;
+    pdir = './';    % directory where you want the figure to go
+    if iprint==1, print(gcf,'-dpsc',[pdir 'plot_example']); end
+    
     % an even simpler version (note: no 'hold on' is needed):
     %figure; semilogy(x,Nd,'bV',x,N,'k-',x,N2,'r-');
     %legend('fake data','cumulative fit','incremental fit');
