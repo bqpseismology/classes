@@ -82,31 +82,36 @@ break
 % generate a plot showing the RSS as a function of model space
 % note: this is the 'brute-force' approach to solving this problem
 
-% generate a grid centered on the target model
-npts = 100;
-beta0_ran = 1;
-beta1_ran = 1;
-beta0_vec = linspace(mtar(1)-beta0_ran, mtar(1)+beta0_ran, npts);
-beta1_vec = linspace(mtar(2)-beta1_ran, mtar(2)+beta1_ran, npts);
-[X,Y] = meshgrid(beta0_vec,beta1_vec);
-[a,b] = size(X);
-beta0 = reshape(X,a*b,1);
-beta1 = reshape(Y,a*b,1);
+% search range, measured by the distance from the target model
+m1_ran = 1;
+m2_ran = 1;
 
+% generate a fine grid for the misfit function;
+% use the target model for the center of the grid
+npts = 100;
+m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, npts);
+m2_vec = linspace(mtar(2)-m2_ran, mtar(2)+m2_ran, npts);
+[X,Y] = meshgrid(m1_vec,m2_vec);
+[a,b] = size(X);
+m1 = reshape(X,a*b,1);
+m2 = reshape(Y,a*b,1);
+
+% compute misfit function
 G = [ones(n,1) x];
 RSS = zeros(n,1);
 for kk=1:a*b
-    mtry = [beta0(kk) beta1(kk)]';
+    mtry = [m1(kk) m2(kk)]';
     dtry = G*mtry;
     res = d - dtry;
     RSS(kk) = sum(res'*res);
 end
 Z = reshape(RSS,a,b);
 
+% plot the misfit function
 nc = 30;
 figure; hold on;
 contourf(X,Y,Z,nc); shading flat;
-%scatter(beta0,beta1,6^2,RSS,'filled'); shading flat;
+%scatter(m1,m2,6^2,RSS,'filled'); shading flat;
 l1 = plot(mtar(1),mtar(2),'ws','markersize',10,'markerfacecolor','k');
 l2 = plot(mest(1),mest(2),'wo','markersize',10,'markerfacecolor','r');
 legend([l1,l2],'target model','estimated model');
@@ -115,5 +120,17 @@ caxis([-1e-6 0.5*max(RSS)]); colorbar
 xlabel(' m0, y-intercept');
 ylabel(' m1, slope');
 title(' Residual sum of squares');
+
+% generate a coarse grid for the gradient
+npts = 10;
+m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, npts);
+m2_vec = linspace(mtar(2)-m2_ran, mtar(2)+m2_ran, npts);
+[X,Y] = meshgrid(m1_vec,m2_vec);
+[a,b] = size(X);
+m1 = reshape(X,a*b,1);
+m2 = reshape(Y,a*b,1);
+
+% compute gradient gamma(m), then superimpose on F(m) plot
+
 
 %==========================================================================
