@@ -127,10 +127,12 @@ m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, npts);
 m2_vec = linspace(mtar(2)-m2_ran, mtar(2)+m2_ran, npts);
 [X,Y] = meshgrid(m1_vec,m2_vec);
 [a,b] = size(X);
-m1 = reshape(X,a*b,1);
-m2 = reshape(Y,a*b,1);
+ng = a*b;               % number of values in the coarse grid
+m1 = reshape(X,ng,1);   % grid values of m1
+m2 = reshape(Y,ng,1);   % grid values of m2
 
-% compute gradient gamma(m), then superimpose on F(m) plot
+% compute gradient, gamma(m), then superimpose on F(m) plot using the
+% Matlab function quiver (help quiver)
 
 
 %==========================================================================
