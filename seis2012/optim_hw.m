@@ -135,58 +135,21 @@ S_vec(1) = S_0;
 
 for ii = 1:niter
     %///////////////////////////////
-    disp([' iteration ' num2str(ii) ' out of ' num2str(niter) ]);
-    m     = mnew;
-    delta = d(m(1),m(2),m(3),m(4));
-    Ga    = G(m(1),m(2),m(3),m(4))
-
-    % update the model: Tarantola (2005), Eq 6.319
-    % (the line-search parameter is assumed to be nu = 1)
-    Hhat  = icprior + Ga'*icobs*Ga;                           % approximate Hessian
-    ghat  = Ga'*icobs*(delta - dobs) + icprior*(m - mprior);  % gradient
-
-    % avoid using 'inv' if possible
-    %mnew  = m - inv(Hhat)*ghat;
-    dm    = -Hhat\ghat;
-    mnew  = m + dm;
-
-    % misfit function for new model
-    % note: book-keeping only -- not used within the algorithm above
-    Sd_vec(ii+1) = Sd(mnew,dobs,icobs);
-    Sm_vec(ii+1) = Sm(mnew,mprior,icprior);
-    S_vec(ii+1)  = S(mnew,dobs,mprior,icobs,icprior);
-
-    disp([num2str(ii) '/' num2str(niter) ' : prior, current, target:']);
-    disp([mprior mnew mtarget]);
+    % CODE HERE
+    
+    
     %///////////////////////////////
 end
 
 %///////////////////////////////
 % posterior model
-mpost = mnew;
-dpost = d(mpost(1),mpost(2),mpost(3),mpost(4));
+% CODE HERE
+
 
 % posterior model covariance matrix (e.g., Tarantola Eq. 3.53)
-% note: cpost0 does not include normalization factors Cdfac and Cmfac
-Gpost = G(mpost(1),mpost(2),mpost(3),mpost(4));
-cpost0 = inv(Gpost'*icobs0*Gpost + icprior0);
+% CODE HERE
 
-% using matlab functions or not
-if 0==1
-    % posterior model uncertainties
-    for i = 1:nparm, sigma_post(i) = cpost0(i,i)^(1/2); end
 
-    % a posteriori model correlations
-    rho_post = zeros(nparm,nparm);
-    for i = 1:nparm
-        for j = 1:nparm
-            rho_post(i,j) = (cpost0(i,j)/(sigma_post(i)*sigma_post(j)));
-        end
-    end
-else
-    sigma_post = sqrt( diag(cpost0) );
-    rho_post = corrcov(cpost0);
-end
 %///////////////////////////////
 
 % a priori model correlations (for comparison)

@@ -15,12 +15,15 @@ format compact
 
 %---------------------------
 
+% USER PARAMETERS (CHANGE THESE)
+n = 100;                % number of observations
+sigvec = [0 0.3];       % standard deviations of added errors
+
 % TARGET model vector (y-intercept, slope)
 mtar = [2.1 -0.5]';
 m = length(mtar);
 
 % compute design matrix
-n = 100;                % USER CHANGE THIS: number of observations
 x = linspace(-2,2,n)';  % input x-values
 G = [ones(n,1) x];      % n by m design matrix
 N = inv(G'*G)*G';       % m by n data resolution matrix
@@ -28,8 +31,6 @@ N = inv(G'*G)*G';       % m by n data resolution matrix
                          
 % display dimensions of these variables
 whos
-
-sigvec = [0 0.3];       % USER CHANGE THIS: error values
 
 nsig = length(sigvec);
 for kk = 1:nsig
@@ -46,8 +47,8 @@ for kk = 1:nsig
 
     % SOLVE: compute least squares solution, estimates, and estimated variance.
     % (We show three options for mest, each with the same result.)
-    mest = N*d;             % estimated model
-    %mest = G\d
+    mest = G\d              % estimated model
+    %mest = N*d;
     %mest = flipud(polyfit(x,d,1)')
     
     dest = G*mest;          % estimated predictions
@@ -76,7 +77,7 @@ for kk = 1:nsig
     %fontsize(11); orient tall, wysiwyg
 end
 
-break
+%break
 
 %---------------------------
 % generate a plot showing the RSS as a function of model space
@@ -100,12 +101,12 @@ m2 = reshape(Y,a*b,1);
 G = [ones(n,1) x];
 RSS = zeros(n,1);
 for kk=1:a*b
-    mtry = [m1(kk) m2(kk)]';
-    dtry = G*mtry;
-    res = d - dtry;
-    RSS(kk) = sum(res'*res);
+    mtry = [m1(kk) m2(kk)]';    % a sample from model space
+    dtry = G*mtry;              % predictions from the model
+    res = d - dtry;             % residuals between data and predictions
+    RSS(kk) = sum(res.*res);    % residual sum of squares
 end
-Z = reshape(RSS,a,b);
+Z = reshape(RSS,a,b);           % reshape for plotting
 
 % plot the misfit function
 nc = 30;
@@ -121,6 +122,8 @@ xlabel(' m0, y-intercept');
 ylabel(' m1, slope');
 title(' Residual sum of squares');
 
+%-------------------------
+
 % generate a coarse grid for the gradient
 npts = 10;
 m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, npts);
@@ -131,8 +134,8 @@ ng = a*b;               % number of values in the coarse grid
 m1 = reshape(X,ng,1);   % grid values of m1
 m2 = reshape(Y,ng,1);   % grid values of m2
 
-% compute gradient, gamma(m), then superimpose on F(m) plot using the
-% Matlab function quiver (help quiver)
-
+% Compute the gradient of the misfit function, gamma(m), then superimpose
+% -gamma(m) on the F(m) plot by using the Matlab function quiver (type 'help quiver').
+% TYPE YOUR CODE HERE
 
 %==========================================================================
