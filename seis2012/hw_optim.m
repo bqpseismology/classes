@@ -1,13 +1,15 @@
 %
-% optim_hw.m
-% Carl Tape, 01-Jan-2012
+% hw_optim.m
+% Applied Seismology, UAF
 %
 % Demonstration of the iterative quasi-Newton method for a 4-parameter
 % inversion for epicenter, origin time, and velocity.
 %
-% This is a simplified version of optimization.m
+% Background reading: Tarantola book (2005), Ch. 3 and Appendix 6.22
 %
 % calls forward_epicenter.m, plot_epicenters.m, plot_covsamples.m
+%
+% Carl Tape, 01-Jan-2012
 %
 
 clc
