@@ -161,9 +161,9 @@ cpost0, rho_post
 
 % posterior data covariance matrix (e.g., Tarantola Eq. 3.44)
 cpost0_d = Gpost*cpost0*Gpost';
-sigma_post_d = sqrt( diag(cpost0_d) );
-rho_post_d = corrcov(cpost0_d);     % posterior correlation matrix
-rho_prior_d = corrcov(cobs0);       % prior, for comparison
+sigma_post_d = sqrt( diag(cpost0_d) );  % IGNORING OFF-DIAGONAL ELEMENTS
+rho_post_d = corrcov(cpost0_d);         % posterior correlation matrix
+rho_prior_d = corrcov(cobs0);           % prior, for comparison
 
 %format long
 disp('model summary:');
