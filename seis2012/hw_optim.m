@@ -137,6 +137,7 @@ S_vec(1) = S_0;
 
 for ii = 1:niter
     %///////////////////////////////
+    % note: fill S_vec, Sd_vec, Sm_vec for plotting later
     % CODE HERE
     
     
@@ -144,12 +145,12 @@ for ii = 1:niter
 end
 
 %///////////////////////////////
-% posterior model
+% posterior model, covariance matrix, and correlation matrix
+% note 1: compute mpost, dpost, Gpost, cpost0, sigma_post, rho_post
+% note 2: use icobs0 and icprior0 in the expression for cpost0
 % CODE HERE
 
 
-% posterior model covariance matrix (e.g., Tarantola Eq. 3.53)
-% CODE HERE
 
 
 %///////////////////////////////
