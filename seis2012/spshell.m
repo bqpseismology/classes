@@ -8,7 +8,6 @@
 % calls these functions:
 %    stress_disp_tor.m
 %    surf_stress.m
-%    earthfun.m
 %
 % GLOBAL VARIABLES: l radius sd rspan mu rho
 %
@@ -39,6 +38,9 @@ mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 l = 2;         % degree (l >= 1)
 rmax = 9;       % maximum number of roots/eigenfunctions/subplots (default = 9)
 iploteig = 1;   % plot eigenfunctions (=1) or not (=0)
+
+% path to the directory containing the data file prem_Tmodes.txt
+ddir = './data/';
 
 %------------------------------------------------
 
@@ -102,7 +104,7 @@ end
 fprintf('l = %i, nroot = %i (rmax = %i)\n',l,sum(~isnan(froots)),rmax);
 
 % observations used in PREM (assumes lvec = 1:10)
-dfile = './data/prem_Tmodes.txt';
+dfile = [ddir 'prem_Tmodes.txt'];
 [nobs,~,lobs,T,Tstd] = textread(dfile,'%f%s%f%f%f','headerlines',6);
 disp('normal mode observations:');
 for ii=1:length(nobs)
