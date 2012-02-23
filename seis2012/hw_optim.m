@@ -22,9 +22,9 @@ format short
 % USER INPUT
 
 nsamples = 1000;
-irandom_initial_model = 0;      % 0,1
-irandom_target_model = 0;       % 0,1
-idata_errors = 2;               % 0,1,2
+irandom_initial_model = 0;      % 0(fixed), 1(random)
+irandom_target_model = 0;       % 0(fixed), 1(random)
+idata_errors = 2;               % 0(none),  1(random), 2(fixed)
 ifig = 1;                       % 0,1
 
 % to print figures to PS files
@@ -137,17 +137,46 @@ S_vec(1) = S_0;
 
 for ii = 1:niter
     %///////////////////////////////
-    % note: fill S_vec, Sd_vec, Sm_vec for plotting later
-    % CODE HERE
+    % CODE HERE for quasi-Newton algorithm
+
     
+
+    % fill misfit function S_vec, Sd_vec, Sm_vec for plotting
+    %Sd_vec(ii+1) = 
+    %Sm_vec(ii+1) = 
+    %S_vec(ii+1) = 
     
     %///////////////////////////////
 end
 
+% misfit function values
+disp('summary of misfit function:');
+disp(sprintf('%8s%16s%16s%16s','iter','Sd','Sm','S = Sm + Sd'));
+for ii = 1:niter+1
+    disp(sprintf('%8i%16.10f%16.10f%16.10f',iter_vec(ii),Sd_vec(ii),Sm_vec(ii),S_vec(ii)));
+end
+
+if ifig==1
+    % plot convergence curve
+    ylims = 10.^[-1 2];
+    stit = [num2str(niter) ' iterations'];
+    figure; hold on;
+    plot(iter_vec, log10(Sd_vec),'r.-',iter_vec, log10(Sm_vec),'b.-',iter_vec, log10(S_vec),'k.-',...
+        'linewidth',2,'markersize',20);
+    legend(stlabS); xlim([-0.5 niter+0.5]); ylim(log10(ylims));
+    set(gca,'xtick',[-1:niter+1]); grid on;
+    xlabel('k, iteration'); ylabel(' log10[ S(m^k) ], misfit function'); title(stit);
+    if iprint==1, print(gcf,'-depsc',[pdir 'converge_' ftag]); end
+end
+
 %///////////////////////////////
-% posterior model, covariance matrix, and correlation matrix
-% note 1: compute mpost, dpost, Gpost, cpost0, sigma_post, rho_post
-% note 2: use icobs0 and icprior0 in the expression for cpost0
+% COMPUTE THE FOLLOWING
+% mpost       posterior model ("final" model)
+% dpost       predictions for mpost
+% Gpost       partial derivatives matrix at mpost
+% cpost0      posterior covariance matrix (use icobs0 and icprior0)
+% sigma_post  variances of the posterior covariance matrix
+% rho_post    posterior correlation matrix (hint: see Tarantola, Section 3.3)
 % CODE HERE
 
 
@@ -264,23 +293,6 @@ if ifig==1
     plot(mtarget(2),mtarget(3),'o','markersize',10,'markerfacecolor','r','markeredgecolor','w');
     title('samples of prior (blue) and posterior (cyan)');
     if iprint==1, print(gcf,'-depsc',[pdir 'mpost_' ftag '_epi']); end
-
-    % convergence curve
-    ylims = 10.^[-1 2];
-    stit = [num2str(niter) ' iterations'];
-    figure; hold on;
-    plot(iter_vec, log10(Sd_vec),'r.-',iter_vec, log10(Sm_vec),'b.-',iter_vec, log10(S_vec),'k.-',...
-        'linewidth',2,'markersize',20);
-    legend(stlabS); xlim([-0.5 niter+0.5]); ylim(log10(ylims));
-    set(gca,'xtick',[-1:niter+1]); grid on;
-    xlabel('k, iteration'); ylabel(' log10[ S(m^k) ], misfit function'); title(stit);
-    if iprint==1, print(gcf,'-depsc',[pdir 'converge_' ftag]); end
-end
-
-% misfit function values
-disp(sprintf('%8s%16s%16s%16s','iter','Sd','Sm','S = Sm + Sd'));
-for ii = 1:niter+1
-    disp(sprintf('%8i%16.10f%16.10f%16.10f',iter_vec(ii),Sd_vec(ii),Sm_vec(ii),S_vec(ii)));
 end
 
 %==========================================================================

@@ -179,11 +179,11 @@ end
 % NOTE: eobs is DIFFERENT FOR EACH RUN, or you can fix it for testing purposes
 switch idata_errors
     case 0
-        eobs = zeros(ndata,1);
+        eobs = zeros(ndata,1);          % no errors
     case 1
-        eobs = cov_samples_d(:,1);      % first sample
+        eobs = cov_samples_d(:,1);      % random: first sample
     case 2
-        eobs = [
+        eobs = [                        % fixed
             -0.8689
             -0.4666
             -0.0516
