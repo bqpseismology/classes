@@ -36,7 +36,7 @@ rho = 4380;             % density
 mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
 l = 2;         % degree (l >= 1)
-rmax = 9;       % maximum number of roots/eigenfunctions/subplots (default = 9)
+rmax = 1;       % maximum number of roots/eigenfunctions/subplots (default = 9)
 iploteig = 1;   % plot eigenfunctions (=1) or not (=0)
 
 % path to the directory containing the data file prem_Tmodes.txt
@@ -56,25 +56,25 @@ surface_stress = surf_stress(f);
 jj = 1;             % counter for the root number (starting at one)
 
 % leave gap for T(n=0,l=1), which do not exist
-if and(l==1,rmax>1), jj = 2; end
+% note: these are useful when looping over l
+if and(l==1,rmax>1), jj = 2; end        % fill the n >= 1 entries
+if and(l==1,rmax==1), continue; end     % exit loop early
 
 froots = NaN*ones(rmax,1);
 for ii = 2:length(fvec)-1   % loop over frequencies
     oldf = f;
     f = fvec(ii);
 
-    % compute the surface stress for this frequency
-    % this is calling the scripts listed above
-    oldvalue = surface_stress;
-    surface_stress = surf_stress(f);
+    oldvalue = surface_stress;          % surface stress for previous f
+    surface_stress = surf_stress(f);    % surface stress for new f
 
     disp(sprintf('%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
         ii, oldvalue, surface_stress, f*1e3, 1/f, 1/f/60));
 
-    % Check if the value of the surface-stress has changed sign
+    % Check if the value of the surface-stress has changed sign,
     % which would indicate that we passed at least one root.
     % If we did cross a root, call the matlab function fzero to refine the root.
-    % Then store the root in the vector root() and plot the results.
+    % Then store the root in the vector froots and plot the results.
     if (oldvalue * surface_stress < 0)
         f0 = fzero('surf_stress',[oldf f]);
         froots(jj) = f0;
