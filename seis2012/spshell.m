@@ -35,8 +35,8 @@ rspan = [3480000 earthr];
 rho = 4380;             % density
 mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
-l = 2;         % degree (l >= 1)
-rmax = 1;       % maximum number of roots/eigenfunctions/subplots (default = 9)
+l = 2;          % degree (l >= 1)
+rmax = 9;       % maximum number of roots/eigenfunctions/subplots (default = 9)
 iploteig = 1;   % plot eigenfunctions (=1) or not (=0)
 
 % path to the directory containing the data file prem_Tmodes.txt
