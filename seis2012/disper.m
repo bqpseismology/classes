@@ -17,8 +17,6 @@ format compact
 deg = 180/pi;
 fsize = 8;
 
-iharm = 1;
-
 %--------------------------------------------------------------------------
 
 % target periods for measurements
@@ -65,63 +63,62 @@ xlabel('Time (s)'); ylabel('Amplitude'); title('Pasadena, LHZ');
 xlim(xran);
 
 subplot(nr,nc,2); hold on;
-plot(ti,ynee,'b');
-%plot(ti,yneeen,'r--',ti,-yneeen,'r--');    % envelope
+plot(ti,ynee,'r');
+%plot(ti,yneeen,'b--',ti,-yneeen,'b--');    % envelope
 xlim(xran);
 xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
+%print(gcf,'-depsc',[pdir 'PAS_NEE_seis']);
 
 %--------------------------------------------------------------------------
 
+% CONSTRUCT FREQUENCY VECTOR
 npt = nt;
 fNyq = 1/(2*dt);                   % Nyquist frequency
 f1 = linspace(0, fNyq, npt/2+1)';  % first half of frequency vector
                                    % note: first entry is f=0
 f = [f1 ; f1(end-1:-1:2)];
 
-H = fft(ypas);      % PAS
-P = H.*conj(H);     % power spectral density
-imax = npt/2+1;
-ip = 1:imax;
-figure; plot(f(ip),P(ip),'r');
+Hp = fft(ypas);  %
+Ap = abs(Hp);    % =sqrt(H.*conj(H)), where P=H.*conj(H) is the power spectral density
+Hn = fft(ynee);
+An = abs(Hn);
 
-% note: the first entry contains the INTEGRATED content of the signal
-sum(ypas), mean(ypas)*npt, H(1)
+% explore these to see various details with the matlab FFT
+if 0==1
+    y = ypas; H = Hp; A = Ap;
+    imax = npt/2+1;
+    ip = 1:imax;
+    
+    % note: the first entry contains the INTEGRATED content of the signal
+    disp('check the first entry of the FFT:');
+    sum(ypas), mean(ypas)*npt, H(1)
 
-% check the difference between abs and power
-norm( abs(H).*abs(H) - H.*conj(H) ) / norm( H.*conj(H) )
+    % check the difference between abs and power
+    % if z = a + bi, then abs(z) = sqrt(z z*)
+    norm( A.*A - H.*conj(H) ) / norm( A )
 
-% check
-figure; hold on;
-plot(ti,ypas,'b',ti,ifft(H),'r--');
+    % compare IFFT[FFT[y(t)]] with y(t)
+    figure; plot(ti,y,'b',ti,ifft(H),'r--');
 
-% check the ordering
-figure;
-plot(real(H(2:imax-1)) - real(H(npt:-1:imax+1)),'.');
+    % check the ordering of the complex entries of H
+    figure; plot(real(H(2:imax-1)) - real(H(npt:-1:imax+1)),'.');
+end
 
 %-------------
-% plot the spectrum for PAS
-figure; nr=2; nc=2; fpmax = 0.1;
-Z = abs(H);
-ip = find(f <= fpmax);
-ip = ip(2:ceil(length(ip)/2));  % one copy only; exclude f=0
-
-subplot(nr,nc,1); plot(f,Z,'b');
+% plot the spectrum for PAS and NEE
+figure; hold on; 
+plot(f,Ap,'b'); plot(f,An,'r');
+legend('PAS','NEE');
 xlabel('frequency (Hz)'); ylabel('spectral amplitude');
-subplot(nr,nc,2); plot(f(ip),Z(ip),'b.-');
-xlabel('frequency (Hz)'); ylabel('spectral amplitude');
+%print(gcf,'-depsc',[pdir 'PAS_NEE_spec']);
 
-subplot(nr,nc,3);
-plot(log10(f(2:end)),log10(Z(2:end)),'b');
-axis tight; ylim([4 7]);
-xlabel('log10 frequency (Hz)'); ylabel('log10 amplitude');
+%==========================================================================
+% CODE HERE FOR GROUP SPEED (use bandpass.m)
 
-subplot(nr,nc,4); 
-plot(log10(f(ip)),log10(Z(ip)),'b.-');
-axis tight; ylim([4 7]);
-xlabel('log10 frequency (Hz)'); ylabel('log10 amplitude');
-%-------------
 
-% HARMONICS
+%==========================================================================
+% CODE HERE FOR HARMONICS
+
 Hp = fft(ypas);
 Hn = fft(ynee);
 
@@ -131,27 +128,14 @@ tlims = [2600 2800];
 numf = length(fvec);
 for ii=1:numf
     ftar = fvec(ii);    % target frequency for harmonic
-
-    % CODE HERE FOR HARMONICS
-end
-
-%==========================================================================
-% CODE HERE FOR GROUP SPEED
-
-
-%==========================================================================
-% CODE HERE FOR HARMONICS
-
-Hp = fft(ypas);
-Hn = fft(ynee);
-
-tlims = [2600 2800];
-numf = length(fvec);
-for ii=1:numf
-    ftar = fvec(ii);    % target frequency for harmonic
-
+    
+    % initialize fourier transforms
+    Hp2 = complex(zeros(npt,1),0);
+    Hn2 = complex(zeros(npt,1),0);
+    
     % CODE HERE FOR HARMONICS
     
+
 end
 
 %==========================================================================
