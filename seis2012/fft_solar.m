@@ -13,15 +13,17 @@ format compact
 
 %---------------------------------
 
+ddir = './data/';
+
 % synthetically derived sample points of the motion of our sun due to planet rotations
-load('solarshort.dat');
+load([ddir 'solarshort.dat']);
 ts = solarshort(:,1);
 xs = solarshort(:,2);
 ys = solarshort(:,3);
 %cs = [xs + i*ys];
 cs = complex(xs,ys);
 
-load('solarlong.dat');
+load([ddir 'solarlong.dat']);
 tL = solarlong(:,1);
 xL = solarlong(:,2);
 yL = solarlong(:,3);
@@ -36,17 +38,17 @@ ax2 = [0 max(ts) slim];
 ax3 = [0 max(tL) slim];
 
 subplot(nr,nc,1); plot(xs,ys,'r'); axis(ax1);
-xlabel('x distance'); ylabel('y distance'); axis equal
+xlabel('x distance, AU'); ylabel('y distance, AU'); axis equal
 subplot(nr,nc,2); plot(xL, yL,'b'); axis(ax1);
-xlabel('x distance'); ylabel('y distance'); axis equal
+xlabel('x distance, AU'); ylabel('y distance, AU'); axis equal
 subplot(3,1,2); plot(tL, xL,'b',ts,xs,'r--'); axis(ax3);
-xlabel('time, years'); ylabel('x distance'); 
+xlabel('time, years'); ylabel('x distance, AU'); 
 subplot(3,1,3); plot(tL, yL,'b',ts,ys,'r--'); axis(ax3);
-xlabel('time, years'); ylabel('y distance'); 
+xlabel('time, years'); ylabel('y distance, AU'); 
 %orient tall, wysiwyg
 
 % switch between using long time series and short time series
-longdata = 1;
+longdata = 0;
 if longdata==0, t = ts; c = cs; else t = tL; c = cL; end
 
 % sidereal orbit periods -- IN YEARS
