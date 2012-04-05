@@ -1,4 +1,4 @@
-function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv)
+function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,iwrite)
 % READ_PZFILE reads sac-convention poles and zeros from a sac pole-zero file
 %
 % INPUT
@@ -20,7 +20,9 @@ if ~exist(pzfile,'file'), error([pzfile ' does not exist']); end
 lines = textread(pzfile,'%s','delimiter','\n','whitespace','');
 
 % write file to command window
-for ii=1:length(lines), disp(lines{ii}); end
+if nargin==3
+    for ii=1:length(lines), disp(lines{ii}); end
+end
 
 for ii=1:length(lines)
     ltemp = lines{ii};
