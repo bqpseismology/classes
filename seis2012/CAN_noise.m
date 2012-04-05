@@ -1,14 +1,14 @@
-% noise_CAN.m
+% CAN_noise.m
 % 
 % Template script for analyzing the noise time series at CAN.
-% See also response_CAN.m
+% See also CAN_response.m
 %
 
 clear
 close all
 clc
 
-spdy = 86400;
+spdy = 86400;   % seconds per day
 
 % load the 10-day time series at CAN from BEFORE the Sumatra earthquake
 tdir = '/home/admin/databases/SUMATRA/data/sac_LH_noise/G_LH/';

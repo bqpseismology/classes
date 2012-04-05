@@ -1,5 +1,5 @@
 %
-% response_CAN.m
+% CAN_response.m
 % 
 % This script shows some conventions for instrument response files
 % associated with GISMO/Antelope and rdseed/sac.
