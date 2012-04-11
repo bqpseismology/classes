@@ -18,6 +18,8 @@ clc
 
 deg = 180/pi;
 
+spdy = 86400;   % seconds per day
+
 % set these to 1 or 0 for testing
 iresponse = 1;
 iwaveform = 0;
@@ -55,7 +57,7 @@ f = logspace(log10(fmin),log10(fmax),100)';
 omega = 2*pi*f;
 
 % default option: get response from antelope database
-% FIGURE 1
+% FIGURE 1r
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
 response_plot(res0); xlim([fmin fmax]);
 title('response_get_from_db.m','interpreter','none');
@@ -64,7 +66,7 @@ title('response_get_from_db.m','interpreter','none');
 % For one file we manually removed the FIR filters in order to show that it
 % would then match the response obtained from the converted-to-velocity
 % sac pole-zero file.
-% FIGURES 2 and 3
+% FIGURES 2r and 3r
 for kk=1:2
     rfile0 = 'STRECKEISEN_STS1.5';
     if kk==1, rfile0 = 'STRECKEISEN_STS1.5_noFIR'; end
@@ -77,7 +79,7 @@ for kk=1:2
 end
 
 % compare CAN response in database with PZs from sac file
-% FIGURE 4
+% FIGURE 4r
 ideriv = 1;
 [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,1);   % velocity response
 polezero.poles = p;
@@ -91,7 +93,7 @@ title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 % compare displacement, velocity, and acceleration spectra
 % response plots are normalized such that the VELOCITY RESPONSE = 1 at some
 % calibration period
-% FIGURE 10
+% FIGURE 10r
 
 % first use read_pzfile.m (add one pole=0 per differentiation)
 figure(10); nr=3; nc=2;
@@ -136,7 +138,7 @@ end  % iresponse
 if iwaveform==1
     
 % load waveform
-% FIGURE 1
+% FIGURE 1w
 ds = datasource('antelope',dbname); 
 scnl = scnlobject(station,channel ,netwk,'');
 w = waveform(ds,scnl,startTime,endTime);
@@ -146,13 +148,13 @@ tstart = get(w,'start');
 
 % example of getting an absolute time from the seismogram
 tpick = 3*1e5;
-datestr(tstart + tpick/86400,31)
+datestr(tstart + tpick/spdy,31)
 
 % for FFT (specifically for modes): demean and taper
 w = demean(w); 
 wd = get(w,'data');
 nd = length(wd);
-taper = tukeywin(nd,1);     % matlab function
+taper = tukeywin(nd,1);     % matlab taper function
 wd = wd.*taper;
 w = set(w,'DATA',wd);
 fNyq = get(w,'NYQ');
@@ -169,17 +171,12 @@ else
     load(fname);
 end
 f    = get(w,'fft_freq');
-wAmp = get(w,'fft_amp');
-wPhs = get(w,'fft_phase');
+wAmp = get(w,'fft_amp');    % amplitude of H(w)
+wPhs = get(w,'fft_phase');  % phase of H(w)
 
 %----------------------------------
 % HOMEWORK/LAB EXERCISE STARTS HERE
-% (1) describe what you 
-% (1) plot the spectrum of the raw seismogram (use loglog)
-% (2) construct the instrument response for acceleration
-% (3) deconvolve the instrument response from the raw spectral seismogram
-% (4) compare the spectra for the raw seismogram and instrument-deconvolved
-%     seismogram over the frequency range [0.2 1.0] mHz
+
 
 
 

@@ -30,6 +30,7 @@ get(w,'duration')
 figure; plot(w);
 
 % specify bandpass filter
+% YOU WILL NEED TO CHANGE THE LIMITS HERE
 T1 = 100;   % minimum period
 T2 = 400;   % maximum period
 f1 = 1/T2;
@@ -44,5 +45,14 @@ w = taper(w,RTAPER);
 w = filtfilt(f,w);
 
 figure; plot(w);
+
+% YOU WILL NEED TO APPLY hilbert AND smooth, FOLLOWING NI ET AL. (2005), FIGURE 1
+% help waveform/hilbert
+% help waveform/smooth
+% help smooth
+% hint: try something like w = smooth(w,NPT,'moving')
+%       where NPT is number of points in the sliding windoe
+
+
 
 %==========================================================================
