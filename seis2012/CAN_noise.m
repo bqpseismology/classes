@@ -19,7 +19,7 @@ tstart0 = get(w,'start');
 tend0   = get(w,'end');
 
 % example of getting an absolute time from the seismogram
-tpick = 3*1e5;  % CHANGE THIS
+tpick = 3*1e5;  % CHANGE THIS TO IDENTIFY THE EARTHQUAKE
 datestr(tstart0 + tpick/spdy,31)
 
 % comment this for next step
@@ -36,6 +36,9 @@ datestr(tcuts)
 % you can also plot with the command plot(w,'xunit','date') to show the date
 w = extract(w,'TIME',tcuts(1),tcuts(2));
 figure; plot(w);
+
+% SPECTRAL ANALYSIS AND DECONVOLUTION
+
 
 %==========================================================================
 

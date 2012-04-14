@@ -5,7 +5,7 @@
 %
 
 clear
-close all
+%close all
 clc
 
 spdy = 86400;   % seconds per day

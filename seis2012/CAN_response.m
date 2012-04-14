@@ -47,7 +47,7 @@ endTime = endTime0 + 1;
 
 dlabs = {'m to counts','m/s to counts','m/s^2 to counts'};
 
-% PART 1; EXAMINE THE INSTRUMENT RESPONSE
+% PART 1: EXAMINE THE INSTRUMENT RESPONSE
 if iresponse==1
 
 % specify frequencies
@@ -57,7 +57,7 @@ f = logspace(log10(fmin),log10(fmax),100)';
 omega = 2*pi*f;
 
 % default option: get response from antelope database
-% FIGURE 1r
+% FIGURE 1
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
 response_plot(res0); xlim([fmin fmax]);
 title('response_get_from_db.m','interpreter','none');
@@ -66,7 +66,7 @@ title('response_get_from_db.m','interpreter','none');
 % For one file we manually removed the FIR filters in order to show that it
 % would then match the response obtained from the converted-to-velocity
 % sac pole-zero file.
-% FIGURES 2r and 3r
+% FIGURES 2 and 3
 for kk=1:2
     rfile0 = 'STRECKEISEN_STS1.5';
     if kk==1, rfile0 = 'STRECKEISEN_STS1.5_noFIR'; end
@@ -79,7 +79,7 @@ for kk=1:2
 end
 
 % compare CAN response in database with PZs from sac file
-% FIGURE 4r
+% FIGURE 4
 ideriv = 1;
 [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,1);   % velocity response
 polezero.poles = p;
@@ -93,7 +93,7 @@ title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 % compare displacement, velocity, and acceleration spectra
 % response plots are normalized such that the VELOCITY RESPONSE = 1 at some
 % calibration period
-% FIGURE 10r
+% FIGURE 10
 
 % first use read_pzfile.m (add one pole=0 per differentiation)
 figure(10); nr=3; nc=2;
@@ -138,7 +138,6 @@ end  % iresponse
 if iwaveform==1
     
 % load waveform
-% FIGURE 1w
 ds = datasource('antelope',dbname); 
 scnl = scnlobject(station,channel ,netwk,'');
 w = waveform(ds,scnl,startTime,endTime);
@@ -162,7 +161,6 @@ fNyq = get(w,'NYQ');
 % compute FFT -- this can take awhile
 % note 1: this will attach the frequency version to the waveform object
 % note 2: the file fftmat.m will be saved in your local directory
-%w = resample(w,'median',10);   % will speed up the FFT but not look as good
 fname = 'fftcan';
 if ~exist([fname '.mat'],'file')
     tic, w = wf_fft.compute(w); toc

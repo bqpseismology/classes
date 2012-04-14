@@ -5,6 +5,8 @@
 
 clear, close all, clc
 
+spdy = 86400;       % seconds per day
+
 % test file is the 2004 Sumatra earthquake recorded at CAN.G, featured in
 % Figure 1 of Park et al. 2005 (Science)
 ddir = '/home/admin/databases/SUMATRA/data/';
@@ -39,11 +41,11 @@ npoles = 2;
 f = filterobject('B',[f1 f2],npoles);
 
 w = fillgaps(w,'meanAll');
-RTAPER = 0.05;
 w = demean(w); 
-w = taper(w,RTAPER);
+w = detrend(w);
+%w = taper(w,0.05);
+w0 = w;               % save a copy for later
 w = filtfilt(f,w);
-
 figure; plot(w);
 
 % YOU WILL NEED TO APPLY hilbert AND smooth, FOLLOWING NI ET AL. (2005), FIGURE 1
@@ -51,8 +53,7 @@ figure; plot(w);
 % help waveform/smooth
 % help smooth
 % hint: try something like w = smooth(w,NPT,'moving')
-%       where NPT is number of points in the sliding windoe
-
+%       where NPT is number of points in the sliding window
 
 
 %==========================================================================
