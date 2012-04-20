@@ -5,25 +5,22 @@
 % For a view of the spectra, open this file:
 %    /home/admin/databases/SUMATRA/data/wfobject/all_sumatra_modes.pdf
 %
+% This assumes that you have added the path to the GEOTOOLS directories.
+%
 
 clear
 close all
 clc
 
-% CHANGE THIS TO YOUR BASE GEOTOOLS DIRECTORY
-gdir = '/home/carltape/GEOTOOLS/';
-
 iload = 1;      % CHANGE THIS
-ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
 
-% add paths (in principle, these only need to be executed once)
-addpath([gdir 'matlab_util/']); % GEOTOOLS (getwaveform.m)
-addpath(ddir);                  % sumatra_modes_fft.m
+% add path
+ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
+addpath(ddir);
 
 % first load all the data
 if iload == 1
     sumatra_modes_fft;
-
     disp('bad records that will not be used:');
     stas(scut)
     

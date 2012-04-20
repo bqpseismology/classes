@@ -5,15 +5,12 @@
 %
 % Adapted from run_getwaveform.m
 %
+% This assumes that you have added the path to the GEOTOOLS directories.
+%
 
 clear
 close all
 clc
-
-% CHANGE THIS TO YOUR BASE GEOTOOLS DIRECTORY
-% add path (in principle, this only needs to be executed once)
-gdir = '/home/carltape/GEOTOOLS/';
-addpath([gdir 'matlab_util/']);
 
 spdy = 86400;   % seconds per day
 
