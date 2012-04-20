@@ -13,7 +13,7 @@ clc
 % CHANGE THIS TO YOUR BASE GEOTOOLS DIRECTORY
 gdir = '/home/carltape/GEOTOOLS/';
 
-iload = 1;      % CHANGE THIS
+iload = 0;      % CHANGE THIS
 ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
 
 % add paths (in principle, these only need to be executed once)
@@ -42,16 +42,21 @@ if iload == 1
 end
 
 % load list of files
-[ind,sta,chan,net,tag,ikeep] = textread([ddir 'sumatra_modes.txt'],'%f%s%s%s%s%f');
+% note: column 1 is the index into the full set of waveforms [1:169]
+%       column 2 is the index into the reduced set of FFT waveforms;
+%                this also represents the page number of the composite pdf
+[ind,ind_pdf,sta,chan,net,tag,ikeep] = textread([ddir 'sumatra_modes.txt'],'%f%f%s%s%s%s%f');
 for ii=1:length(ind)
-   disp(sprintf('%3i %7s %7s %4s %4i',ii,sta{ii},chan{ii},net{ii},ikeep(ii)));
+   disp(sprintf('%3i %3i %7s %7s %4s %4i',ind(ii),ind_pdf(ii),sta{ii},chan{ii},net{ii},ikeep(ii)));
 end
 
 % USER: PICK A SET TO PLOT AND SAVE FOR ANALYSIS
+% NOTE: these indices correspond to the range 1-169, NOT the pages of the pdf
 ipick = [1:3 22];
 
 npick = length(ipick);
 w(1,npick) = waveform;  % initialize array of waveforms
+pamp = zeros(npick,1);
 for ii=1:length(ipick)
     jj = ipick(ii);
     if ikeep(jj)==0
@@ -59,7 +64,7 @@ for ii=1:length(ipick)
     else
         fname = strcat('w',tag{jj},'.mat');
         ifile = [ddir 'full_length/' fname];
-        load(fname);
+        load(ifile);
         w(ii) = v;
 
         f = get(v,'fft_freq');
@@ -67,11 +72,16 @@ for ii=1:length(ipick)
         figure; plot(f*1e3,A); xlim([0.2 1.0]);
         title(tag{jj},'interpreter','none');
         xlabel('frequency, mHz'); ylabel('amplitude');
+        
+        % save amplitude of a particular peak
+        f1 = 0.94; f2 = 0.95;   % CHANGE THESE
+        pamp(ii) = max(A(and(f*1e3 > f1, f*1e3 < f2)));
     end
 end
 
 % diplay the properties of the object
 w(4)
+% get properties of the object
 [slon,slat,dist_deg,az] = getm(w(4),'STLA','STLO','GCARC','AZ');
 
 % START MODES PROBLEM HERE

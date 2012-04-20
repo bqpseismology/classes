@@ -5,7 +5,6 @@
 %
 % Adapted from run_getwaveform.m
 %
-%
 
 clear
 close all
@@ -45,9 +44,10 @@ mag = 8.9974;
 eid = 'M122604A';
 w = getwaveform(idatabase,startTime,endTime,channel,iint,...
     iprocess,cutoff,samplerate,axb,sacdir,originTime,elat,elon,edep_km,mag,eid);
+nw = length(w);
 
 disp('here is a list of the waveforms you have:');
-for ii=1:length(w)
+for ii=1:nw
    disp(sprintf('%3i %7s %3s %6s %10s',ii,get(w(ii),'channel'),get(w(ii),'KNETWK'),...
        get(w(ii),'station'),get(w(ii),'units')));
 end
@@ -55,12 +55,15 @@ end
 % save a copy to avoid rerunning
 w0 = w;
 
+%------------------------------------------
+% RERUN THE BLOCK BELOW WHEN SELECTING YOUR STATIONS
+
 % pick a subset of waveforms
 %ipick = [1:nw];                % default
 ipick = [22 30 31 120:124];     % CHANGE THIS     
 w = w0(ipick);
 
-% PLOTTING PARAMETERS (CHANGE THESE AD NEEDED)
+% PLOTTING PARAMETERS FOR plotw_rs.m (CHANGE THESE AS NEEDED)
 isort = 2;      % =1 by azimuth, =2 by distance
 iabs = 0;
 tmark = [];
@@ -81,6 +84,7 @@ plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit
 % plot map
 [sta,rlat,rlon,elat,elon] = getm(w,'station','STLA','STLO','EVLA','EVLO');
 plot_event_station(elat(1),elon(1),rlat,rlon,sta);
+%------------------------------------------
 
 % START YOUR ANALYSIS HERE
 
