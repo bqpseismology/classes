@@ -13,7 +13,7 @@ clc
 % CHANGE THIS TO YOUR BASE GEOTOOLS DIRECTORY
 gdir = '/home/carltape/GEOTOOLS/';
 
-iload = 0;      % CHANGE THIS
+iload = 1;      % CHANGE THIS
 ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
 
 % add paths (in principle, these only need to be executed once)
@@ -28,7 +28,7 @@ if iload == 1
     stas(scut)
     
     % plot the time series that were manually cut from the analysis
-    for ii = 1:nw
+    for ii = 1:nw   % loop over all time series
         if any(ii==scut)  
             stag = [stas{ii} '_' chans{ii} '_' nets{ii}];
             stdur = sprintf('duration = %.2f days',get(w(ii),'duration'));
@@ -49,10 +49,16 @@ end
 for ii=1:length(ind)
    disp(sprintf('%3i %3i %7s %7s %4s %4i',ind(ii),ind_pdf(ii),sta{ii},chan{ii},net{ii},ikeep(ii)));
 end
+% we only want to consider files with FFTs pre-computed
+sta  = sta(logical(ikeep));
+chan = chan(logical(ikeep));
+net  = net(logical(ikeep));
+tag  = tag(logical(ikeep));
 
 % USER: PICK A SET TO PLOT AND SAVE FOR ANALYSIS
-% NOTE: these indices correspond to the range 1-169, NOT the pages of the pdf
-ipick = [1:3 22];
+% note: these are the same indices as the page numbers of the composite PDF
+%ipick = [1:length(sta)];    % view all 139
+ipick = [1:3 21];
 
 npick = length(ipick);
 w(1,npick) = waveform;  % initialize array of waveforms
