@@ -14,7 +14,6 @@ clear
 ax1 = [-120.157113 -114.809623 32 36.364429];
 lonmin = ax1(1); lonmax = ax1(2);
 latmin = ax1(3); latmax = ax1(4);
-colors;
 
 %-----------------------------
 % LOAD DATA

@@ -10,8 +10,6 @@ close all
 format short
 format compact
 
-colors;
-
 ax1 = [-121 -114 31 37];        % lon-lat plotting dimensions
 
 %==========================================================================
