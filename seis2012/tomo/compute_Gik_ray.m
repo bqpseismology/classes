@@ -14,6 +14,7 @@ clear
 ax1 = [-120.157113 -114.809623 32 36.364429];
 lonmin = ax1(1); lonmax = ax1(2);
 latmin = ax1(3); latmax = ax1(4);
+colors;
 
 %-----------------------------
 % LOAD DATA
@@ -51,7 +52,8 @@ q = 8;
 % number of points along each ray path
 nump = 1000;
 
-% test the ordering scheme for the rows of G
+% test the ordering scheme for the rows of G -- each row i should be
+% thought of as a measurement index with an associated ray path
 if (1==1)
     %i = 0;
     disp('     i   isrc  irec ');

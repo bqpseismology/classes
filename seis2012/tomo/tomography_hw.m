@@ -32,7 +32,7 @@ nspline = length(qlat);
 % lon-lat gridpoints for plotting
 
 numx = 100;
-[lonplot,latplot] = gridvec(ax1(1),ax1(2),numx,ax1(3),ax1(4));
+[lonplot,latplot,numy,a,b] = gridvec(ax1(1),ax1(2),numx,ax1(3),ax1(4));
 nplot = length(lonplot);
 
 % Compute design matrix for expanding a function in terms of splines;
@@ -42,6 +42,12 @@ for ii=1:nspline
     ff = spline_vals(qlon(ii),qlat(ii),q,lonplot,latplot,{1});
     B(:,ii) = ff(:);
 end
+
+% EXAMPLE of plotting a function on the 'plotting grid' above (Problem 2-4)
+bfun = B(:,96);    % spline index 96, dimension nplot x 1
+%figure; scatter(lonplot,latplot,4^2,bfun,'filled');
+figure; pcolor(reshape(lonplot,numy,numx),reshape(latplot,numy,numx),reshape(bfun,numy,numx));
+shading interp;
 
 %==========================================================================
 % INVERSE PROBLEM
