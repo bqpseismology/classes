@@ -1,8 +1,5 @@
-%
-% function ff = spline_vals(clon,lat,q,lon_vec,lat_vec,opts)
-%
-% Given a spline gridpoint, this returns the value of the spline
-% at all the input datapoints.
+function ff = spline_vals(clon, clat, q, lon_vec, lat_vec, opts)
+%SPLINE_VALS evlauate a spherical spline function at a set of input points
 %
 % INPUT:
 %   clon, clat, q   = these describe the local spherical spline basis function
@@ -15,8 +12,6 @@
 %
 % Carl Tape, 2005
 %
-
-function ff = spline_vals(clon, clat, q, lon_vec, lat_vec, opts)
 
 % convert to theta-phi
 deg    = 180/pi;

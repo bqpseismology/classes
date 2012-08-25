@@ -1,5 +1,6 @@
 %
 % compute_Gik_ray.m
+% Applied Seismology, GEOS 694, Spring 2012
 %
 % Template script for computing an element of the partial derivatives matrix, Gik.
 %
@@ -14,10 +15,12 @@ clear
 ax1 = [-120.157113 -114.809623 32 36.364429];
 lonmin = ax1(1); lonmax = ax1(2);
 latmin = ax1(3); latmax = ax1(4);
+earthr = 6371*1e3;      % earth radius, in meters
+deg = 180/pi;
 colors;
 
 %-----------------------------
-% LOAD DATA
+% LOAD SOURCE-STATION GEOMETRY AND CENTER POINTS OF SPLINE FUNCTIONS
 
 % load sources
 [slon,slat,sinds] = textread('events_lonlat.dat','%f%f%f','headerlines',1);
@@ -42,8 +45,8 @@ title(' Center-points of spherical spline basis functions');
 % REFERENCE HOMOGENEOUS PHASE VELOCITY
 c0 = 3500;      % m/s
 
-%-----------------------------
-% compute ray paths (great circles)
+%==========================================================================
+% compute design matrix
 
 % spline evaluations
 opts = {1};
@@ -54,7 +57,7 @@ nump = 1000;
 
 % test the ordering scheme for the rows of G -- each row i should be
 % thought of as a measurement index with an associated ray path
-if (1==1)
+if 1==1
     %i = 0;
     disp('     i   isrc  irec ');
     for isrc = 1:nsrc
@@ -66,16 +69,14 @@ if (1==1)
     end
 end
 
+% number of measurements (one per station or ray)
+ndata = nrec*nsrc;
+
+% initialize the design matrix
+Gik = zeros(ndata, nspline);
+
+% NOW FILL THE ENTRIES OF THE PARTIAL DERIVATIVES MATRIX
+% USE THE INDEXING ABOVE TO LOOP OVER ROWS OF Gik
+
+
 %==========================================================================
-% compute design matrix
-
-
-
-
-
-
-% save design matrix
-%save([outdir 'Amat_ray'],'Amat_ray');
-
-%==========================================================================
-
