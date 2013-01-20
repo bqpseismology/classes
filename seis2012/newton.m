@@ -1,20 +1,12 @@
 %
 % newton.m
-% Carl Tape, GEOS 694, Applied Seismology, Feb 2012
+% Carl Tape, GEOS 626, Applied Seismology
 %
 % This is a template for implementing an iterative netwon algorithm.
 % See Tarantola (2005), Eq. 6.291.
 % This is a prepatory exercise for hw_optim.m
 %
-% LAB EXERCISE:
-%   1. Using 'fminbnd' compute the (numerical) minimum of F(m).
-%         Plot the point (mmin,F(mmin)) on the curve F(m).
-%   2. Implement the Newton algorithm, and show that you reach the minimum.
-%         Plot the point (m,F(m)) for each new value of m.
-%         Try several different starting values of m to make sure it works.
-%   3. Define a sensible stopping criterion.
-%   4. Repeat the experiment for a quadratic function.
-% 
+% See lab_newton.pdf for instructions to this lab exercise.
 %
 
 close all
