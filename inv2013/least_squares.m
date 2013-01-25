@@ -21,13 +21,14 @@ sigvec = [0 0.3];       % standard deviations of added errors
 
 % TARGET model vector (y-intercept, slope)
 mtar = [2.1 -0.5]';
-m = length(mtar);
+m = length(mtar);           % number of model parameters
 
 % compute design matrix
-x = linspace(-2,2,n)';  % input x-values
-G = [ones(n,1) x];      % n by m design matrix
-N = inv(G'*G)*G';       % m by n data resolution matrix
-                        % (notice the matlab comment associated with inv)
+% x is a vector of x_i locations where your measurements y_i will be made
+xmin = -2;
+xmax = 2;
+x = linspace(xmin,xmax,n)'; % input x-values
+G = [ones(n,1) x];          % n by m design matrix
                          
 % display dimensions of these variables
 whos
@@ -47,9 +48,9 @@ for kk = 1:nsig
 
     % SOLVE: compute least squares solution, estimates, and estimated variance.
     % (We show three options for mest, each with the same result.)
-    mest = G\d              % estimated model
-    %mest = N*d;
-    %mest = flipud(polyfit(x,d,1)')
+    mest = G\d
+    %mest = inv(G'*G)*G'*d;             % note matlab's warning about using inv
+    %mest = flipud(polyfit(x,d,1)')     % specific to this problem only
     
     dest = G*mest;          % estimated predictions
     res = d - dest;         % residuals
@@ -80,7 +81,7 @@ end
 break
 
 %---------------------------
-% generate a plot showing the RSS as a function of model space
+% generate a plot showing the residual sum of squares (RSS) as a function of model space
 
 % search range, measured by the distance from the target model
 m1_ran = 1;
@@ -93,16 +94,16 @@ nx = 100;
 % generate grid for the model space
 m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, nx);
 m2_vec = linspace(mtar(2)-m2_ran, mtar(2)+m2_ran, nx);
-[X,Y] = meshgrid(m1_vec,m2_vec);
-[a,b] = size(X);
-m1 = reshape(X,a*b,1);
-m2 = reshape(Y,a*b,1);
+[M1,M2] = meshgrid(m1_vec,m2_vec);
+[a,b] = size(M1);
+ng = a*b;                       % number of gridpoints in model space
+m1 = reshape(M1,ng,1);
+m2 = reshape(M2,ng,1);
 
 % compute misfit function (and gradient)
-G = [ones(n,1) x];              % design matrix
-RSS = zeros(n,1);               % initialize misfit function
-
-for kk=1:a*b
+RSS = zeros(ng,1);              % initialize misfit function
+                                % initialize the gradient
+for kk=1:ng
     mtry = [m1(kk) m2(kk)]';    % a sample from model space
     dtry = G*mtry;              % predictions from the model
     res = d - dtry;             % residuals between data and predictions
@@ -111,21 +112,20 @@ for kk=1:a*b
     % COMPUTE GRADIENT HERE
 
 end
-Z = reshape(RSS,a,b);           % reshape for plotting
 
 % plot the misfit function
 nc = 30;    % number of contours to plot
 figure; hold on;
-contourf(X,Y,Z,nc); shading flat;
+contourf(M1,M2,reshape(RSS,a,b),nc); shading flat;
 %scatter(m1,m2,6^2,RSS,'filled'); shading flat;
 l1 = plot(mtar(1),mtar(2),'ws','markersize',10,'markerfacecolor','k');
 l2 = plot(mest(1),mest(2),'wo','markersize',10,'markerfacecolor','r');
 legend([l1,l2],'target model','estimated model');
 axis equal, axis tight;
 caxis([-1e-6 0.5*max(RSS)]); colorbar
-xlabel(' m0, y-intercept');
-ylabel(' m1, slope');
-title(' Residual sum of squares');
+xlabel('m0, y-intercept');
+ylabel('m1, slope');
+title('Residual sum of squares');
 
 % PLOT GRADIENT HERE WITH quiver COMMAND
 
