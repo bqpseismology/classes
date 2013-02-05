@@ -1,5 +1,5 @@
 %
-% least_squares.m
+% lab_linefit.m (formerly least_squares.m)
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % This program introduces the least squares method for the example of
