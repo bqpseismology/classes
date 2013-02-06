@@ -23,6 +23,10 @@ A = 2;
 % note that parameters x0 and A must be previously defined
 f = @(x) ( A*exp(-(x-x0).^2) );
 
+% KEY TECHNICAL POINT: f is a function, not a numerical array
+% (note that x is not a stored array)
+whos
+
 % generate samples
 NTRY = 1e5;
 xtry = xmin + (xmax-xmin)*rand(NTRY,1);
