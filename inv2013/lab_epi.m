@@ -7,7 +7,8 @@
 %
 % The sampling method here is called the Rejection Method (Tarantola 2005, Section 2.3.2),
 % which is attributed to a paper by John von Neumann (1951).
-% There is a function in the Matlab Statistics Toolbox (accrejrnd):
+% As far as I know, this sampling method (or something similar) is not
+% available within Matlab, though there is some discussion here:
 %    http://www.mathworks.com/help/stats/common-generation-methods.html#br5k9hi-4
 %
 % This script is a guide to the epicenter homework problem presented as
@@ -37,9 +38,9 @@ xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
 % sample the function
 fmax = A;
-ftry = f(xtry) / fmax;      % value between 0 and 1
-chance = rand(NTRY,1);
-xkeep = xtry(chance < ftry);
+ftry = f(xtry) / fmax;          % value between 0 and 1
+chance = rand(NTRY,1);          % value between 0 and 1
+xkeep = xtry(chance < ftry);    % accept or reject the test sample
 
 % plot
 xcurve = linspace(xmin,xmax,100);
