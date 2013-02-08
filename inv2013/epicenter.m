@@ -10,6 +10,7 @@
 clear, close all, clc
 
 % ENTER DATA AND OTHER PARAMETERS
+dx = 0.2;       % grid spacing, km
 
 
 % travel time between any two points
@@ -31,7 +32,11 @@ xmin = 0; xmax = 22;
 ymin = -2; ymax = 30;
 xvec = xmin:dx:xmax; nx = length(xvec);
 yvec = ymin:dx:ymax; ny = length(yvec);
+% X: ny x nx matrix of x values (for plotting)
+% Y: ny x nx matrix of y values (for plotting)
 [X,Y] = meshgrid(xvec,yvec);
+% x: ng x 1 vector of x values (for function evaluation)
+% y: ng x 1 vector of y values (for function evaluation)
 x = X(:);
 y = Y(:);
 ng = length(x);     % number of gridpoints
@@ -39,7 +44,7 @@ dA = dx^2;          % area of each cell
 disp(sprintf('model space is %i x %i = %i',nx,ny,ng));
 disp(sprintf('model cell is %.2f km x %.2f km = %.4f km^2',dx,dx,dA));
 
-% misfit function, given a single model m=(x,y)
+% misfit function, given a SINGLE model m=(x,y)
 F = @(x,y) ( YOUR FUNCTION HERE );
 
 
