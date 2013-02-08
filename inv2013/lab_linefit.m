@@ -116,7 +116,8 @@ end
 % plot the misfit function
 nc = 30;    % number of contours to plot
 figure; hold on;
-contourf(M1,M2,reshape(RSS,a,b),nc); shading flat;
+contourf(M1,M2,reshape(RSS,a,b),nc); shading flat
+%pcolor(M1,M2,reshape(RSS,a,b)); shading flat
 %scatter(m1,m2,6^2,RSS,'filled'); shading flat;
 l1 = plot(mtar(1),mtar(2),'ws','markersize',10,'markerfacecolor','k');
 l2 = plot(mest(1),mest(2),'wo','markersize',10,'markerfacecolor','r');
