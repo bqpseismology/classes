@@ -1,4 +1,5 @@
-% hw_grav.m
+%
+% hwgrav.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Estimation of density from gravity using singular value decomposition.

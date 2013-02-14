@@ -36,10 +36,11 @@ xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
 % sample the function
 fmax = max([A1 A2]);
-ftry = f(xtry) / fmax;          % value between 0 and 1
-chance = rand(NTRY,1);          % value between 0 and 1
+ftry = f(xtry) / fmax;          % SET A: values between 0 and 1
+chance = rand(NTRY,1);          % SET B: values between 0 and 1
 
-% KEY COMMAND: accept or reject the test sample
+% KEY COMMAND: compare pairs of test samples in sets A and B,
+%              then accept or reject the test sample
 xkeep = xtry(ftry > chance);
 
 % plot

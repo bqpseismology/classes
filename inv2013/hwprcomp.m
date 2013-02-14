@@ -1,4 +1,5 @@
-% hw_prcomp.m
+%
+% hwprcomp.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Principal Component Analysis of diets in Europe.
