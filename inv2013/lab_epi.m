@@ -41,7 +41,8 @@ chance = rand(NTRY,1);          % SET B: values between 0 and 1
 
 % KEY COMMAND: compare pairs of test samples in sets A and B,
 %              then accept or reject the test sample
-xkeep = xtry(ftry > chance);
+ikeep = find(ftry > chance);
+xkeep = xtry(ikeep);
 
 % plot
 xcurve = linspace(xmin,xmax,1000);
