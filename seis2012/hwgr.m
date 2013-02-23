@@ -1,8 +1,8 @@
 %
-% hw1.m
+% hwgr.m
 % Applied Seismology, Jan-2012
 % 
-% Starting script for Homework 1
+% Template for Homework 1: Gutenberg-Richter frequency-magnitude relation
 %
 %
 

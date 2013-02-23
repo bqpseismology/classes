@@ -1,5 +1,5 @@
 %
-% hw_optim.m
+% hwoptim.m
 % Applied Seismology, UAF
 %
 % Demonstration of the iterative quasi-Newton method for a 4-parameter
