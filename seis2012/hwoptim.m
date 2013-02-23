@@ -141,7 +141,7 @@ for ii = 1:niter
 
     
 
-    % fill misfit function S_vec, Sd_vec, Sm_vec for plotting
+    % fill misfit function S_vec, Sd_vec, Sm_vec for plotting later
     %Sd_vec(ii+1) = 
     %Sm_vec(ii+1) = 
     %S_vec(ii+1) = 
