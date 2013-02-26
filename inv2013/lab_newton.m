@@ -22,6 +22,7 @@ P = [2 -1 2 -1 2];          % non-quadratic
 F = @(m) ( P(1)*m.^4 + P(2)*m.^3 + P(3)*m.^2 + P(4)*m + P(5) );
 g = @(m) ( 4*P(1)*m.^3 + 3*P(2)*m.^2 + 2*P(3)*m + P(4) );
 H = @(m) ( 12*P(1)*m.^2 + 6*P(2)*m + 2*P(3) );
+whos
 
 % specify bounds for choosing initial model (and for plotting)
 mA = -2;
@@ -39,8 +40,8 @@ xlabel('model m'); ylabel('misfit function, F(m)');
 %---------------------------------
 
 % initial model
-%m0 = -1.5;
-m0 = mA + (mB-mA)*rand; % random starting value
+m0 = -1.5;
+%m0 = mA + (mB-mA)*rand; % try a random starting value
 
 % IMPLEMENT NEWTON ALGORITHM HERE (see class notes on Least Squares)
 
