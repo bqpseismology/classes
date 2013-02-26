@@ -1,10 +1,10 @@
 %
-% newton.m
+% lab_newton.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% This is a template for implementing an iterative netwon algorithm.
+% This is a template for implementing an iterative Newton algorithm.
 % See Tarantola (2005), Eq. 6.291.
-% This is a prepatory exercise for hwoptim.m
+% This is a preparatory exercise for hwoptim.m
 %
 % See lab_iter.pdf for instructions to this lab exercise.
 %
@@ -30,6 +30,7 @@ m = linspace(mA,mB,100);
 
 % COMPUTE MINIMUM OF MISFIT FUNCTION HERE
 
+
 figure; hold on;
 plot(m,F(m));
 % PLOT MINIMUM HERE
@@ -44,4 +45,3 @@ m0 = mA + (mB-mA)*rand; % random starting value
 % IMPLEMENT NEWTON ALGORITHM HERE (see class notes on Least Squares)
 
 
-%==========================================================================
