@@ -2,7 +2,7 @@
 % hwoptim.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% Demonstration of the iterative quasi-Newton method for a 4-parameter
+% Template scripts for the iterative quasi-Newton method for a 4-parameter
 % inversion for epicenter, origin time, and velocity.
 %
 % Background reading: Tarantola book (2005), Ch. 3 and Appendix 6.22
@@ -17,6 +17,9 @@ clear
 close all
 format compact
 format short
+
+% add path to Aster library (chi2inv)
+addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Lib/');
 
 %=========================================
 % USER INPUT
@@ -37,6 +40,9 @@ pdir = pwd;
 ndata = 12;     % observations
 nparm = 4;      % model parameters
 
+% indices of xs and ys within model vector
+ix = 1; iy = 2;
+
 inormalization = 1;
 stnsamples = [num2str(nsamples) ' samples'];
 stlabS = {'Sd(m^k)','Sm(m^k)','S(m^k) = Sd + Sm'};
@@ -54,8 +60,8 @@ for ii=1:nsamples, randn_vecs_d(:,ii) = randn(ndata,1); end  % data
 forward_epicenter;      % KEY COMMAND
 
 % predictions for prior and initial models (not necessary)
-dprior   = d(mprior(1),mprior(2),mprior(3),mprior(4));
-dinitial = d(minitial(1),minitial(2),minitial(3),minitial(4));
+dprior   = d(mprior);
+dinitial = d(minitial);
 
 if ifig==1
     % plot different histograms of properties of the prior model covariance samples
@@ -105,7 +111,7 @@ end
 
 % data misfit
 Sd = @(m,dobs,icobs) ( 0.5* ...
-      transpose(d(m(1),m(2),m(3),m(4))-dobs) * icobs * (d(m(1),m(2),m(3),m(4))-dobs) );
+      transpose(d(m)-dobs) * icobs * (d(m)-dobs) );
 % model misfit (related to regularization)
 Sm = @(m,mprior,icprior) ( 0.5* ...
       transpose(m - mprior) * icprior * (m - mprior) );
@@ -158,7 +164,7 @@ end
 
 if ifig==1
     % plot convergence curve
-    ylims = 10.^[-1 2];
+    ylims = 10.^[-2 2];
     stit = [num2str(niter) ' iterations'];
     figure; hold on;
     plot(iter_vec, log10(Sd_vec),'r.-',iter_vec, log10(Sm_vec),'b.-',iter_vec, log10(S_vec),'k.-',...
@@ -191,12 +197,13 @@ cpost0, rho_post
 
 % posterior data covariance matrix (e.g., Tarantola Eq. 3.44)
 cpost0_d = Gpost*cpost0*Gpost';
+cpost0_d = (cpost0_d + cpost0_d')/2;    % force to be symmetric
 sigma_post_d = sqrt( diag(cpost0_d) );  % IGNORING OFF-DIAGONAL ELEMENTS
 rho_post_d = corrcov(cpost0_d);         % posterior correlation matrix
 rho_prior_d = corrcov(cobs0);           % prior, for comparison
 
 %format long
-disp('model summary:');
+disp(sprintf('model summary (%i iterations):',niter));
 disp('    prior    initial  posterior   target');
 disp([mprior minitial mpost mtarget]);
 disp(sprintf('data summary (%i observations):',ndata));
@@ -235,13 +242,16 @@ disp('  ');
 d_samples = zeros(ndata,nsamples);
 for ii=1:nsamples
     ms = mpost_samples(:,ii);
-    d_samples(:,ii) = d(ms(1),ms(2),ms(3),ms(4));
+    d_samples(:,ii) = d(ms);
 end
-std_d_samples = std(d_samples'); 
+covd_samples = cov(d_samples');
+rhod_samples = corrcov(covd_samples);
+std_d_samples = sqrt(diag(covd_samples));
+%std_d_samples = std(d_samples'); 
 
 disp('  ');
 disp(' Compare data uncertainties : ');
-disp(sprintf('%16s %10s %10s %10s','prior','post','samples','prior/post'));
+disp(sprintf('%16s %10s %10s %10s','prior','post','samples','post/prior'));
 call = [sigma_obs(:) sigma_post_d(:) std_d_samples(:) sigma_post_d(:)./sigma_obs(:)];
 for ii=1:ndata
    disp(sprintf('%6i%10.4f %10.4f %10.4f %10.4f',ii,call(ii,:)));
@@ -265,24 +275,26 @@ if ifig==1
     end
     if iprint==1, print(gcf,'-depsc',[pdir 'mpost2_' ftag]); end
     
-    % NEW: correlation matrix and scatterplots
-    plot_covsamples(mprior_samples,rho_prior,'mprior',[],[],[],mlabs);
+    % correlation matrices and scatterplots
+    %plot_covsamples(mprior_samples,rho_prior,'mprior',[],[],[],mlabs);
     plot_covsamples(mpost_samples,rho_post,'mpost',[],[],[],mlabs);
     plot_covsamples(mprior_samples,rho_prior,'mprior',mpost_samples,rho_post,'mpost',mlabs);
     
     % 'physical view' of estimated posterior data uncertainties
+    % note: plot either sigma_post_d (from Cpost_d) or std_d_samples (from d(Cpost_samples))
     figure; hold on;
-    plot(mpost_samples(2,:),mpost_samples(3,:),'c.');
-    plot(mpost(2),mpost(3),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
-    %plot(mprior(2),mprior(3),'o','markersize',10,'markerfacecolor','b','markeredgecolor','w');
-    scatter(xrec,yrec,16^2,sigma_post_d,'filled','V');
+    plot(mpost_samples(ix,:),mpost_samples(iy,:),'c.');
+    plot(mpost(ix),mpost(iy),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
+    %plot(mprior(ix),mprior(iy),'o','markersize',10,'markerfacecolor','b','markeredgecolor','w');
+    %scatter(xrec,yrec,16^2,sigma_post_d,'filled','V'); title('estimated uncertainties for posterior predictions'); 
+    scatter(xrec,yrec,16^2,std_d_samples,'filled','V'); title('uncertainties for posterior predictions, computed from samples'); 
     scatter(xrec,yrec,16^2,'kV');
     colormap('hot'); colorbar;
-    axis equal; axis([0 100 0 100]);
-    set(gca,'xtick',[0:20:100],'ytick',[0:20:100]);
+    axis equal; axis(axepi);
+    %set(gca,'xtick',[0:20:100],'ytick',[0:20:100]);
     xlabel(' X distance (km)'); ylabel(' Y distance (km)');
-    title('estimated uncertainties for posterior predictions'); 
     
+    % plot predictions for samples of the posterior
     plot_covsamples(d_samples,rho_post_d,'dpost',[],[],[],[]);
     
     % opts is set in forward_epicenter

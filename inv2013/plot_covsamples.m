@@ -16,10 +16,12 @@ function plot_covsamples(msamples,rho,tlab,msamples2,rho2,tlab2,mlabs)
 % NOTE: We could alternatively estimate the covariance matrix
 % (and correlation matrix) directly from the input samples.
 %
-% called by hw_optim.m
+% called by optimization.m, optim_hw.m
 %
 % Carl Tape, 01-Jan-2012
 %
+
+NMAX = 6;   % max number to make into scatterplot
 
 [n,s] = size(msamples);
 disp(sprintf('plot_covsamples.m: n = %i, s = %i',n,s));
@@ -33,37 +35,55 @@ end
 % whether to plot a second set of samples
 if and(~isempty(msamples2),~isempty(rho2)), isecond = 1; else isecond = 0; end
 
-% correlation matrices
-% note: we could replace imagesc with a non-toolbox function (pcolor)
-figure; nr=1+isecond; nc=1;
-subplot(nr,nc,1); imagesc(rho); caxis([-1 1]), colorbar
-set(gca,'xtick',[1:n],'xticklabel',mlabs,'xaxislocation','top');
-set(gca,'ytick',[1:n],'yticklabel',mlabs);
-title(['correlation matrix for ' tlab]); axis equal, axis tight
+% kk=1: correlation matrices from Cpost
+% kk=2: correlation matrices based on inpur SAMPLES
+figure; nr=1+isecond; nc=2;
+for kk=1:2
+    if kk==1
+       F1 = rho; 
+       if isecond==1, F2 = rho2; end
+       stag = '';
+    else
+       F1 = corrcoef(msamples');
+       if isecond==2, F2 = corrcoef(msamples2'); end
+       stag = 'sample';
+    end
 
-if isecond==1
-subplot(nr,nc,2); imagesc(rho2); caxis([-1 1]), colorbar
-set(gca,'xtick',[1:n],'xticklabel',mlabs,'xaxislocation','top');
-set(gca,'ytick',[1:n],'yticklabel',mlabs);
-title(['correlation matrix for ' tlab2]); axis equal, axis tight
+    % note: we could replace imagesc with a non-toolbox function (pcolor)
+    pind = kk+isecond*(kk-1);
+    subplot(nr,nc,pind); imagesc(F1); caxis([-1 1]), colorbar
+    set(gca,'xtick',[1:n],'xticklabel',mlabs,'xaxislocation','top');
+    set(gca,'ytick',[1:n],'yticklabel',mlabs);
+    title([stag ' correlation matrix for ' tlab]); axis equal, axis tight
+
+    if isecond==1
+    subplot(nr,nc,pind+1); imagesc(F2); caxis([-1 1]), colorbar
+    set(gca,'xtick',[1:n],'xticklabel',mlabs,'xaxislocation','top');
+    set(gca,'ytick',[1:n],'yticklabel',mlabs);
+    title([stag ' correlation matrix for ' tlab2]); axis equal, axis tight
+    end
 end
 
 % scatterplots
-if n > 6
-    disp(sprintf('n = %i is > 6, so no scatterplots made',n));
+if n > NMAX
+    disp(sprintf('n = %i is > %i, so no scatterplots made',n,NMAX));
 else
     figure; nr=n-1; nc=n-1;
     for ii=1:n-1
        for jj=ii+1:n
+           px = msamples(ii,:);
+           py = msamples(jj,:);
            iplot = nc*(ii-1) + jj-1;
            %disp([ii jj iplot]);
            subplot(nr,nc,iplot); hold on;
-           plot(msamples(ii,:),msamples(jj,:),'.');
+           plot(px,py,'.');
            xlabel(mlabs{ii}); ylabel(mlabs{jj});
-           st1 = sprintf('corr(%s) = %.3f',tlab,rho(ii,jj));
+           st1 = sprintf('corr(%s) = %.2f (%.2f)',tlab,corr(px(:),py(:)),rho(ii,jj));
            if isecond==1
-               plot(msamples2(ii,:),msamples2(jj,:),'r.');
-               st2 = sprintf('corr(%s) = %.3f',tlab2,rho2(ii,jj));
+               px = msamples2(ii,:);
+               py = msamples2(jj,:);
+               plot(px,py,'r.');
+               st2 = sprintf('corr(%s) = %.2f (%.2f)',tlab2,corr(px(:),py(:)),rho2(ii,jj));
                title({st1,st2});
            else
                title(st1);

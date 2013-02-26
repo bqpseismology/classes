@@ -23,8 +23,8 @@ xmin = -15; xmax = 12;
 x1 = -2; A1 = 2; sig1 = 2;
 x2 =  4; A2 = 1; sig2 = 0.5;
 % note that parameters x0 and A must be previously defined
-f = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
-%f = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
+%f = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
+f = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
 
 % KEY TECHNICAL POINT: f is a function, not a numerical array
 % (note that x is not a stored array)
@@ -46,10 +46,11 @@ xkeep = xtry(ikeep);
 
 % plot
 xcurve = linspace(xmin,xmax,1000);
+fcurve = f(xcurve);
 figure; nr=3; nc=2;
 edges1 = [xmin:0.2:xmax];
 edges2 = [0:0.05:1];
-subplot(nr,nc,1); plot(xcurve,f(xcurve)/fmax);
+subplot(nr,nc,1); plot(xcurve,fcurve/fmax);
 xlabel('x'); ylabel('f(x)'); title('(a)'); axis([xmin xmax 0 1.2]);
 subplot(nr,nc,2); plot_histo(xtry,edges1);
 xlabel('xtry'); title('(b)'); 
@@ -59,5 +60,10 @@ subplot(nr,nc,4); plot_histo(chance,edges2);
 xlabel('chance'); title('(d)'); 
 subplot(nr,nc,5); plot_histo(xkeep,edges1);
 xlabel('xkeep');  title('(e)'); xlim([xmin xmax]);
+
+% if f is a probability density, -ln(f) is the misfit function: f = exp(-F(x))
+subplot(nr,nc,6); plot(xcurve,-log(fcurve));
+axis([xmin xmax -1 1.1*max(-log(fcurve))]);
+xlabel('x'); ylabel('F(x) = -ln(f(x))'); title('(f)');
 
 %==========================================================================

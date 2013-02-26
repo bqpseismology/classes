@@ -4,9 +4,9 @@
 %
 % This is a template for implementing an iterative netwon algorithm.
 % See Tarantola (2005), Eq. 6.291.
-% This is a prepatory exercise for hw_optim.m
+% This is a prepatory exercise for hwoptim.m
 %
-% See lab_newton.pdf for instructions to this lab exercise.
+% See lab_iter.pdf for instructions to this lab exercise.
 %
 
 close all
