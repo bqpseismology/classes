@@ -300,9 +300,9 @@ if ifig==1
     % opts is set in forward_epicenter
     plot_epicenters(mprior_samples,mprior,minitial,mtarget,opts,mpost);
     % plot the cpost0 samples and re-plot the two markers
-    plot(mpost_samples(2,:),mpost_samples(3,:),'c.');
-    plot(mpost(2),mpost(3),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
-    plot(mtarget(2),mtarget(3),'o','markersize',10,'markerfacecolor','r','markeredgecolor','w');
+    plot(mpost_samples(ix,:),mpost_samples(iy,:),'c.');
+    plot(mpost(ix),mpost(iy),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
+    plot(mtarget(ix),mtarget(iy),'o','markersize',10,'markerfacecolor','r','markeredgecolor','w');
     title('samples of prior (blue) and posterior (cyan)');
     if iprint==1, print(gcf,'-depsc',[pdir 'mpost_' ftag '_epi']); end
 end

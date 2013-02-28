@@ -19,9 +19,9 @@
 % FORWARD PROBLEM    
 
 % labels for parameters
-%mlabs = {'ts','xs','ys','v = ln(V/V0)'};
-mlabs = {'ts','xs','ys','v'};
-ulabs = {'s','km','km','none'};
+%mlabs = {'xs','ys','ts','v = ln(V/V0)'};
+mlabs = {'xs','ys','ts','v'};
+ulabs = {'km','km','s','none'};
 
 % travel time computation (homogeneous velocity; straight ray paths)
 % v is the logarithmic velocity, v = ln(V/V0), which is Cartesian
