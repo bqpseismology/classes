@@ -11,8 +11,8 @@
 % constants are assigned at the time the function is INITIALIZED, not at
 % the time the function is called.
 %
-% CALLED BY : optimization.m
-% CALLS     : plot_epicenters
+% CALLED BY : hwoptim.m
+% CALLS     : plot_epicenters.m
 %
 
 %=========================================
