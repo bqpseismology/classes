@@ -150,17 +150,18 @@ end
 dtarget = d(mtarget);
 
 % data covariance matrix
-sigma_obs = 0.5 * ones(ndata,1);    % standard deviations
+tsigma = 0.5;                       % uncertainty in arrival time measurement, seconds
+sigma_obs = tsigma * ones(ndata,1); % standard deviations
 cobs0     = diag( sigma_obs.^2 );   % diagonal covariance matrix
 if inormalization==1
     Cdfac = ndata;
 else
     Cdfac = 1;
 end
-cobs   = Cdfac * cobs0;          % WITH NORMALIZATION FACTOR
-icobs  = inv(cobs);              % WITH NORMALIZATION FACTOR
+cobs   = Cdfac * cobs0;             % WITH NORMALIZATION FACTOR
+icobs  = inv(cobs);                 % WITH NORMALIZATION FACTOR
 icobs0 = inv(cobs0);
-Lcobs  = chol(cobs0,'lower')';   % square-root (lower triangular)
+Lcobs  = chol(cobs0,'lower')';      % square-root (lower triangular)
 
 % sample the data distribution using the square-root UNNORMALIZED covariance matrix
 for ii=1:nsamples, randn_vecs_d(:,ii) = randn(ndata,1); end
