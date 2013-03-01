@@ -4,14 +4,11 @@
 % 
 % Generating 2D Gaussian random fields with prescribed covariance,
 % such as Gaussian or exponential.
-%
-% SEE ALSO cov1Dsamples.m, cov2D_chol.m, gaussian_2D.m, testfun.m
 % 
 % calls
 %   covC.m
 %   xy2distance.m
 %   xy2distance_row1.m
-%   cov2Dsamples_plot.m (covsamples_plot.m)
 %
 
 clear, clc, close all
@@ -23,9 +20,8 @@ path(path,'/usr/local/GEOTOOLS/matlab_util/util_grf/');
 % USER INPUT: n, L (=iL*dx), sigma
 
 % discretize the grid
-nx = 2^5; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;
-%nx = 2^6; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;
-%nx = 2^7; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;    % FFT
+nx = 2^5; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-1,1-2,1-3,1-4
+%nx = 2^7; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-5,1-6,1-7,1-8
 
 % correlation length of 2D Gaussian fields
 % NOTE: actual correlation length is L = iL*dx
@@ -70,7 +66,7 @@ stit0 = sprintf('L=%.2f, sigma=%.2f',L,sigma);
 stit1 = sprintf('(nx,ny) = (%i,%i), L = %.2f, \\sigma = %.2f',nx,ny,L,sigma);
 stit2 = sprintf('Block Toeplitz: %i x %i (%i) blocks, each %i x %i',nx,nx,nx*nx,ny,ny);
 
-% axes limits
+% axes limits for plotting only
 axfac = 1.05;
 axc = [1 n 1 n];
 ax1a = [xmin xmax ymin ymax];
@@ -149,12 +145,13 @@ if n <= NMAX
     orient tall, wysiwyg, fontsize(11)
     
 else
-    if ichol==1, error('decrease n for ichol=1, or set ichol=0'); end
+    if ichol==1, error('decrease n for ichol=1, or set ichol=0'); end 
 
 end  % if n > NMAX
 
 %-------------------------------------------------
 
+% ugly indexing to handle all options
 if and(ichol==1, ifourier==1), izmin=1; izmax=2; end
 if and(ichol==1, ifourier==0), izmin=1; izmax=1; end
 if and(ichol==0, ifourier==1), izmin=2; izmax=2; end
@@ -225,6 +222,7 @@ for iz = izmin:izmax
     
     %======================================================================
     % START YOUR PLOTS AND CALCULATIONS HERE
+    % (You will also need to change the USER INPUT at the top of the code.)
     
     % plot samples
     figure; nc=2; nr=4;
@@ -238,40 +236,54 @@ for iz = izmin:izmax
     xlabel('x'); ylabel('y');
     title({sprintf('%s sample %i/%i',stcov,ii,nsample),stit1});
     colorbar;
-    %orient tall, wysiwyg, fontsize(10)
+    orient tall, wysiwyg, fontsize(10)
     
-    break
+    % PROBLEM 1-2
+    % compute and plot the sample mean
     
-    %% vary icov and see how the GRFs change (ifourier = 1)
-    % (code extracted from above)
-    icvec = [1 2 3];
-    nrun = length(icvec);
-    nsamp = 1;
-    figure; nr=nrun; nc=1;
-    for xx=1:nrun
-        icov = icvec(xx);
-        c = covC(iDrow1,{icov,iL,sigma});
-        cmod = reshape(c,nyd,nxd);
-        cmod(nyd/2+2:end,:) = flipud(cmod(2:nyd/2,:));
-        cmod(:,nxd/2+2:end) = fliplr(cmod(:,2:nxd/2));
-        [kvec,lvec,CKL0] = mhfft2(xs,ys,cmod);
-        CKL = real(CKL0);
-        % REPLACE THE FOLLOWING LINE WITH SOMETHING ELSE
-        phi_h = grf2(kvec,lvec,2*CKL,nsamp);
-        [xss,yss,phi] = mhifft2(kvec,lvec,phi_h);
-        ptemp = real(phi(1:ny,1:nx,nsamp));
-        csample = ptemp(:);
+   
+    
+    
+    if n <= NMAX
+        % PROBLEM 1-3
+        % compute and plot covariance matrix from the samples
         
-        subplot(nr,nc,xx);
-        pcolor(X, Y, reshape(csample,ny,nx) ); shading flat
-        axis equal, axis(ax1aex); caxis(3*sigma*[-1 1]);
-        title(sprintf('%s covariance, L = %.2f, \\sigma = %.2f',stcovs{icvec(xx)},L,sigma));
+        
     end
-    %orient tall, wysiwyg, fontsize(10)
     
-    
-    
+    if and(iz==2,ifourier==1)
+        % PROBLEM 1-7
+        % vary icov and see how the GRFs change (ifourier = 1)
+        % (code extracted from above)
+        icvec = [1 2 3];
+        nrun = length(icvec);
+        nsamp = 1;
+        figure;
+        for xx=1:nrun
+            icov = icvec(xx);
+            c = covC(iDrow1,{icov,iL,sigma});
+            cmod = reshape(c,nyd,nxd);
+            cmod(nyd/2+2:end,:) = flipud(cmod(2:nyd/2,:));
+            cmod(:,nxd/2+2:end) = fliplr(cmod(:,2:nxd/2));
+            [kvec,lvec,CKL0] = mhfft2(xs,ys,cmod);
+            CKL = real(CKL0); 
+            % REPLACE THE FOLLOWING LINE WITH OTHER LINES (see grf2.m)
+            phi_h = grf2(kvec,lvec,2*CKL,nsamp);
+            [xss,yss,phi] = mhifft2(kvec,lvec,phi_h);
+            ptemp = real(phi(1:ny,1:nx));
+            csample = ptemp(:);  
+
+            subplot(3,1,xx);
+            pcolor(X,Y,reshape(csample,ny,nx)); shading flat; colorbar;
+            axis equal, axis(ax1aex); caxis(3*sigma*[-1 1]);
+            title(sprintf('%s covariance, L = %.2f, \\sigma = %.2f',stcovs{icvec(xx)},L,sigma));
+        end
+
+        % PROBLEM 1-8
+        % vary L and see how the GRFs change
         
+
+    end
     
 end   % for iz
 
