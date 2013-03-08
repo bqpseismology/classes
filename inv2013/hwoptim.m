@@ -292,7 +292,7 @@ if ifig==1
     colormap('hot'); colorbar;
     axis equal; axis(axepi);
     %set(gca,'xtick',[0:20:100],'ytick',[0:20:100]);
-    xlabel(' X distance (km)'); ylabel(' Y distance (km)');
+    xlabel('X distance (km)'); ylabel('Y distance (km)');
     
     % plot predictions for samples of the posterior
     plot_covsamples(d_samples,rho_post_d,'dpost',[],[],[],[]);

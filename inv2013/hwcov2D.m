@@ -20,8 +20,8 @@ path(path,'/usr/local/GEOTOOLS/matlab_util/util_grf/');
 % USER INPUT: n, L (=iL*dx), sigma
 
 % discretize the grid
-nx = 2^5; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-1,1-2,1-3,1-4
-%nx = 2^7; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-5,1-6,1-7,1-8
+nx = 2^5; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;
+%nx = 2^7; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-7,1-8
 
 % correlation length of 2D Gaussian fields
 % NOTE: actual correlation length is L = iL*dx

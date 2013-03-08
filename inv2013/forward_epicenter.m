@@ -59,7 +59,7 @@ d = @(m) ([   tt(m(1),m(2),m(3),m(4),xrec(1),yrec(1))
 G = @(m) ([
     -(d2(m(1),m(2),xrec(1),yrec(1)))^(-1/2)*(xrec(1)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(1),yrec(1)))^(-1/2)*(yrec(1)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(1),yrec(1))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(2),yrec(2)))^(-1/2)*(xrec(2)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(2),yrec(2)))^(-1/2)*(yrec(2)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(2),yrec(2))/(V0*exp(m(4)))
-    -(d2(m(1),m(2),xrec(3),yrec(3)))^(-1/2)*(xrec(2)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(3),yrec(3)))^(-1/2)*(yrec(2)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(3),yrec(3))/(V0*exp(m(4)))
+    -(d2(m(1),m(2),xrec(3),yrec(3)))^(-1/2)*(xrec(3)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(3),yrec(3)))^(-1/2)*(yrec(3)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(3),yrec(3))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(4),yrec(4)))^(-1/2)*(xrec(4)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(4),yrec(4)))^(-1/2)*(yrec(4)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(4),yrec(4))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(5),yrec(5)))^(-1/2)*(xrec(5)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(5),yrec(5)))^(-1/2)*(yrec(5)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(5),yrec(5))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(6),yrec(6)))^(-1/2)*(xrec(6)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(6),yrec(6)))^(-1/2)*(yrec(6)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(6),yrec(6))/(V0*exp(m(4)))
@@ -70,15 +70,6 @@ G = @(m) ([
     -(d2(m(1),m(2),xrec(11),yrec(11)))^(-1/2)*(xrec(11)-m(1))/(V0*exp(m(4)))    -(d2(m(1),m(2),xrec(11),yrec(11)))^(-1/2)*(yrec(11)-m(2))/(V0*exp(m(4)))    1  -d1(m(1),m(2),xrec(11),yrec(11))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(12),yrec(12)))^(-1/2)*(xrec(12)-m(1))/(V0*exp(m(4)))    -(d2(m(1),m(2),xrec(12),yrec(12)))^(-1/2)*(yrec(12)-m(2))/(V0*exp(m(4)))    1  -d1(m(1),m(2),xrec(12),yrec(12))/(V0*exp(m(4)))
     ]);
-
-% M x M matrix of second partial derivatives (only used in full Newton method)
-% note: this contains the measurement index i
-G2 = @(m,i)  ([
-   (d1(m(1),m(2),xrec(i),yrec(i)))^-3*(yrec(i)-m(2))^2/(V0*exp(m(4)))                -(d1(m(1),m(2),xrec(i),yrec(i)))^-3*(xrec(i)-m(1))*(yrec(i)-m(2))/(V0*exp(m(4)))    0  (d1(m(1),m(2),xrec(i),yrec(i)))^-1*(xrec(i)-m(1))/(V0*exp(m(4)))
-  -(d1(m(1),m(2),xrec(i),yrec(i)))^-3*(xrec(i)-m(1))*(yrec(i)-m(2))/(V0*exp(m(4)))   (d1(m(1),m(2),xrec(i),yrec(i)))^-3*(xrec(i)-m(1))^2/(V0*exp(m(4)))                  0  (d1(m(1),m(2),xrec(i),yrec(i)))^-1*(yrec(i)-m(2))/(V0*exp(m(4)))
-    0 0 0 0
-   (d1(m(1),m(2),xrec(i),yrec(i)))^-1*(xrec(i)-m(1))/(V0*exp(m(4)))                  (d1(m(1),m(2),xrec(i),yrec(i)))^-1*(yrec(i)-m(2))/(V0*exp(m(4)))                    0  d1(m(1),m(2),xrec(i),yrec(i))/(V0*exp(m(4)))
-]);
 
 %---------------------------------------------
 % PRIOR MODEL (MEAN MODEL) : ts, xs, ys, v
@@ -211,15 +202,15 @@ axepi = [0 100 0 100];
 
 % source-receiver geometry with ray paths
 plot_epicenters([],mprior,minitial,mtarget,{xrec,yrec,1,axepi});
-if iprint==1, print(gcf,'-depsc',[pdir 'srcrec_rays']); end
+if iprint==1, print(gcf,'-depsc',sprintf('%srcrec_rays_f%i',pdir,iforward)); end
 
 % source-receiver geometry with ray paths
 plot_epicenters(mprior_samples,mprior,minitial,mtarget,{xrec,yrec,1,axepi});
-if iprint==1, print(gcf,'-depsc',[pdir 'mprior_epi_rays']); end
+if iprint==1, print(gcf,'-depsc',sprintf('%smprior_rays_f%i',pdir,iforward)); end
 
 % with prior samples (no ray paths)
 opts = {xrec,yrec,0,axepi};
 plot_epicenters(mprior_samples,mprior,minitial,mtarget,opts);
-if iprint==1, print(gcf,'-depsc',[pdir 'mprior_epi']); end
+if iprint==1, print(gcf,'-depsc',sprintf('%smprior_f%i',pdir,iforward)); end
 
 %========================================================================
