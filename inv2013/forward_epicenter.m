@@ -1,18 +1,17 @@
 %
 % forward_epicenter.m
-% Carl Tape
-% 18-March-2010
 %
 % This forward problem describes the straight-line ray path travel time
-% from a source to a receiver in a homogeneous medium with unknown
-% velocity.
+% from a source with an unknown origin time to a receiver in a
+% homogeneous medium with unknown velocity V.
 %
 % NOTE: If there are constants in the Matlab in-line functions, then these
 % constants are assigned at the time the function is INITIALIZED, not at
 % the time the function is called.
 %
-% CALLED BY : hwoptim.m
-% CALLS     : plot_epicenters.m
+% calls plot_epicenters.m
+%
+% Carl Tape, 3/18/2010
 %
 
 %=========================================
@@ -23,18 +22,22 @@
 mlabs = {'xs','ys','ts','v'};
 ulabs = {'km','km','s','none'};
 
-% travel time computation (homogeneous velocity; straight ray paths)
-% v is the logarithmic velocity, v = ln(V/V0), which is Cartesian
+% velocity for prior model
+% v is the unitless logarithmic velocity, v = ln(V/V0)
+% V = V0*exp(v) has units km/s
+V = 5;      % km/s
 V0 = 1;     % arbitrary scale factor (V is defined below)
+
+% travel time computation (homogeneous velocity; straight ray paths)
 d2 = @(x,y,xr,yr)     ( (xr-x)^2 + (yr-y)^2 );
 d1 = @(x,y,xr,yr)     ( sqrt(d2(x,y,xr,yr)) );
 tt = @(x,y,t,v,xr,yr) ( t + d1(x,y,xr,yr)/(V0*exp(v)) );
 
 % receiver locations for uniform grid
-xmin = 10; xmax = 80;
-ymin = 20; ymax = 90;
-xvec = linspace(xmin,xmax,4);
-yvec = linspace(ymin,ymax,3);
+xrecmin = 10; xrecmax = 80;
+yrecmin = 20; yrecmax = 90;
+xvec = linspace(xrecmin,xrecmax,4);
+yvec = linspace(yrecmin,yrecmax,3);
 [X,Y] = meshgrid(xvec,yvec);
 xrec = X(:);
 yrec = Y(:);
@@ -55,7 +58,7 @@ d = @(m) ([   tt(m(1),m(2),m(3),m(4),xrec(1),yrec(1))
            ]);
 
 % N x M matrix of partial derivatives (differentiate tt with respect to each parameter)
-% evaluated at model m = (m(1),m(2),t,m(4))
+% evaluated at model m = (m(1),m(2),m(3),m(4))
 G = @(m) ([
     -(d2(m(1),m(2),xrec(1),yrec(1)))^(-1/2)*(xrec(1)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(1),yrec(1)))^(-1/2)*(yrec(1)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(1),yrec(1))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(2),yrec(2)))^(-1/2)*(xrec(2)-m(1))/(V0*exp(m(4)))       -(d2(m(1),m(2),xrec(2),yrec(2)))^(-1/2)*(yrec(2)-m(2))/(V0*exp(m(4)))       1  -d1(m(1),m(2),xrec(2),yrec(2))/(V0*exp(m(4)))
@@ -75,11 +78,10 @@ G = @(m) ([
 % PRIOR MODEL (MEAN MODEL) : ts, xs, ys, v
 
 % prior model
-V = 5;                      % km/s
-v = log(V/V0);              % logarithmic velocity (Cartesian)
-mprior = [ 35 45 16 v ]';
+% note: V and V0 are defined above
+mprior = [ 35 45 16 log(V/V0) ]';
 
-% prior model covariance matrix (diagonal)
+% prior model covariance matrix (assumed to be diagonal)
 sigma_prior = [10 10 0.5 0.2]';         % standard deviations
 cprior0     = diag( sigma_prior.^2 );   % diagonal covariance matrix
 if inormalization==1
@@ -87,10 +89,10 @@ if inormalization==1
 else
     Cmfac = 1;
 end
-cprior   = Cmfac * cprior0;          % WITH NORMALIZATION FACTOR
-icprior  = inv(cprior);              % WITH NORMALIZATION FACTOR
+cprior   = Cmfac * cprior0;             % WITH NORMALIZATION FACTOR
+icprior  = inv(cprior);                 % WITH NORMALIZATION FACTOR
 icprior0 = inv(cprior0);
-Lprior   = chol(cprior0,'lower')';   % square-root (lower triangular)
+Lprior   = chol(cprior0,'lower')';      % square-root (lower triangular)
 
 % sample the prior model distribution using the square-root UNNORMALIZED covariance matrix
 for ii=1:nsamples, randn_vecs_m(:,ii) = randn(nparm,1); end
@@ -140,7 +142,7 @@ end
 % TARGET DATA
 dtarget = d(mtarget);
 
-% data covariance matrix
+% data covariance matrix (assumed to be diagonal)
 tsigma = 0.5;                       % uncertainty in arrival time measurement, seconds
 sigma_obs = tsigma * ones(ndata,1); % standard deviations
 cobs0     = diag( sigma_obs.^2 );   % diagonal covariance matrix
