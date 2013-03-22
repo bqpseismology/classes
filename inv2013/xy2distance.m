@@ -134,6 +134,7 @@ end
 % EXAMPLE
 
 if 0==1
+    %%
     clear, clc, close all
     %nx = 3; ny = 5;      %  9 5 x 5 Toeplitz blocks
     nx = 5; ny = 3;      % 25 3 x 3 Toeplitz blocks
