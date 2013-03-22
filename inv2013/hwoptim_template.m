@@ -36,24 +36,10 @@ pdir = pwd;
 
 %=========================================
 
-% number of observations and model parameters
-ndata = 12;     % observations
-nparm = 4;      % model parameters
-
-% indices of xs and ys within model vector
-ix = 1; iy = 2;
-
 inormalization = 1;
 stnsamples = [num2str(nsamples) ' samples'];
 stlabS = {'Sd(m^k)','Sm(m^k)','S(m^k) = Sd + Sm'};
-
-%=========================================
-% RANDOM VECTORS: useful for sampling distributions
-
-% Gaussian random vectors, each with mean = 0 and standard deviation = 1
-for ii=1:nsamples, randn_vecs_m(:,ii) = randn(nparm,1); end  % model
-for ii=1:nsamples, randn_vecs_d(:,ii) = randn(ndata,1); end  % data
-        
+   
 %---------------------------------------------
 % FORWARD PROBLEM    
 
@@ -283,9 +269,9 @@ if ifig==1
     % 'physical view' of estimated posterior data uncertainties
     % note: plot either sigma_post_d (from Cpost_d) or std_d_samples (from d(Cpost_samples))
     figure; hold on;
-    plot(mpost_samples(ix,:),mpost_samples(iy,:),'c.');
-    plot(mpost(ix),mpost(iy),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
-    %plot(mprior(ix),mprior(iy),'o','markersize',10,'markerfacecolor','b','markeredgecolor','w');
+    plot(mpost_samples(1,:),mpost_samples(2,:),'c.');
+    plot(mpost(1),mpost(2),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
+    %plot(mprior(1),mprior(2),'o','markersize',10,'markerfacecolor','b','markeredgecolor','w');
     %scatter(xrec,yrec,16^2,sigma_post_d,'filled','V'); title('estimated uncertainties for posterior predictions'); 
     scatter(xrec,yrec,16^2,std_d_samples,'filled','V'); title('uncertainties for posterior predictions, computed from samples'); 
     scatter(xrec,yrec,16^2,'kV');
@@ -300,9 +286,9 @@ if ifig==1
     % opts is set in forward_epicenter
     plot_epicenters(mprior_samples,mprior,minitial,mtarget,opts,mpost);
     % plot the cpost0 samples and re-plot the two markers
-    plot(mpost_samples(ix,:),mpost_samples(iy,:),'c.');
-    plot(mpost(ix),mpost(iy),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
-    plot(mtarget(ix),mtarget(iy),'o','markersize',10,'markerfacecolor','r','markeredgecolor','w');
+    plot(mpost_samples(1,:),mpost_samples(2,:),'c.');
+    plot(mpost(1),mpost(2),'o','markersize',10,'markerfacecolor','c','markeredgecolor','w');
+    plot(mtarget(1),mtarget(2),'o','markersize',10,'markerfacecolor','r','markeredgecolor','w');
     title('samples of prior (blue) and posterior (cyan)');
     if iprint==1, print(gcf,'-depsc',[pdir 'mpost_' ftag '_epi']); end
 end

@@ -17,6 +17,9 @@
 %=========================================
 % FORWARD PROBLEM    
 
+ndata = 12;
+nparm = 4;
+
 % labels for parameters
 %mlabs = {'xs','ys','ts','v = ln(V/V0)'};
 mlabs = {'xs','ys','ts','v'};
@@ -73,6 +76,15 @@ G = @(m) ([
     -(d2(m(1),m(2),xrec(11),yrec(11)))^(-1/2)*(xrec(11)-m(1))/(V0*exp(m(4)))    -(d2(m(1),m(2),xrec(11),yrec(11)))^(-1/2)*(yrec(11)-m(2))/(V0*exp(m(4)))    1  -d1(m(1),m(2),xrec(11),yrec(11))/(V0*exp(m(4)))
     -(d2(m(1),m(2),xrec(12),yrec(12)))^(-1/2)*(xrec(12)-m(1))/(V0*exp(m(4)))    -(d2(m(1),m(2),xrec(12),yrec(12)))^(-1/2)*(yrec(12)-m(2))/(V0*exp(m(4)))    1  -d1(m(1),m(2),xrec(12),yrec(12))/(V0*exp(m(4)))
     ]);
+
+%---------------------------------------------
+% RANDOM VECTORS
+
+% Gaussian random vectors, each with mean = 0 and standard deviation = 1
+randn_vecs_m = randn(nparm,nsamples);   % model
+randn_vecs_d = randn(ndata,nsamples);   % data
+%for ii=1:nsamples, randn_vecs_m(:,ii) = randn(nparm,1); end  % model
+%for ii=1:nsamples, randn_vecs_d(:,ii) = randn(ndata,1); end  % data
 
 %---------------------------------------------
 % PRIOR MODEL (MEAN MODEL) : ts, xs, ys, v
