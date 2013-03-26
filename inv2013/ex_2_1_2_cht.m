@@ -2,6 +2,7 @@
 % Examples 2.1 and 2.2 
 % from Parameter Estimation and Inverse Problems, 2nd edition, 2011
 % by R. Aster, B. Borchers, C. Thurber
+%
 
 clear
 close all
@@ -60,11 +61,8 @@ r = covm./(s*s');
 xx = min(t)-1 : 0.05 : max(t)+1;
 mm = m(1) + m(2)*xx - 0.5*m(3)*xx.^2;
 
-figure(1)
-clf
-bookfonts
+figure(1); hold on
 plot(xx,mm,'k');
-hold on
 errorbar(t,y,sigma,'ko');
 xlabel('Time (s)');
 ylabel('Elevation (m)');
@@ -105,8 +103,7 @@ for nreal = 1:nsamp
 end
 
 % Plot the histogram of chi squared values
-figure(2); nr=4; nc=1; xmax = 30; ymax = 0.14;
-clf
+figure(2); nr=3; nc=1; xmax = 30; ymax = 0.14;
 
 dbin = 0.5;
 for ii=1:3
@@ -121,32 +118,21 @@ for ii=1:3
     xlim([0 xmax]); if ii==3, ylim([0 ymax]); end
 end
 
-subplot(nr,nc,4)
+hold on;
 xx=linspace(0,xmax,100); dx=xx(2)-xx(1);
 chitheo=chi2pdf(xx,dof);
 sum(chitheo)*dx
-plot(xx,chitheo);
-ylabel(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
-xlabel('x')
+plot(xx,chitheo,'r','linewidth',2);
+title(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
+%ylabel(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
+%xlabel('x')
 axis([0 xmax 0 ymax]);
 
 % Plot the histograms of the model parameters
 figure(3)
-clf
-subplot(1,3,1)
-bookfonts;
-hist(mmc(:,1))
-title('m_1 (m)')
-
-subplot(1,3,2)
-bookfonts;
-hist(mmc(:,2))
-title('m_2 (m/s)')
-
-subplot(1,3,3)
-bookfonts;
-hist(mmc(:,3))
-title('m_3 (m/s^2)')
+subplot(1,3,1); hist(mmc(:,1)); title('m_1 (m)')
+subplot(1,3,2); hist(mmc(:,2)); title('m_2 (m/s)')
+subplot(1,3,3); hist(mmc(:,3)); title('m_3 (m/s^2)')
 disp('Displaying Monte-Carlo Model Histograms (fig 3)')
 
 % Plot the realizations of each pair of model parameters with the other
@@ -155,23 +141,19 @@ ax1 = [-50 50 85 110];
 ax2 = [-50 50 7 12];
 ax3 = [80 120 7 12];
 
-clf
 subplot(nr,nc,1)
-bookfonts;
 plot(mmc(:,1),mmc(:,2),'k.')
 xlabel('m_1 (m)')
 ylabel('m_2 (m/s)')
 axis(ax1);
 
 subplot(nr,nc,3)
-bookfonts;
 plot(mmc(:,1),mmc(:,3),'k.')
 xlabel('m_1 (m)')
 ylabel('m_3 (m/s^2)')
 axis(ax2);
 
 subplot(nr,nc,5)
-bookfonts;
 plot(mmc(:,2),mmc(:,3),'k.')
 xlabel('m_2 (m/s)')
 ylabel('m_3 (m/s^2)')
@@ -198,7 +180,6 @@ r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*
 
 % plot the data for the m1, m2 ellipsoid
 subplot(nr,nc,2)
-bookfonts;
 plot(m(1)+r(:,1),m(2)+r(:,2),'k');
 fill(m(1)+r(:,1),m(2)+r(:,2),'r');
 axis(ax1);
@@ -217,7 +198,6 @@ r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*
 
 % plot the data for the m1, m3 ellipsoid
 subplot(nr,nc,4)
-bookfonts;
 plot(m(1)+r(:,1),m(3)+r(:,2),'k');
 fill(m(1)+r(:,1),m(3)+r(:,2),'r');
 axis(ax2);
@@ -236,7 +216,6 @@ r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*
 
 % plot the data for the m2, m3 ellipsoid
 subplot(nr,nc,6)
-bookfonts;
 plot(m(2)+r(:,1),m(3)+r(:,2),'k');
 fill(m(2)+r(:,1),m(3)+r(:,2),'r');
 axis(ax3);
