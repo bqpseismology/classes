@@ -7,15 +7,15 @@ close all
 clc
 format compact
 
-xlims = [-pi/2 pi/2];
-
 % add path to load data
 addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Examples/chap3/ex_3_3/');
 
-%acquire the G, m, and d originally generated using shaw.m for m = n = 20
-%using Per Hansen's regularization tools; 
-%http://www2.imm.dtu.dk/~pch/Regutools/)
+% acquire the G, m, and d originally generated using shaw.m for m = n = 20
+% using Per Hansen's regularization tools (http://www2.imm.dtu.dk/~pch/Regutools/)
 load shaw20.mat
+whos
+
+xlims = [-pi/2 pi/2];
 
 % Compute the SVD.
 [U,S,V] = svd(G);
@@ -196,9 +196,9 @@ load shaw6.mat
 
 % Plot singular values of G for n = 6
 figure(13)
-semilogy(diag(S6),'ko');
-xlabel('i')
-ylabel('s_i')
+semilogy(diag(S6),'ko-','markersize',12);
+xlabel('i'); ylabel('s_i');
+xlim([0 length(U6)+1]);
 disp('Displaying singular values of G for n = 6 (fig. 13)')
 %print -deps2 c3fshawsing_6.eps
 
