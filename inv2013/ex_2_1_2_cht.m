@@ -8,8 +8,6 @@ clear
 close all
 clc
 
-iprint = 0;
-
 % Load precomputed data
 ddir = '/usr/local/matlab_toolboxes/aster/cd_5.2/Examples/chap2/ex_2_1_2/';
 load([ddir 'data1.mat']);
@@ -40,12 +38,12 @@ covm = ginv*ginv'
 
 % get the 1.96-sigma (95%) conf intervals
 disp('95% parameter confidence intervals (m-, mest, m+)')
-del = 1.96*sqrt(diag(covm));
-[m-del , m , m+del]
+dm = 1.96*sqrt(diag(covm));
+[m-dm  m  m+dm]
 
 % N-M degrees of freedom
 dof = N-M;
-disp(['Chi-square misfit for ',num2str(dof),' dof'])
+disp(sprintf('Chi-square misfit for %i degrees of freedom (dof)',dof));
 chi2 = norm((y - G*m)./sigma)^2
 
 % Find the p-value for this data set
@@ -58,7 +56,7 @@ disp('correlation matrix')
 r = covm./(s*s');
 
 % Plot the data and model predicted data
-xx = min(t)-1 : 0.05 : max(t)+1;
+xx = min(t)-1 : 0.05 : max(t)+1;        % denser sampling of x values
 mm = m(1) + m(2)*xx - 0.5*m(3)*xx.^2;
 
 figure(1); hold on
@@ -66,25 +64,18 @@ plot(xx,mm,'k');
 errorbar(t,y,sigma,'ko');
 xlabel('Time (s)');
 ylabel('Elevation (m)');
-disp('Displaying Data and Model Fit (fig 1)')
-hold off
-if iprint==1
-    print -deps2 c2fparabfig.eps
-end
+%print -deps2 c2fparabfig.eps
 
 % Output covm and the eigenvalues/eigenvectors of covm.
-disp('Covariance matrix for fitted parameters.')
+disp('Covariance matrix for fitted parameters:')
 covm
-disp('Eigenvalues/eigenvectors of the covariance matrix');
+disp('Eigenvalues/eigenvectors of the covariance matrix:');
 [u,lam] = eig(inv(covm))
-disp('95% confidence ellipsoid semiaxis lengths');
+disp('95% confidence ellipsoid semiaxis lengths:');
 semi_axes = [sqrt(chi2inv(0.95,3)*(1./diag(lam)))]'
 
-disp('95% confidence ellipsoid semiaxes')
-
+disp('95% confidence ellipsoid semiaxes:')
 [semi_axes(1)*u(:,1), semi_axes(2)*u(:,2), semi_axes(3)*u(:,3)]
-
-%break
 
 %-------------------------------
 
@@ -110,17 +101,14 @@ for ii=1:3
     subplot(nr,nc,ii);
     [B,Bplot] = plot_histo(chimc,[0:dbin:xmax],ii);
     sum(Bplot)*dbin  % check
-    %bookfonts
-    %hist(chimc,xmax);
-    %ylabel('N');
     xlabel('\chi_{obs}^2');
-    disp('Displaying 1000 Monte-Carlo Chi-square Values (fig 2)')
     xlim([0 xmax]); if ii==3, ylim([0 ymax]); end
 end
 
 hold on;
-xx=linspace(0,xmax,100); dx=xx(2)-xx(1);
-chitheo=chi2pdf(xx,dof);
+xx = linspace(0,xmax,100);
+dx = xx(2)-xx(1);
+chitheo = chi2pdf(xx,dof);
 sum(chitheo)*dx
 plot(xx,chitheo,'r','linewidth',2);
 title(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
@@ -133,7 +121,6 @@ figure(3)
 subplot(1,3,1); hist(mmc(:,1)); title('m_1 (m)')
 subplot(1,3,2); hist(mmc(:,2)); title('m_2 (m/s)')
 subplot(1,3,3); hist(mmc(:,3)); title('m_3 (m/s^2)')
-disp('Displaying Monte-Carlo Model Histograms (fig 3)')
 
 % Plot the realizations of each pair of model parameters with the other
 figure; nr=3; nc=2;
@@ -143,20 +130,17 @@ ax3 = [80 120 7 12];
 
 subplot(nr,nc,1)
 plot(mmc(:,1),mmc(:,2),'k.')
-xlabel('m_1 (m)')
-ylabel('m_2 (m/s)')
+xlabel('m_1 (m)'); ylabel('m_2 (m/s)')
 axis(ax1);
 
 subplot(nr,nc,3)
 plot(mmc(:,1),mmc(:,3),'k.')
-xlabel('m_1 (m)')
-ylabel('m_3 (m/s^2)')
+xlabel('m_1 (m)'); ylabel('m_3 (m/s^2)')
 axis(ax2);
 
 subplot(nr,nc,5)
 plot(mmc(:,2),mmc(:,3),'k.')
-xlabel('m_2 (m/s)')
-ylabel('m_3 (m/s^2)')
+xlabel('m_2 (m/s)'); ylabel('m_3 (m/s^2)')
 disp('Displaying Projections of 1000 Monte-Carlo models (fig 4)')
 axis(ax3);
 
@@ -183,8 +167,7 @@ subplot(nr,nc,2)
 plot(m(1)+r(:,1),m(2)+r(:,2),'k');
 fill(m(1)+r(:,1),m(2)+r(:,2),'r');
 axis(ax1);
-xlabel('m_1 (m)');
-ylabel('m_2 (m/s)');
+xlabel('m_1 (m)'); ylabel('m_2 (m/s)');
 
 % compute the data for the m1, m3 ellipsoid.
 C = covm([1,3],[1,3]);
@@ -201,8 +184,7 @@ subplot(nr,nc,4)
 plot(m(1)+r(:,1),m(3)+r(:,2),'k');
 fill(m(1)+r(:,1),m(3)+r(:,2),'r');
 axis(ax2);
-xlabel('m_1 (m)');
-ylabel('m_3 (m/s^2)');
+xlabel('m_1 (m)'); ylabel('m_3 (m/s^2)');
 
 % compute the data for the m2, m3 ellipsoid.
 C = covm([2,3],[2,3]);
@@ -219,12 +201,8 @@ subplot(nr,nc,6)
 plot(m(2)+r(:,1),m(3)+r(:,2),'k');
 fill(m(2)+r(:,1),m(3)+r(:,2),'r');
 axis(ax3);
-xlabel('m_2 (m/s)');
-ylabel('m_3 (m/s^2)');
-if iprint==1
-    print -deps2 c2fellipseproj.eps
-end
-disp('Displaying 95% Confidence Ellipse Projections (fig 4)')
+xlabel('m_2 (m/s)'); ylabel('m_3 (m/s^2)');
+%print -deps2 c2fellipseproj.eps
 
 %==========================================================================
 
