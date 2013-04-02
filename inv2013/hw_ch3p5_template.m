@@ -16,15 +16,14 @@ clc
 % Load the data (d)
 load('/usr/local/matlab_toolboxes/aster/cd_5.2/Exercises/chap3/prob5/ifk.mat');
 whos
-
 m = length(d);
 
-% set up vector of the y collocation points
+% set up vectors of the x and y collocation points
 dx = 0.05;
 xmin = dx/2;
 xmax = 1 - dx/2;
 y = (xmin:dx:xmax)';
-
-% set up vectors of the x collocation points
+x = y;
+n = length(x);
 
 
