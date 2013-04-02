@@ -15,16 +15,11 @@ function [f_r, rss, f_r_ss] = tsvd(g, X, rvec)
 %       [f_r, rss, f_r_ss] = tsvd(g, X, r) 
 % this returns the truncated SVD estimate of the vector f in the linear
 % regression model
+%        g = X*f + noise
 % 
-%        g = X*f + noise.
-% 
-% Also returned are the residual sum of squares rss and the sum of
-% squares f_r_ss of the elements of the truncated SVD estimate f_r
-% (the squared norm of f_r).
-% 
-% If r is a vector of truncation parameters, the i-th column
+% If r is a vector of truncation parameters, then the ith column
 % f_r(:,i) is the truncated SVD estimate for the truncation
-% parameter r(i); the i-th elements of rss and f_r_ss are the
+% parameter r(i); the ith elements of rss and f_r_ss are the
 % associated residual sum of squares and estimate sum of squares.
 % 
 % Adapted from TSVD routine in Per Christian Hansen's Regularization Toolbox. 
