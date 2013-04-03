@@ -40,7 +40,8 @@ covm = ginv*ginv'
 
 % get the 1.96-sigma (95%) conf intervals
 disp('95% parameter confidence intervals (m-, mest, m+)')
-dm = 1.96*sqrt(diag(covm));
+DELTA = 1.96;   % Eq. 2.30
+dm = DELTA*sqrt(diag(covm));
 [m-dm  m  m+dm]
 
 % N-M degrees of freedom
@@ -50,6 +51,7 @@ chi2 = norm((y - G*m)./sigvec)^2
 %chi2 = norm(yw - Gw*m)^2
 
 % Find the p-value for this data set
+% see Eq. 2.21: p value is the integral from chi2 to infinity
 disp('chi-square p-value')
 p = 1-chi2cdf(chi2,dof)
 
@@ -155,19 +157,19 @@ axis(ax3);
 
 %generate a vector of angles from 0 to 2*pi
 theta = (0:.01:2*pi)';
-delta = sqrt(chi2inv(0.95,2));
+DELTA = sqrt(chi2inv(0.95,2));  % 2 is the subspace dimension (p. 34)
 %the radii in each direction from the center
 r = zeros(length(theta),2);
 
 %---------------
 
-% compute the data for the m1, m2 ellipsoid.
+% compute the data for the m1, m2 ellipsoid
 C = covm((1:2),(1:2));
 [u,lam] = eig(inv(C));
 %calculate the x component of the ellipsoid for all angles
-r(:,1) = (delta/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(1,2)*sin(theta);
+r(:,1) = (DELTA/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(1,2)*sin(theta);
 %calculate the y component of the ellipsoid for all angles
-r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*sin(theta);
+r(:,2) = (DELTA/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(2,2)*sin(theta);
 
 % plot the data for the m1, m2 ellipsoid
 subplot(nr,nc,2)
@@ -176,15 +178,15 @@ fill(m(1)+r(:,1),m(2)+r(:,2),'r');
 axis(ax1);
 xlabel('m_1 (m)'); ylabel('m_2 (m/s)');
 
-% compute the data for the m1, m3 ellipsoid.
+% compute the data for the m1, m3 ellipsoid
 C = covm([1,3],[1,3]);
 [u,lam] = eig(inv(C));
 deltachisq = chi2inv(0.95,2);
-delta = sqrt(deltachisq);
+DELTA = sqrt(deltachisq);
 % calculate the x component of the ellipsoid for all angles
-r(:,1) = (delta/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(1,2)*sin(theta);
+r(:,1) = (DELTA/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(1,2)*sin(theta);
 % calculate the y component of the ellipsoid for all angles
-r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*sin(theta);
+r(:,2) = (DELTA/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(2,2)*sin(theta);
 
 % plot the data for the m1, m3 ellipsoid
 subplot(nr,nc,4)
@@ -193,15 +195,15 @@ fill(m(1)+r(:,1),m(3)+r(:,2),'r');
 axis(ax2);
 xlabel('m_1 (m)'); ylabel('m_3 (m/s^2)');
 
-% compute the data for the m2, m3 ellipsoid.
+% compute the data for the m2, m3 ellipsoid
 C = covm([2,3],[2,3]);
 [u,lam] = eig(inv(C));
 deltachisq = chi2inv(0.95,2);
-delta = sqrt(deltachisq);
+DELTA = sqrt(deltachisq);
 % calculate the x component of the ellipsoid for all angles
-r(:,1) = (delta/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(1,2)*sin(theta);
+r(:,1) = (DELTA/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(1,2)*sin(theta);
 % calculate the y component of the ellipsoid for all angles
-r(:,2) = (delta/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(delta/sqrt(lam(2,2)))*u(2,2)*sin(theta);
+r(:,2) = (DELTA/sqrt(lam(1,1)))*u(2,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(2,2)*sin(theta);
 
 % plot the data for the m2, m3 ellipsoid
 subplot(nr,nc,6)
