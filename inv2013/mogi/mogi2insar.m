@@ -1,4 +1,4 @@
-function [rad_calc_rot2] = mogi2InSAR(x,y,z,v, plot_ind)
+function [rad_calc_rot2] = mogi2insar(x,y,z,v, plot_ind)
 
 % generate a synthetic interferogram based on a point source (Mogi source) located at [x, y, z] with a volume change of v;
 % the calculated LOS range changes (in mm)are stored in rad_calc_rot2

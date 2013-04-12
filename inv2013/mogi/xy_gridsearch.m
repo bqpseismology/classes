@@ -1,3 +1,6 @@
+
+clear, close all, clc
+
 read_data;
 x0 = [19:0.2:22];
 y0 = [21:0.2:23];
@@ -9,7 +12,7 @@ a = find(temp == 0);
 for k = 1:length(x0)
     x0(k)
     for l = 1:length(y0)
-        modelout = mogi2InSAR(x0(k),  y0(l),   z0, v0,0);  
+        modelout = mogi2insar(x0(k),  y0(l),   z0, v0,0);  
         misfit(k,l) = sum((obs_rngchg(a) - modelout(a)).^2);
     end
 end
@@ -24,9 +27,10 @@ set(gca,'FontSize',12); h = xlabel('Easting [km]');set(h,'FontSize',14);
 h = ylabel('Northing [km]');set(h,'FontSize',14);
 h = title('Misfit Function');set(h,'FontSize',14);
 h = text(x0(indx),y0(indy),'*');set(h,'FontSize',24,'Color',[1 1 1]);
-axis equal;axis tight
+axis equal;     % WARNING: only for comparing x vs y
+axis tight;
 
-modelout = mogi2InSAR(x0(indx),  y0(indy),   z0, v0,1);  
+modelout = mogi2insar(x0(indx),  y0(indy),   z0, v0,1);  
 
 residuals = (obs_rngchg - (modelout));
 
