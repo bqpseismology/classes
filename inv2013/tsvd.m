@@ -1,10 +1,10 @@
 function [f_r, rss, f_r_ss] = tsvd(g, X, rvec)
-%TSVD truncated SVD regularization
+%TSVD regularization using truncated singular value decomposition
 %
 % INPUT
 %   g       n x 1 data vector
 %   X       n x p design matrix
-%   rvec    r x 1 vector of truncation parameters
+%   rvec    r x 1 vector of truncation parameters (integers between 1 and p)
 %
 % OUTPUT
 %   f_r     p x r matrix of TSVD model vectors
@@ -25,7 +25,7 @@ function [f_r, rss, f_r_ss] = tsvd(g, X, rvec)
 % Adapted from TSVD routine in Per Christian Hansen's Regularization Toolbox. 
 %
 
-% size of inputs
+% size of inputs (n is number of data; p is number of parameters)
 [n, p]      = size(X);
 q           = min(n, p);
 nr          = length(rvec);
@@ -55,7 +55,7 @@ for j = 1:nr
 	k         = rvec(j);                % current truncation parameter
 	f_r(:, j) = V(:, 1:k) * fc(1:k);    % truncated SVD estimated model vector
 	f_r_ss(j) = sum(fc(1:k).^2);        % the squared norm of f_r
-	rss(j)    = sum(beta(k+1:q).^2);    % norm(coefs*s_i NOT used)
+	rss(j)    = sum(beta(k+1:q).^2);    % residual sum of squares
 end
 
 % in overdetermined case, add rss of least-squares problem
