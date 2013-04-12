@@ -6,14 +6,14 @@ x0 = [19:0.2:22];
 y0 = [21:0.2:23];
 z0 = 2.581;
 v0 = 0.0033911;
-temp = isnan(obs_rngchg);
-a = find(temp == 0);
+iokay = find(isnan(obs_rngchg)==0);
 
+misfit = NaN(length(x0),length(y0));
 for k = 1:length(x0)
     x0(k)
     for l = 1:length(y0)
         modelout = mogi2insar(x0(k),  y0(l),   z0, v0,0);  
-        misfit(k,l) = sum((obs_rngchg(a) - modelout(a)).^2);
+        misfit(k,l) = sum((obs_rngchg(iokay) - modelout(iokay)).^2);
     end
 end
 
@@ -22,16 +22,21 @@ end
 disp(['Source X coordinate: ',num2str(x0(indx))]);
 disp(['Source Y coordinate: ',num2str(y0(indy))]);
 
-figure;imagesc(x0,y0,misfit');colorbar
-set(gca,'FontSize',12); h = xlabel('Easting [km]');set(h,'FontSize',14);
-h = ylabel('Northing [km]');set(h,'FontSize',14);
-h = title('Misfit Function');set(h,'FontSize',14);
-h = text(x0(indx),y0(indy),'*');set(h,'FontSize',24,'Color',[1 1 1]);
+% plot cross section of misfit function
+figure;
+imagesc(x0,y0,misfit'); hold on;
+colorbar
+set(gca,'FontSize',12);
+xlabel('Easting [km]','FontSize',14);
+ylabel('Northing [km]','FontSize',14);
+title('Misfit Function','FontSize',14);
+plot(x0(indx),y0(indy),'kp','markersize',24,'markerfacecolor','w');
 axis equal;     % WARNING: only for comparing x vs y
 axis tight;
 
-modelout = mogi2insar(x0(indx),  y0(indy),   z0, v0,1);  
+% plot solution
+modelout = mogi2insar(x0(indx),y0(indy),z0,v0,1);  
 
+% plot residual field
 residuals = (obs_rngchg - (modelout));
-
-plot_model(residuals)
+plot_model(residuals);
