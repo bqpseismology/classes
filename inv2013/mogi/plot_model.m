@@ -14,7 +14,7 @@ load data_mask
 F1 = D.*data_mask;
 F2 = wrap(D.*data_mask./10)./5.66.*4*pi;
 
-iimagesc = 0;  % plot with imagesc (=1) or pcolor (=0)
+iimagesc = 1;  % plot with imagesc (=1) or pcolor (=0)
 nanclr = 0.8*[1 1 1];
 
 figure; clims = [-30 30];

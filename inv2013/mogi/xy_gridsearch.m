@@ -12,7 +12,7 @@ misfit = NaN(length(x0),length(y0));
 for k = 1:length(x0)
     x0(k)
     for l = 1:length(y0)
-        modelout = mogi2insar(x0(k),  y0(l),   z0, v0,0);  
+        modelout = mogi2insar(x0(k),y0(l),z0,v0,0);  
         misfit(k,l) = sum((obs_rngchg(iokay) - modelout(iokay)).^2);
     end
 end
@@ -36,6 +36,8 @@ axis tight;
 
 % plot solution
 modelout = mogi2insar(x0(indx),y0(indy),z0,v0,1);  
+subplot(2,1,1); hold on; plot(x0(indx),y0(indy),'kp','markersize',24,'markerfacecolor','w');
+subplot(2,1,2); hold on; plot(x0(indx),y0(indy),'kp','markersize',24,'markerfacecolor','w');
 
 % plot residual field
 residuals = (obs_rngchg - (modelout));

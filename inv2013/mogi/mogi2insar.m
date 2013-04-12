@@ -6,14 +6,12 @@ function [rad_calc_rot2] = mogi2insar(x,y,z,v, plot_ind)
 
 global eing_vec ning_vec obs_phavec plook
 
+bvc=[x y z v 0 0 0 0]';
 
-bvc=[x        y        z       v       0 0  0 0]';
-
-
-%INPUT TRACK AND LOOK ANGLES 
-%satellite track angle from the geographic north (in degrees) 
+% INPUT TRACK AND LOOK ANGLES 
+% satellite track angle from the geographic north (in degrees) 
 track =  -13.3;
-%radar look angle from the vertical (in degrees) 
+% radar look angle from the vertical (in degrees) 
 look  = 23.0;
 
 % INPUT FILE WIDTH (SAMPLE), LENGTH (LINE), AND POSTING
@@ -54,8 +52,9 @@ calc_rng=rngchn_mogi(bvc(2),bvc(1),bvc(3),bvc(4),ning_vec_bg,eing_vec_bg,plook);
 %calc_mat(vec_ind_bg) = (calc_rng - eing_vec_bg*bvc(6) - ning_vec_bg*bvc(7) - bvc(5));
 calc_mat(vec_ind_bg) = calc_rng;
 
-rng2rad=(2.0*pi)/28.3;
-rad_calc=calc_mat;%.*rng2rad;
+%rng2rad=(2.0*pi)/28.3;
+%rad_calc=calc_mat*rng2rad;
+rad_calc=calc_mat;
 rad_calc_rot = (flipud(rad_calc)).';
 % pha_file=[filename,'.syn'];
 % fid=fopen(pha_file,'w', 'b');
