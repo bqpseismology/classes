@@ -21,14 +21,14 @@ subplot(2,1,1);
 if iimagesc==1
     imagesc(xvec,yvec,F1,clims);
 else
-    % without this command, the background gray will not appear when you
-    % print the figure to file; however, this command will make the entire
-    % background page gray (not white) -- it makes no sense!
-    set(gcf,'InvertHardCopy','off');
-    
     pcolor(xvec,yvec,F1); shading flat; set(gca,'ydir','reverse');
-    set(gca,'Color',nanclr);
     caxis(clims);
+    
+    % silly Matlab commands to make sure that the colors that are shown in
+    % the figure are actually printed to files
+    set(gcf,'Color','white');
+    set(gca,'Color',nanclr);
+    set(gcf,'InvertHardCopy','off');
 end
 colorbar   
 axis equal; axis tight
