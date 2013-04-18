@@ -16,14 +16,25 @@ clc
 % Load the data (d)
 load('/usr/local/matlab_toolboxes/aster/cd_5.2/Exercises/chap3/prob5/ifk.mat');
 whos
-m = length(d);
+m = length(d);  % number of data
+n = m;          % number of model parameters
 
-% set up vectors of the x and y collocation points
-dx = 0.05;
-xmin = dx/2;
-xmax = 1 - dx/2;
-y = (xmin:dx:xmax)';
-x = y;
-n = length(x);
+% construct discretization vector for data
+xmin = 0;
+xmax = 1;
+xvec = collocate(xmin,xmax,m);
 
+% construct discretization vector for model
+ymin = 0;
+ymax = 1;
+yvec = collocate(ymin,ymax,n);
+
+whos xvec yvec d
+
+% example of using plotconst_mod.m
+figure; hold on;
+plotconst_mod(rand(m,1),xmin,xmax,{'k','linewidth',2});
+plotconst_mod(rand(m,1),xmin,xmax,{'r--','linewidth',2});
+
+% construct design matrix G
 

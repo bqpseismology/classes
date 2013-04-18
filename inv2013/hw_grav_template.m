@@ -33,10 +33,5 @@ yvec = collocate(ymin,ymax,n);
 
 whos xvec yvec d
 
-% example of using plotconst_mod.m
-figure; hold on;
-plotconst_mod(rand(m,1),xmin,xmax,{'k','linewidth',2});
-plotconst_mod(rand(m,1),xmin,xmax,{'r--','linewidth',2});
-
 % construct design matrix G
 
