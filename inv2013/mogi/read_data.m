@@ -1,4 +1,3 @@
-clear all; close all;
 % unwrapped interferogram of Okmok volcano
 % pixel values represent line-of-sight (LOS) range change in radians
 % zeros in this interferogram represent data voids
