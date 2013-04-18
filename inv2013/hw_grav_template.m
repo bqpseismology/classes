@@ -21,15 +21,15 @@ d = gravity;
 n = length(d);
 m = n;
 
-% construct discretization vector for data
+% construct discretization vector for model
 xmin = 0;
 xmax = 1;
-xvec = collocate(xmin,xmax,m);
+xvec = collocate(xmin,xmax,n);
 
-% construct discretization vector for model
+% construct discretization vector for data
 ymin = 0;
 ymax = 1;
-yvec = collocate(ymin,ymax,n);
+yvec = collocate(ymin,ymax,m);
 
 whos xvec yvec d
 
