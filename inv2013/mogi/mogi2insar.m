@@ -1,4 +1,4 @@
-function rad_calc_rot2 = mogi2insar(x,y,z,v, plot_ind)
+function rad_calc_rot2 = mogi2insar(x,y,z,v,iplot,imask)
 %MOGI2INSAR generate a synthetic interferogram based on a Mogi source
 %
 % Mogi source is located at [x, y, z] with a volume change of v;
@@ -56,17 +56,23 @@ calc_rng = rngchn_mogi(bvc(2),bvc(1),bvc(3),bvc(4),ning_vec_bg,eing_vec_bg,plook
 calc_mat(vec_ind_bg) = calc_rng;
 
 %rng2rad = (2.0*pi)/28.3;
-%rad_calc = calc_mat*rng2rad;
-rad_calc = calc_mat;
-rad_calc_rot = (flipud(rad_calc)).';
+rng2rad = 1;        % (do not apply)
+rad_calc = calc_mat*rng2rad;
+rad_calc_rot = (flipud(rad_calc))';
 % pha_file = [filename,'.syn'];
 % fid = fopen(pha_file,'w', 'b');
 % fwrite(fid,rad_calc_rot,'float');
 % fclose(fid);
-load data_mask
-rad_calc_rot2 = rad_calc_rot'.*data_mask;
-rad_calc_rot2(rad_calc_rot2==0) = nan;
 
-if plot_ind==1
+% whether you want to plot with the data mask
+if imask==1
+    load data_mask      % saved from read_data.m
+    rad_calc_rot2 = rad_calc_rot'.*data_mask;
+    rad_calc_rot2(rad_calc_rot2==0) = nan;
+else
+    rad_calc_rot2 = rad_calc_rot';
+end
+
+if iplot==1
     plot_model(rad_calc_rot2);
 end
