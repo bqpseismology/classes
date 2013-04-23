@@ -26,6 +26,7 @@ POSTING = 40;
 track = track*pi/180.0;
 look = look*pi/180.0;
 % radar line-of-sight (LOS) vector in [E, N, U]
+% note: there is a sign flip in rngchn_mogi.m that could instead be applied here
 plook = [-sin(look)*cos(track) sin(look)*sin(track) cos(look)];
 
 num_rows = LINE;
