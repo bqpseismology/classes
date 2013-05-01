@@ -48,7 +48,7 @@ xlabel('x'); title(stlab); axis tight; grid on;
 figure;
 imagesc(D); hold on;
 axis equal, axis([-1 M+1 -1 M+1]);
-plot(kp,k,'ko','markersize',10,'markerfacecolor','k');
+plot(kp,k,'wo','markersize',10,'markerfacecolor','k');
 xlabel('k'' index'); ylabel('k index');
 set(gca,'xtick',[0:20:120],'ytick',[0:20:120]); colorbar
 title({sprintf('Distances between pairs of points (dmax = %.1f)',max(D(:))),...
@@ -74,7 +74,7 @@ for ii=1:Pnew
     mc = mc_samples(:,ii);  % sample of covariance matrix
     %mean_samples(ii)  = 
     %std_samples(ii)   = 
-    %norm_samples(ii)  =    % note: Matlab's norm will not work here!
+    %norm_samples(ii)  =    % note: Matlab's 'norm' function will not work here!
 end
 
 %==========================================================================

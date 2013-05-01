@@ -3,6 +3,9 @@
 %
 % Implementation of the problem in Section 7.19 of Tarantola (2005),
 %   "Using the Backus and Gilbert Method"
+% For background reading, see
+%    Tarantola (2005), Section 6.16, The Method of Backus and Gilbert
+%    Aster et al. (2012), Section 5.3, The Method of Backus and Gilbert
 %
 
 close all, clc, clear
