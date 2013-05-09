@@ -138,24 +138,19 @@
 % \altaffilmark will produce footnote;
 % matching \altaffiltext will appear at bottom of page.
 
-% \authors{A. B. Smith,\altaffilmark{1}
-% Eric Brown,\altaffilmark{1,2} Rick Williams,\altaffilmark{3}
-% John B. McDougall\altaffilmark{4}, and S. Visconti\altaffilmark{5}}
+\authors{A. B. Smith,\altaffilmark{1}
+Eric Brown,\altaffilmark{1,2} Rick Williams,\altaffilmark{3}
+John B. McDougall\altaffilmark{4}, and S. Visconti\altaffilmark{5}}
 
-%\altaffiltext{1}{Department of Hydrology and Water Resources,
-%University of Arizona, Tucson, Arizona, USA.}
+\altaffiltext{1}{Department of Hydrology and Water Resources, University of Arizona, Tucson, Arizona, USA.}
 
-%\altaffiltext{2}{Department of Geography, Ohio State University,
-%Columbus, Ohio, USA.}
+\altaffiltext{2}{Department of Geography, Ohio State University, Columbus, Ohio, USA.}
 
-%\altaffiltext{3}{Department of Space Sciences, University of
-%Michigan, Ann Arbor, Michigan, USA.}
+\altaffiltext{3}{Department of Space Sciences, University of Michigan, Ann Arbor, Michigan, USA.}
 
-%\altaffiltext{4}{Division of Hydrologic Sciences, Desert Research
-%Institute, Reno, Nevada, USA.}
+\altaffiltext{4}{Division of Hydrologic Sciences, Desert Research Institute, Reno, Nevada, USA.}
 
-%\altaffiltext{5}{Dipartimento di Idraulica, Trasporti ed
-%Infrastrutture Civili, Politecnico di Torino, Turin, Italy.}
+\altaffiltext{5}{Dipartimento di Idraulica, Trasporti ed Infrastrutture Civili, Politecnico di Torino, Turin, Italy.}
 
 %% ------------------------------------------------------------------------ %%
 %
@@ -167,7 +162,7 @@
 % >> the body of the abstract.
 
 \begin{abstract}
-(Type abstract here)
+The abstract goes here.
 \end{abstract}
 
 %% ------------------------------------------------------------------------ %%
@@ -183,29 +178,46 @@
 
 \begin{article}
 
-%% ------------------------------------------------------------------------ %%
-%
-%  TEXT
-%
-%% ------------------------------------------------------------------------ %%
+%=====================================================================================
 
 \section{Introduction}
 
-How about referencing \citet{AsterE2,Tarantola2005,vonNeumann1951,Gneiting2012}?
+You will want to have done the \LaTeX tutorial from class before starting here. This AGU style file has certain requirements for references.
 
-Inverse problems are great \citep[e.g.,][]{AsterE2,Tarantola2005}.
+\begin{itemize}
+\item All your bibliographic information should be listed in the file \verb+REFERENCES.bib+.
+\item How about referencing \citet{AsterE2,Tarantola2005,vonNeumann1951,Gneiting2012}?
+\item Inverse problems are great \citep[e.g.,][]{AsterE2,Tarantola2005}.
+\item See the results in Table~\ref{table_label} and Figure~\ref{figure_label}.
+\end{itemize}
 
-See the results in Table~\ref{table_label} and Figure~\ref{figure_label}.
+\section{Section header}
 
-\section{Background: spectral absorption}
+Here's an example of an equation
+%
+\begin{equation}
+f(x,y) = x^2 - y^2 + 8
+\label{fxy}
+\end{equation}
+%
+Now we can mention Eq.~\ref{fxy}.
+What about an array of equations?
+%
+\begin{eqnarray}
+g(x,y) &=& x^2 - y^2 + 8
+\label{gxy}
+\\
+h(x,y) &=& x^2 - y^2 + 8
+\label{hxy}
+\end{eqnarray}
+%
+We might want to reference Eqs.~\ref{gxy} and \ref{hxy}.
+
+\section{Section header}
 
 Text
 
-\section{Inverse method: iterative least squares}
-
-Text
-
-\section{Experimental design}
+\section{Section header}
 
 Text
 
@@ -247,7 +259,7 @@ Text
 %  ACKNOWLEDGMENTS
 
 \begin{acknowledgments}
-(Text here)
+The acknowledgments go here.
 \end{acknowledgments}
 
 %% ------------------------------------------------------------------------ %%
