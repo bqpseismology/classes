@@ -1,9 +1,11 @@
 %
-% hw_gr.m
+% hw_gr_template.m
 % Applied Seismology, GEOS 626, Jan 2014
 % 
 % Homework template:
 % Gutenberg-Richter frequency-magnitude relation
+%
+% calls seis2GR.m
 %
 
 clc

@@ -1,6 +1,6 @@
 %
-% fft_solar.m
-% Carl Tape, Applied Seismology
+% lab_fft.m
+% Carl Tape, Applied Seismology (GEOS 626)
 %
 % Spectral analysis of the motion of the sun due to planetary orbits.
 %

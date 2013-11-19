@@ -1,12 +1,11 @@
 %
-% disper.m
-% Carl Tape, 06-March-2012
-% Applied Seismology
+% lab_dispersion.m
+% Carl Tape, Applied Seismology (GEOS 626)
 % 
 % Example of computing group dispersion and phase dispersion using two
 % seismograms (real data).
 %
-% calls bandpass.m, markt.m
+% calls bandpass.m, markt.m, fftvec.m
 %
 
 clear
@@ -73,10 +72,8 @@ xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
 
 % CONSTRUCT FREQUENCY VECTOR
 npt = nt;
-fNyq = 1/(2*dt);                   % Nyquist frequency
-f1 = linspace(0, fNyq, npt/2+1)';  % first half of frequency vector
-                                   % note: first entry is f=0
-f = [f1 ; f1(end-1:-1:2)];
+f = fftvec(ti);
+f = abs(f);      % we do not have negative frequencies here
 
 Hp = fft(ypas);  %
 Ap = abs(Hp);    % =sqrt(H.*conj(H)), where P=H.*conj(H) is the power spectral density

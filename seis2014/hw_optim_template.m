@@ -1,6 +1,6 @@
 %
-% hwoptim.m
-% Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
+% hw_optim_template.m
+% Carl Tape
 %
 % Template scripts for the iterative quasi-Newton method for a 4-parameter
 % inversion for epicenter, origin time, and velocity.
@@ -19,7 +19,7 @@ format compact
 format short
 
 % add path to Aster library (chi2inv)
-addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Lib/');
+%addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Lib/');
 
 %=========================================
 % USER INPUT
