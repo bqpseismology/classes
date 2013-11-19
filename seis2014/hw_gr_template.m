@@ -1,9 +1,9 @@
 %
-% hwgr.m
-% Applied Seismology, Jan-2012
+% hw_gr.m
+% Applied Seismology, GEOS 626, Jan 2014
 % 
-% Template for Homework 1: Gutenberg-Richter frequency-magnitude relation
-%
+% Homework template:
+% Gutenberg-Richter frequency-magnitude relation
 %
 
 clc
@@ -11,7 +11,7 @@ clear
 close all
 
 %---------------------------
-% HW1, Problem 1-1
+% Problem 1-1
 
 % load GCMT catalog
 % M:     6 x n set of moment tensors
@@ -49,7 +49,7 @@ caxis([0 600]); colorbar
 %xlabel('Longitude'); ylabel('Latitutde');
 
 %---------------------------
-% HW1, Problem 1-2
+% Problem 1-2
 
 dmag = 0.1;     % magnitude bin width
 % note: seis2GR.m is NOT a built-in matlab command

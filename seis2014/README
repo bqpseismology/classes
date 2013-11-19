@@ -1,0 +1,7 @@
+Extra scripts needed to run Matlab codes.
+
+Basic utilities:
+fontsize.m    -- change font size throughout a figure
+plot_histo.m  -- plot histograms
+
+hw_gr.m    -- seis2GR.m
