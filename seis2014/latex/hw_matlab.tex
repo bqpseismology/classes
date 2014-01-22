@@ -107,7 +107,7 @@ where the index $i$ refers to the magnitude bin.
 %------------------
 
 \begin{enumerate}
-\item (1.0) We consider the Global Centroid Moment Tensor (GCMT) catalog (\verb+www.globalcmt.org+), from 01-Jan-1976 to 30-June-2011. Thus $T$ represents the duration of the catalog, and $R$ represents planet Earth.
+\item (0.5) We consider the Global Centroid Moment Tensor (GCMT) catalog (\verb+www.globalcmt.org+), from 01-Jan-1976 to 30-June-2011. Thus $T$ represents the duration of the catalog, and $R$ represents planet Earth.
 
 Run the Matlab program \verb+hw_gr_template.m+ to generate a global map of the catalog.
 %
@@ -171,19 +171,16 @@ Note: The expected value does not have to agree with what actually occurred with
 
 \item What is the best-fitting line for the new distribution?
 
-\item What magnitude interval averages $>100$ events per year?
+\item What magnitude interval averages $>$100 events per year?
 \end{enumerate}
 
 %----------------
 
-\item (1.5) Plot the cumulative and incremental distributions for seismicity rate for bin widths of $\Delta M = 0.05, 0.10, 0.5$, and 1.0. What is the apparent relationship between bin width and the separation between the cumulative and incremental distributions?
+\item (1.0) Plot the cumulative and incremental distributions for seismicity rate for bin widths of $\Delta M = 0.05, 0.10, 0.5$, and 1.0. What is the apparent relationship between bin width and the separation between the cumulative and incremental distributions?
 
 %----------------
 
-\item (2.5) As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution.
-%Using the formula for $d N/ d M$, derive an expression for $\Delta a$ that is valid for small bin widths, $\Delta M \ll 1$.
-
-Define the bin width as
+\item (2.0) Define the bin width as
 %
 \begin{equation}
 \Delta M = M_{i+1} - M_i
@@ -210,6 +207,19 @@ and list the expression for $\Delta a$.
 \item What is the relationship between bin width and the shift in the $y$-intercept?
 
 \item If $b = 1$ and $\Delta M = 0.1$, what is $\Delta a$?
+\end{enumerate}
+
+%----------------
+
+\item  (1.5) As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution. 
+%
+\begin{enumerate}
+\item Using the analytical formula for $d N/ d M$, derive an expression for $\Delta a$ that is valid for small bin widths, $\Delta M \ll 1$.
+
+Hint: What is the mathematical definition of a derivative?
+
+\item If $b = 1$ and $\Delta M = 0.1$, what is $\Delta a$?
+
 \end{enumerate}
 
 %----------------
