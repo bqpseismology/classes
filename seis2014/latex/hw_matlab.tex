@@ -1,0 +1,243 @@
+% dvips -t letter hw_matlab.dvi -o hw_matlab.ps ; ps2pdf hw_matlab.ps
+\documentclass[11pt,titlepage,fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage[round]{natbib}
+\usepackage{xspace}
+\usepackage{epsfig}
+\usepackage{bm}
+
+%--------------------------------------------------------------
+%       SPACING COMMANDS (Latex Companion, p. 52)
+%--------------------------------------------------------------
+
+\usepackage{setspace}    % double-space or single-space
+
+\renewcommand{\baselinestretch}{1.1}
+
+\textwidth 460pt
+\textheight 690pt
+\oddsidemargin 0pt
+\evensidemargin 0pt
+
+% see Latex Companion, p. 85
+\voffset     -50pt
+\topmargin     0pt
+\headsep      20pt
+\headheight   15pt
+\headheight    0pt
+\footskip     30pt
+\hoffset       0pt
+
+\include{NEWCOMMANDS}
+
+\graphicspath{
+  {./figures/}
+}
+
+%--------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------
+
+\begin{center}
+
+{\large \bf Problem Set 1: 
+
+Introduction to Matlab, featuring the frequency-magnitude relation}
+
+GEOS 626: Applied Seismology, Carl Tape
+
+Assigned: January 16, 2014 --- Due: January 23, 2014
+
+\end{center}
+
+%------------------------
+
+\subsection*{Overview and instructions}
+
+\begin{itemize}
+
+\item The purposes of this problem set are to practice using Matlab and to think critically about histograms. (If you are new to Matlab, let me know.)
+
+\item See the handout \verb+doc_startup.pdf+ to get set up on the Linux network. This includes copying the template file to make \verb+hw_gr.m+.
+%to access \verb+GEOTOOLS+.
+
+\item {\bf Possible source of confusion:} Following standard mathematical notation, I will use `$\log$' to represent the base-10 logarithm ($\log_{10}$) and `$\ln$' to represent the natural logarithm. Note that in Matlab \verb+log10+ is $\log_{10}$ and \verb+log+ is $\ln$.
+
+\item {\bf Matlab tips:}
+%Use \verb+linspace+ to generate a sequency of numbers, $x_i$; then $10^{x_i}$ will be uniformly spaced in $\log$ space.
+\verb+hw_gr_template.m+ shows an example of how to plot multiple items on a log-scaled plot. It also shows how to produce a postscript (PS) or pdf file from a Matlab file. Make sure you follow the template script before proceeding.
+
+\end{itemize}
+
+%------------------------
+
+%\pagebreak
+\subsection*{Problem 1 (10.0). Histograms and earthquake statistics}
+
+This problem addresses the famous Gutenberg-Richter frequency-magnitude relation \citep{GutenbergRichter1944}, which is one of the cornerstone empirical relationships in seismology. It is given by
+%
+\begin{equation}
+\log N = a - b\,M,
+\label{GR}
+\end{equation}
+%
+where
+%
+\begin{itemize}
+\item $N$ is the cumulative number of earthquakes having magnitudes larger than $M$ that occur in region $R$ within a particular time $T$
+\item $M$ is the earthquake magnitude; we take this to be moment magnitude $\mw$
+\item $b$ controls the slope of the seismicity distribution in region $R$ within a particular time $T$; $b \approx 1$ for most earthquake catalogs
+\item $a$ indicates the seismic activity in region $R$ within a particular time $T$
+\end{itemize}
+%
+A subtle point is that in practice the magnitudes are {\em binned}, then a line is fit to the histogram. It is helpful to consider the discrete form
+%
+\begin{equation}
+\log N_i = a - b\,M_i,
+\label{GRd}
+\end{equation}
+%
+where the index $i$ refers to the magnitude bin.
+
+\pagebreak
+
+%------------------
+
+\begin{enumerate}
+\item (1.0) We consider the Global Centroid Moment Tensor (GCMT) catalog (\verb+www.globalcmt.org+), from 01-Jan-1976 to 30-June-2011. Thus $T$ represents the duration of the catalog, and $R$ represents planet Earth.
+
+Run the Matlab program \verb+hw_gr_template.m+ to generate a global map of the catalog.
+%
+\begin{enumerate}
+\item What is the range of depths of events in the catalog?
+\item List three regions of the deepest seismicity.
+\item What is the range of magnitudes of events in the catalog?
+\end{enumerate}
+
+\item (1.0) The {\em incremental distribution} is the number of events per magnitude bin, $M_i$. The {\em cumulative distribution} is the cumulative number of events with $M \ge M_i$; the frequency-magnitude relation is based on the cumulative distribution. A {\em magnitude interval} is a range of magnitude, \eg the magnitude interval $[8.7,9.0]$.
+
+As shown in \verb+hw_gr_template.m+, use the function \verb+seis2GR.m+ to obtain the cumulative and incremental distributions for the $\mw$ values of the GCMT catalog, using a bin width of $\Delta M = 0.1$. Examine the output that appears in the command window.
+
+Note: The function \verb+seis2GR.m+ uses the variables names \verb+Ncum+ for the cumulative numbers ($N_i$), \verb+N+ for the incremental numbers, and \verb+Medges+ for the bin edges $M_i$.
+
+\begin{enumerate}
+\item What is the maximum value of the incremental distribution?
+
+What is its magnitude interval?
+
+\item What is the maximum value of the cumulative distribution?
+
+What is its magnitude interval?
+
+\item What is the minimum value of the incremental distribution? 
+
+\item What is the minimum value of the cumulative distribution? 
+\end{enumerate}
+
+%----------------
+
+\item (2.5) Now it's time to write some lines of code.
+
+Using the output from \verb+seis2GR.m+ (as shown in \verb+hw_gr_template.m+), plot the cumulative and incremental distributions on the same plot, similar to the plot in \citet[][Figure~4.7-2]{SteinWysession}, but note that your $x$-axis is $\mw$, not $\log M_0$.
+
+{\em Matlab tip}: \verb+hw_gr_template.m+ shows an example of how to plot multiple items with \verb+semilogy+ axes. Another alternative is to transform $N$ into $n = \log N$, then work with~$n$.
+
+\begin{enumerate}
+\item Which distribution has more scatter?
+
+\item Find a best-fitting line, $\log N = a - b M$, for the `most linear' section of the $\log$-scaled cumulative distribution. You can simply pick two points and compute the line, or use a command such as \verb+polyfit+ (and \verb+polyval+) to apply a least-squares fit to a set of points. (Do not fit a line to the entire distribution!)
+
+Plot your best-fitting line over the full range of magnitudes and include this plot in your write-up. What are your values for $a$ and $b$? What is the physical meaning of $a$? What is the physical meaning of $b$?
+
+\item Assume that the best-fitting distribution (not the GCMT catalog) is `reality'. Based on the idealized cumulative distribution, what is largest earthquake expected over the duration of the GCMT catalog? 
+
+Hint: Where does $N = 1$ intersect your best-fitting line?
+
+Note: The expected value does not have to agree with what actually occurred within the GCMT catalog.
+
+\item The ``catalog completeness'' \citep[\eg][]{WiemerWyss2000}, $M_c$, represents the smallest magnitude of above which the frequency-magnitude is true for a particular seismicity catalog. What is the catalog completeness for GCMT? List your answer with 0.1 precision. (Provide a brief explanation, but no computation is necessary.)
+
+\end{enumerate}
+
+%----------------
+
+\item (1.0) Instead of analyzing seismicity, let us know analyze seismicity rate by dividing all binned values by the duration of the catalog ($T$).
+%
+\begin{enumerate}
+\item Why might seismicity rate be more useful than seismicity?
+
+\item What is the best-fitting line for the new distribution?
+
+\item What magnitude interval averages $>100$ events per year?
+\end{enumerate}
+
+%----------------
+
+\item (1.5) Plot the cumulative and incremental distributions for seismicity rate for bin widths of $\Delta M = 0.05, 0.10, 0.5$, and 1.0. What is the apparent relationship between bin width and the separation between the cumulative and incremental distributions?
+
+%----------------
+
+\item (2.5) As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution.
+%Using the formula for $d N/ d M$, derive an expression for $\Delta a$ that is valid for small bin widths, $\Delta M \ll 1$.
+
+Define the bin width as
+%
+\begin{equation}
+\Delta M = M_{i+1} - M_i
+\label{dM}
+\end{equation}
+%
+where $i$ increases to the right (the usual convention).
+
+The incremental distribution is given by
+%
+\begin{equation}
+-\Delta N_i = -(N_{i+1} - N_i) = N_i - N_{i+1}.
+\end{equation}
+%
+\begin{enumerate}
+\item Using the frequency-magnitude relation (\refeq{GRd}), show that
+%
+\begin{equation}
+\log(-\Delta N_i) = a - \Delta a - b M_i
+\end{equation}
+%
+and list the expression for $\Delta a$.
+
+\item What is the relationship between bin width and the shift in the $y$-intercept?
+
+\item If $b = 1$ and $\Delta M = 0.1$, what is $\Delta a$?
+\end{enumerate}
+
+%----------------
+
+\item (0.5) Earlier you determined the catalog completeness, $M_c$.
+%
+\begin{enumerate}
+\item Can the GCMT catalog, $M > M_c$ (see earlier part of this problem for $M_c$), be fit with a single line?
+\item Compute an estimate $b$ for $M > 7.5$.
+\item What does the different $b$ value imply about large events in the catalog?
+\item What is a possible reason for this?
+\end{enumerate}
+
+\end{enumerate}
+
+%-------------------------------------------------------------
+
+%\pagebreak
+\subsection*{Problem}
+
+Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+
+%-------------------------------------------------------------
+%\pagebreak
+\bibliographystyle{agu08}
+\bibliography{preamble,refs_carl,REFERENCES,refs_alaska,refs_source}
+%-------------------------------------------------------------
+
+%-------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------
