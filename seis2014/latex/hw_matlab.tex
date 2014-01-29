@@ -61,6 +61,8 @@ Assigned: January 16, 2014 --- Due: January 23, 2014
 
 \item The purposes of this problem set are to practice using Matlab and to think critically about histograms. (If you are new to Matlab, let me know.)
 
+\item Suggested reading: \citet[][Section 4.7.1]{SteinWysession}, \citet{GutenbergRichter1944}
+
 \item See the handout \verb+doc_startup.pdf+ to get set up on the Linux network. This includes copying the template file to make \verb+hw_gr.m+.
 %to access \verb+GEOTOOLS+.
 
@@ -93,16 +95,18 @@ where
 \item $a$ indicates the seismic activity in region $R$ within a particular time $T$
 \end{itemize}
 %
-A subtle point is that in practice the magnitudes are {\em binned}, then a line is fit to the histogram. It is helpful to consider the discrete form
+A subtle point is that in practice the magnitudes are {\em binned}, then a line is fit to the histogram. It is helpful to consider the discrete form of \refEq{GR}:
 %
 \begin{equation}
 \log N_i = a - b\,M_i,
 \label{GRd}
 \end{equation}
 %
-where the index $i$ refers to the magnitude bin.
+where the index $i$ refers to the magnitude bin, with $M_i$ being the magnitude at the left boundary of the bin.
 
-\pagebreak
+The {\em cumulative distribution} is the cumulative number of events with $M \ge M_i$; the frequency-magnitude relation is expressed as a cumulative distribution. The {\em incremental distribution} is the number of events per magnitude bin, $M_i$.  A {\em magnitude interval} is a range of magnitude, \eg the magnitude interval $[8.7,9.0]$.
+
+%\pagebreak
 
 %------------------
 
@@ -117,9 +121,7 @@ Run the Matlab program \verb+hw_gr_template.m+ to generate a global map of the c
 \item What is the range of magnitudes of events in the catalog?
 \end{enumerate}
 
-\item (1.0) The {\em incremental distribution} is the number of events per magnitude bin, $M_i$. The {\em cumulative distribution} is the cumulative number of events with $M \ge M_i$; the frequency-magnitude relation is based on the cumulative distribution. A {\em magnitude interval} is a range of magnitude, \eg the magnitude interval $[8.7,9.0]$.
-
-As shown in \verb+hw_gr_template.m+, use the function \verb+seis2GR.m+ to obtain the cumulative and incremental distributions for the $\mw$ values of the GCMT catalog, using a bin width of $\Delta M = 0.1$. Examine the output that appears in the command window.
+\item (1.0) As shown in \verb+hw_gr_template.m+, use the function \verb+seis2GR.m+ to obtain the cumulative and incremental distributions for the $\mw$ values of the GCMT catalog, using a bin width of $\Delta M = 0.1$. Examine the output that appears in the command window.
 
 Note: The function \verb+seis2GR.m+ uses the variables names \verb+Ncum+ for the cumulative numbers ($N_i$), \verb+N+ for the incremental numbers, and \verb+Medges+ for the bin edges $M_i$.
 
@@ -196,13 +198,17 @@ The incremental distribution is given by
 \end{equation}
 %
 \begin{enumerate}
-\item Using the frequency-magnitude relation (\refeq{GRd}), show that
+\item Using the frequency-magnitude relation (\refeq{GRd}), show that the incremental distribution can be written as
 %
 \begin{equation}
-\log(-\Delta N_i) = a - \Delta a - b M_i
+\log(-\Delta N_i) = a + \Delta a - b M_i
+\label{inc}
 \end{equation}
 %
-and list the expression for $\Delta a$.
+%where $a'$ is a function in terms of other variables. List the expression for $a'$.
+where $\Delta a$ is a function in terms of other variables. List the expression for $\Delta a$.
+
+Hint: Start with $\log(-\Delta N_i)$ and show that it can be written in the form of \refEq{inc}.
 
 \item What is the relationship between bin width and the shift in the $y$-intercept?
 
@@ -211,12 +217,13 @@ and list the expression for $\Delta a$.
 
 %----------------
 
-\item  (1.5) As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution. 
+\item  (1.5)
+%As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution. 
 %
 \begin{enumerate}
-\item Using the analytical formula for $d N/ d M$, derive an expression for $\Delta a$ that is valid for small bin widths, $\Delta M \ll 1$.
+\item Starting from \refEq{GRd}, derive the analytical formula for $d N/ d M$.
 
-Hint: What is the mathematical definition of a derivative?
+\item Using this, as well as the mathematical definition of a derivative, derive an expression analagous to \refEq{inc} that is valid for small bin widths, $\Delta M \ll 1$. List the expression for $\Delta a$
 
 \item If $b = 1$ and $\Delta M = 0.1$, what is $\Delta a$?
 
