@@ -1,0 +1,330 @@
+% dvips -t letter hw_mt.dvi -o hw_mt.ps ; ps2pdf hw_mt.ps
+\documentclass[11pt,titlepage,fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage[round]{natbib}
+\usepackage{xspace}
+\usepackage{epsfig}
+\usepackage{bm}
+
+\usepackage{pifont}  % \ding
+
+%--------------------------------------------------------------
+%       SPACING COMMANDS (Latex Companion, p. 52)
+%--------------------------------------------------------------
+
+\usepackage{setspace}    % double-space or single-space
+
+\renewcommand{\baselinestretch}{1.2}
+
+\textwidth 460pt
+\textheight 690pt
+\oddsidemargin 0pt
+\evensidemargin 0pt
+
+% see Latex Companion, p. 85
+\voffset     -50pt
+\topmargin     0pt
+\headsep      20pt
+\headheight   15pt
+\headheight    0pt
+\footskip     30pt
+\hoffset       0pt
+
+\include{NEWCOMMANDS}
+ 
+\newcommand{\rotangA}{\alpha}
+\newcommand{\rotangB}{\xi}    % TapTape2012kagan 
+\newcommand{\rotvec}{\bv}      % TapTape2012kagan 
+%\newcommand{\rotangB}{\gamma} 
+%\newcommand{\rotvec}{\bw} 
+
+\graphicspath{
+  {./figures/}
+}
+
+%--------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------
+
+\begin{center}
+
+{\large \bf Problem Set 3: Fault parameters and moment tensors}
+
+GEOS 626: Applied Seismology, Carl Tape
+
+Assigned: January 30, 2014 --- Due: February 7, 2013
+
+\end{center}
+
+\subsection*{Overview}
+
+The purpose of this problem set is to obtain a geometrical understanding of the relationship between fault parameters and seismic moment tensors. The fundamental tool is rotation in 3D, which is described by a rotation matrix.
+
+\begin{itemize}
+\item Several concepts from the math homework are useful here. See also Appendix A of \citet{SteinWysession}.
+
+\item Background reading: Section 4.2--4.4 of \citet{SteinWysession}; Ch.~9 of \citet{ShearerE2}
+
+\item {\bf Spherical coordinates}. You will need to familiarize yourself with spherical coordinates. We will use the standard physics convention for radial coordinate ($r$), polar angle ($\theta$), and azimuthal angle ($\phi$). You should label these in \reffig{fig:globe} for your reference.
+
+\item {\bf All rotations are right-handed}. Stick your thumb on your right hand in the direction of the rotation axes, point your fingers toward the vector being rotated, then curling your fingers inward gives the positive rotation direction.
+
+\item {\bf Eigenvalue space of moment tensors}. A ``moment tensor'' $\bM$ is a $3 \times 3$ symmetric tensor (6~distinct entries) that is a point-source representation for a source of seismic waves. This could be an earthquake or something more exotic, like a nuclear explosion, a dike opening near a volcanic magma chamber, or a calving glacier. ``Double couple'' moment tensors represent a small subset of all moment tensors, as depicted in \refFig{fig:lam}. Double couples are defined such that both the trace and the determinant of $\bM$ are zero:
+%
+\begin{eqnarray*}
+{\rm tr}(\bM) &=& \lambda_1 + \lambda_2 + \lambda_3 = 0
+\\
+\det(\bM) &=& \lambda_1 \lambda_2 \lambda_3 = 0
+\end{eqnarray*}
+%
+where $\lambda_k$ are the eigenvalues of $\bM$. (This means that that the eigenvalues are $M_0$, 0, and $-M_0$, where $M_0$ is the scalar seismic moment.)
+
+\item {\bf Nomenclature clarification}. 
+The terms ``focal mechanism'' or ``fault-plane solution'' refers to a ``double couple'' representation of the moment tensor. It is best to think of ``focal mechanisms'' or ``double couples'' or ``fault-plane solutions'' as a special type of moment tensor.
+
+\end{itemize}
+
+%------------------------
+
+\pagebreak
+\subsection*{Problem 1 (4.0). Rotations in 2D and 3D}
+
+This problem should prepare you for Problem 2.
+%
+\begin{itemize}
+\item {\bf Please note:} The full expressions for the equations below are messy, containing dozens of terms of $\cos\rotangA$, $\sin\phi$, etc. I am not asking for the full expressions; if you find yourself writing out long, messy equations, please stop!
+\item The basis for this problem is the standard Cartesian basis: $\bxh$-$\byh$-$\bzh$.
+\item Angle $\phi$ is measured from $\bxh$, and angle $\theta$ is measured from the zenith vector $\bzh$.
+\end{itemize}
+
+\begin{enumerate}
+\item (0.2) 
+
+\begin{enumerate}
+\item Write down the $2 \times 2$ rotation matrix $\bR = \bR(\rotangA)$ that rotates $\br = (x,y)$ by angle $\rotangA$ in the positive (counter-clockwise) direction.
+\item What is the relationship between $\bR(\rotangA)$ and $\bR(-\rotangA)$?
+\item Show that for $\rotangA = 90^\circ$ your matrix will rotate $\br = (1,0)$ to $\br' = (0,1)$.
+\item If $\rotangA = 60^\circ$ and $\br = (1,2)$, compute $\br'$; express your answer in exact form (and without trigonometric functions) and also in decimal form.
+\end{enumerate}
+
+\item (0.3)
+
+\begin{enumerate}
+\item Write down the $3 \times 3$ rotation matrix $\bR_z = \bR_z(\rotangA)$ that rotates $\br = (x,y,z)$ by angle $\rotangA$ in the positive (counter-clockwise) direction about the $z$-axis, $\bzh = (0,0,1)$.
+\item Check that $\bR_z(90^\circ)(1,0,0) = (0,1,0)$, as shown in the 2D case.
+\item Repeat for $\bR_x(\rotangA)$ and $\bR_y(\rotangA)$. Check that $\bR_y(90^\circ)(1,0,0) = (0,0,-1)$.
+\end{enumerate}
+
+\item (0.5) Write a function \verb+rotmat.m+ in Matlab that inputs a rotation angle $\rotangA$ and an index for the axis ($k = 1,2,3$ for $x,y,z$), and then outputs the rotation matrix $\bR_k(\rotangA)$. 
+
+\item (1.5) With \refFig{fig:rot} as a guide, derive an expression for the matrix, $\bU(\rotvec,\rotangB)$, that rotates a vector $\br$ about the input vector $\rotvec$ by angle $\rotangB$; this expression will be in terms of the matrix functions $\bR_x(\beta)$, $\bR_y(\beta)$, $\bR_z(\beta)$, where $\beta$ is the rotation angle about an axis. Let $\theta$ be the polar angle for $\rotvec$ and $\phi$ be the azimuthal angle.
+
+%Hint: What operations should be applied to $\rotvec$?
+
+\item (1.0) Write a new function \verb+rotmat_gen.m+ that represents $\bU(\rotvec,\rotangB)$; note that this function will call your \verb+rotmat.m+ function.
+%
+\begin{enumerate}
+\item Using \verb+rotmat_gen.m+, compute $\bU(\rotvec,\rotangB)$ for input values of $\rotvec = (2,1,2)$ and $\rotangB = 30^\circ$. List $\bU$ in decimal form.
+\item Check that $\bU(-\rotvec,-\rotangB)$ gives the same result, and explain why this is the case.
+\item Check that $\bU$ is orthogonal and also a rotation matrix.
+\item Apply the rotation to the point $\br_0 = (2,2,1)$ and list the rotated point $\br$ in decimal form and check that (1) the lengths of both vectors are equal and (2) the angle between $\rotvec$ and $\br_0$ is the same as the angle between  $\rotvec$ and $\br$.
+\end{enumerate}
+
+\item (0.5) Using the function \verb+globefun3.m+, plot your rotation axis ($\rotvec$), the initial point ($\br_0$), and the rotated point ($\br$).
+
+\end{enumerate}
+
+%------------------------
+
+\subsection*{Problem 2 (6.0). From fault parameters to moment tensors}
+
+\begin{itemize}
+\item \refFig{fig:cmt} shows the basics of the problem: given measurements of the angles strike, dip, and slip, compute the $3 \times 3$ symmetric moment tensor. This requires a choice of a orthonormal basis for expressing vectors and tensors; we will choose the Global Centroid Moment Tensor (GCMT) convention of up-south-east, or $\brh$-$\bthetah$-$\bphih$.
+
+\item You will utilize the function $\bU(\rotvec,\rotangB)$ (\verb+rotmat_gen.m+) that you obtained in Problem 1.
+
+\item The dip is denoted by $\theta$. (In Problem 1, $\theta$ was a generic polar angle.)
+
+\item {\bf Please note:} The full expressions for the equations below are messy, containing dozens of terms of $\cos\kappa$, $\sin\sigma$, etc. I am not asking for the full expressions; if you find yourself writing out long, messy equations, please stop!
+\end{itemize}
+
+\begin{enumerate}
+\item (0.2) Sketch your basis vectors on \refFig{fig:cmt}. What is the north vector, $\bnh$, in your basis?
+
+%-----------
+
+\item (0.8) Referring to \refFig{fig:cmt}, write the expression for the strike vector, $\bK$, in terms of $\bU(\rotvec,\rotangB)$. % Check dot and cross product
+
+Hint: What should $\rotvec$ and $\rotangB$ be? What angles does $\bK$ depend on?
+
+%-----------
+
+\item (0.8) Write the expression for the normal vector, $\bN$, in terms of $\bU(\rotvec,\rotangB)$. Hint: What should $\rotvec$ and $\rotangB$ be? What angles does $\bN$ depend on?
+
+%-----------
+
+\item (0.7) Write the expression for the slip vector, $\bS$, in terms of $\bU(\rotvec,\rotangB)$. Hint: What should $\rotvec$ and $\rotangB$ be? What angles does $\bS$ depend on?
+
+%-----------
+
+\item (0.5) Using your \verb+rotmat_gen.m+, compute the vectors $\bK$, $\bN$, and $\bS$ for this example, using the angles listed in \refFig{fig:cmt}. Write them in decimal form as a sum of weighted basis vectors (\eg $\bv = 1.45\bxh + 1.75\byh - 5.32\bzh$).
+
+Check the following results:
+%
+\begin{enumerate}
+\item The fault vectors are unit vectors.
+\item The unsigned angle between $\bnh$ and $\bK$ is $\kappa$.
+\item The unsigned angle between $\brh$ and $\bN$ is $\theta$.
+\item The unsigned angle between $\bK$ and $\bS$ is $\sigma$.
+\item $\bN = (\bS \times \bK)/\| \bS \times \bK \|$
+\end{enumerate}
+
+%-----------
+
+\item (0.5) There are many equivalent choices for computing the eigenvectors associated with a moment tensor. For this example, compute them using the following expressions:
+%
+\begin{eqnarray*}
+\bu_1 &=& \frac{\bS + \bN}{\left| \bS + \bN \right|}
+\\
+\bu_3 &=& \frac{\bS - \bN}{\left| \bS - \bN \right|}
+\\
+\bu_2 &=& \bu_3  \times \bu_1
+\end{eqnarray*}
+%
+The columns of $\bU$ are $\bu_1$, $\bu_2$, and $\bu_3$.
+%
+\begin{enumerate}
+\item List $\bU$.
+\item Check that $\bU$ is orthonormal.
+\item Compute the determinant to check that the basis is also a rotation matrix.
+\item Check that $\bu_2$ is in the fault plane and $90^\circ$ from the slip vector.
+\item Sketch the basis vectors on the upper right diagram in \refFig{fig:cmt}.
+\end{enumerate}
+
+%-----------
+
+\item (0.0) What are the (unsorted) eigenvalues of any double-couple moment tensor?
+
+%-----------
+
+\item (1.0) Our convention for (eigen)basis $\bU$ is tied to eigenvalues ordered as $\lambda_1 = 1$, $\lambda_2 = 0$, $\lambda_3 = -1$. Thus, our ``base'' diagonal moment tensor is $\bM'$ with diagonal $(1, 0, -1)$. Write the expression for $\bM$, obtained from $\bM'$ via transformation by $\bU$. Check that the following operations are true for this example:
+%
+\begin{eqnarray*}
+\bM \, \bu_1 &=& \lambda_1 \, \bu_1 = \bu_1
+\\
+\bM \, \bu_2 &=& \lambda_2 \, \bu_2 = \bzero
+\\
+\bM \, \bu_3 &=& \lambda_3 \, \bu_3 = -\bu_3
+\\
+\bM \, \bS &=& \bN
+\\
+\bM \, \bN &=& \bS
+\end{eqnarray*}
+%
+What is the physical meaning of these operations? (Be careful: The ``beachball'' pattern is representative of the P-wave motion only.)
+
+%-----------
+
+\item (0.5) Compute the transformation matrix, $\bP$, that will convert the coordinates of vectors and tensors from the up-south-east basis to the north-east-down basis of \citet{AkiRichardsE2}.
+%
+\begin{enumerate}
+\item Compute $\bP$ using Eq.~1 of Section A.5.1 of \cite{SteinWysession}.
+
+\item Transform the fault vectors $\bK$, $\bN$, $\bS$ using $\bK' = \bP\bK$, etc. Mark $\bK'$, $\bN'$, and $\bS'$ on \refFig{fig:cmt}.
+
+\item Transform $\bM$ to $\bM'$ using $\bM' = \bP \bM \bP^T$; list your expression for the moment tensor in this new convention.
+\end{enumerate}
+
+%-----------
+
+\item (1.0) Go to \verb+www.globalcmt.org/CMTsearch.html+ and enter the following search parameters:
+
+\begin{itemize}
+\item Starting Date: 2002/11/03
+\item Ending Date: Number of days = 1
+\item Moment Magnitude between 7 and 10
+\item OUTPUT Type: CMTSOLUTION format
+\end{itemize}
+%
+This will list $\bM_{\rm cmt}$, the GCMT solution for this event. Other display formats provide the strike, dip, and slip angles for both planes of the moment tensor.
+
+\begin{enumerate}
+\item Compute $\bM$ for $\kappa = 296.40$, $\theta = 71.25$, $\sigma = 171.27$; then compute $\bM$ for $\kappa = 29.23$, $\theta = 81.73$, $\sigma = 18.96$. Verify that the two moment tensors are the same (to two significant figures or so). Note \footnote{The GCMT catalog lists angles rounded to integer values. Their moment tensor elements are listed with greater precision, so I use these to obtain more precise fault angles to use.}.
+
+\item Verify that they are close to the GCMT solution. To make this comparison you will need to normalize both moment tensors so that they have the same magnitude. This can be done with an operation like \verb+M/norm_mat(M)+, where \verb+M+ is a $3 \times 3$ matrix and \verb+norm_mat.m+ is a simple function that treats the matrix as a nine-vector, then computes the magnitude (\ie Euclidean length). (Warning: \verb+norm(M)+ will {\em not} give you the desired result\footnote{{\tt norm(M)} will return the largest singulat value of matrix $\bM$.}.)
+After normalization, why do we expect your moment tensor to {\em not} be identical to the GCMT version (besides numerical errors)?
+
+%Discuss one seismic data set for which a point-source model of this earthquake is appropriate. Discuss one seismic data set for which a point-source model of this earthquake is {\em not} appropriate.
+
+\end{enumerate}
+
+\end{enumerate}
+
+%------------------------
+
+\subsection*{Problem}
+
+Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+
+%-------------------------------------------------------------
+\bibliographystyle{agu08}
+\bibliography{preamble,refs_carl,REFERENCES}
+%-------------------------------------------------------------
+
+%\clearpage\pagebreak
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{mt_01.eps}
+\caption[]
+{{
+A point on the sphere: $\phi = 40^\circ$, $\theta = 60^\circ$.
+\label{fig:globe}
+}}
+\end{figure}
+
+\clearpage\pagebreak
+\begin{figure}
+\centering
+\includegraphics[width=14cm]{BeachballsDeviatoric.eps}
+\caption[]
+{{
+Eigenvalue space for moment tensors; the three axes correspond to the eigenvalues.
+The purple plane is the deviatoric plane $\lambda_1 + \lambda_2 + \lambda_3 = 0$.
+The brown planes are the coordinate planes $\lambda_1 = 0$, $\lambda_2 = 0$, and $\lambda_3 = 0$.
+ISO is the $(1,1,1)$ direction; DC is the $(1,0,-1)$ direction.
+The principal axes of the moment tensor are denoted by $p_1$, $p_2$, and $p_3$.
+ The space of double couples represents all solutions that are deviatoric (purple plane) {\em and} have one eigenvalue that is zero (brown planes). Ignoring the six-part symmetry (related to different eigenvalue ordering), this means that all double couples are found on the line in the direction $(1,0,-1)$.
+\label{fig:lam}
+}}
+\end{figure}
+
+\clearpage\pagebreak
+\begin{figure}
+\centering
+\includegraphics[width=14cm]{DeriveRot_mod.eps}
+\caption[]
+{{
+Schematic view of the rotation operations needed in Problem 1.
+In this example, the objective is to rotate the beachball by angle $\rotangB$ about the black vector ($\rotvec$). The $\rotangB = 30^\circ$ rotation occurs between the bottom two panels; each of the other four steps is a shift of the rotation axis. The axes are fixed and represent the standard Cartesian system: $x$ (red), $y$ (blue), and $z$ (yellow).
+\label{fig:rot}
+}}
+\end{figure}
+
+\clearpage\pagebreak
+\begin{figure}
+\centering
+\includegraphics[width=16cm]{block_figs.eps}
+\caption[]
+{{
+Diagram showing notation for vectors and angles for Problem 2. The strike angle is $\kappa = 40^\circ$, the dip angle is $\theta = 70^\circ$, and the slip angle is $\sigma = -120^\circ$.
+Note that the map view of the beachballs shows the upper hemisphere, which differs from the seismological convention of plotting the lower hemisphere.
+\label{fig:cmt}
+}}
+\end{figure}
+
+%-------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------
