@@ -1,7 +1,8 @@
-% CAN_noise.m
+%
+% CAN_noise_template.m
 % 
 % Template script for analyzing the noise time series at CAN.
-% See also CAN_response.m
+% See also CAN_response_template.m
 %
 
 clear

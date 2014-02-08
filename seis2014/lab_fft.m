@@ -12,6 +12,12 @@ close all
 format compact
 
 %---------------------------------
+% USER PARAMETERS
+
+% switch between using long time series and short time series
+longdata = 0;
+
+%---------------------------------
 
 ddir = './data/';
 
@@ -47,8 +53,6 @@ subplot(3,1,3); plot(tL, yL,'b',ts,ys,'r--'); axis(ax3);
 xlabel('time, years'); ylabel('y distance, AU'); 
 %orient tall, wysiwyg
 
-% switch between using long time series and short time series
-longdata = 0;
 if longdata==0, t = ts; c = cs; else t = tL; c = cL; end
 
 % sidereal orbit periods -- IN YEARS

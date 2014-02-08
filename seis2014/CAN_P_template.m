@@ -1,7 +1,8 @@
-% CAN_P.m
+%
+% CAN_P_template.m
 % 
 % Template script for analyzing the Sumatra P wave at CAN.
-% See also CAN_response.m
+% See also CAN_response_template.m
 %
 
 clear

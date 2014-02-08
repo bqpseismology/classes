@@ -1,4 +1,5 @@
-% CAN_bp.m
+%
+% CAN_bp_template.m
 % 
 % Template script for bandpass filtering the vertical seismogram.
 %
@@ -16,6 +17,7 @@ channel = 'BHZ';
 
 % waveform time interval
 % pick times to get the entire waveform
+% NOTE: all times are in days
 startTime0 = datenum(2004,12,25,12,58,50);
 endTime0 = datenum(2005,1,4,12,58,50);
 startTime = startTime0 - 1;
@@ -54,6 +56,7 @@ figure; plot(w);
 % help smooth
 % hint: try something like w = smooth(w,NPT,'moving')
 %       where NPT is number of points in the sliding window
+
 
 
 %==========================================================================
