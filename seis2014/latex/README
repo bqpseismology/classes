@@ -2,6 +2,11 @@ This directory contains the latex source code used to make the homework assignme
 If you are interested in learning latex by doing your homework in latex,
 then you can use these files as templates.
 
+The template files require NEWCOMMANDS.tex for user-defined variables.
+The figure files are not available (but could be if you want them).
+
+------
+
 For some instructions on latex, download these files:
 
 cd
