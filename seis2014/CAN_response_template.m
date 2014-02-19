@@ -17,12 +17,16 @@ close all
 clc
 
 deg = 180/pi;
-
 spdy = 86400;   % seconds per day
 
-% set these to 1 or 0 for testing
-iresponse = 1;
-iwaveform = 0;
+%----------------------------------
+% USER CHANGE THESE
+iresponse = 1;  % Part 1
+iwaveform = 0;  % Part 2
+
+% print figures to filesvn ci
+iprint = 0;
+pdir = './';
 
 %----------------------------------
 
@@ -47,6 +51,7 @@ endTime = endTime0 + 1;
 
 dlabs = {'m to counts','m/s to counts','m/s^2 to counts'};
 
+%==========================================================================
 % PART 1: EXAMINE THE INSTRUMENT RESPONSE
 if iresponse==1
 
@@ -61,6 +66,7 @@ omega = 2*pi*f;
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
 response_plot(res0); xlim([fmin fmax]);
 title('response_get_from_db.m','interpreter','none');
+if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig1',pdir)); end
 
 % Here we create a response object by directly specifying the response file.
 % For one file we manually removed the FIR filters in order to show that it
@@ -68,19 +74,23 @@ title('response_get_from_db.m','interpreter','none');
 % sac pole-zero file.
 % FIGURES 2 and 3
 for kk=1:2
-    rfile0 = 'STRECKEISEN_STS1.5';
-    if kk==1, rfile0 = 'STRECKEISEN_STS1.5_noFIR'; end
+    if kk==1
+        rfile0 = 'STRECKEISEN_STS1.5';
+    else
+        rfile0 = 'STRECKEISEN_STS1.5_noFIR';
+    end
     rfile = [tdir rfile0];
     respObject = dbresponse(rfile);
-    response.values = eval_response(respObject, omega);
+    response.values = eval_response(respObject,omega);
     response.frequencies = f;
     response_plot(response);
     xlim([fmin fmax]); title(rfile0,'interpreter','none');
+    if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,kk+1)); end
 end
 
-% compare CAN response in database with PZs from sac file
-% FIGURE 4
-ideriv = 1;
+% compare CAN response in antelope database (no FIR) with PZs from sac file
+% FIGURE 4 (should match Figure 3)
+ideriv = 1;     % velocity
 [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,1);   % velocity response
 polezero.poles = p;
 polezero.zeros = z;
@@ -88,15 +98,17 @@ polezero.normalization = A0;    % needed to match normalization
 res = response_get_from_polezero(f,polezero);
 response_plot(res); xlim([fmin fmax]);
 title(['sac pole-zero file: ' dlabs{ideriv+1}]);
+if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig4',pdir)); end
 
 %-----------------------
 % compare displacement, velocity, and acceleration spectra
-% response plots are normalized such that the VELOCITY RESPONSE = 1 at some
-% calibration period
-% FIGURE 10
+% Note that all response plots are normalized such that the
+% VELOCITY RESPONSE = 1 at some calibration period.
+% FIGURE 5
 
-% first use read_pzfile.m (add one pole=0 per differentiation)
-figure(10); nr=3; nc=2;
+% first: use read_pzfile.m (add one pole=0 per differentiation)
+xf = 5;  % figure index
+figure(xf); nr=3; nc=2;
 for kk=1:3
     ideriv = kk-1;
     [p,z,c,A0,k] = read_pzfile(pzfile,ideriv);
@@ -104,36 +116,38 @@ for kk=1:3
     polezero.zeros = z;
     polezero.normalization = c;    % note c, not A0
     res = response_get_from_polezero(f,polezero);
-    H = res.values;
-    subplot(nr,nc,2*kk-1); semilogx(f,angle(H)*deg); axis([fmin fmax -180 180]);
+    % complex instrument response to either displacement, velocity, or acceleration
+    Ix = res.values;
+    subplot(nr,nc,2*kk-1); semilogx(f,angle(Ix)*deg); axis([fmin fmax -180 180]);
     xlabel('frequency, Hz'); ylabel('phase, deg');
-    subplot(nr,nc,2*kk); loglog(f,abs(H)); xlim([fmin fmax]);
+    subplot(nr,nc,2*kk); loglog(f,abs(Ix)); xlim([fmin fmax]);
     xlabel('frequency, Hz'); ylabel('amplitude');
     title(sprintf('sac pole-zero file (%s)',dlabs{kk}));
 end
 
+% THIS IS ONLY A CHECK
 % second: check this operation by dividing by i*omega for each operation
+%         (here we plot in dashed red lines on Figure 10 to show an exact match)
 % note: FFT[ f'(t) ] = i*w*FFT[ f(t) ]
 [p,z,c,A0,k] = read_pzfile(pzfile,0);   % displacement
 polezero.poles = p;
 polezero.zeros = z;
 polezero.normalization = c;
 res = response_get_from_polezero(f,polezero);
-H = res.values;
-P = H;
-figure(10); subplot(nr,nc,1); hold on; plot(f,angle(P)*deg,'r--');
-figure(10); subplot(nr,nc,2); hold on; plot(f,abs(P),'r--');
-P = H./(1i*omega);
-figure(10); subplot(nr,nc,3); hold on; plot(f,angle(P)*deg,'r--');
-figure(10); subplot(nr,nc,4); hold on; plot(f,abs(P),'r--');
-P = H./(-omega.^2);
-figure(10); subplot(nr,nc,5); hold on; plot(f,angle(P)*deg,'r--');
-figure(10); subplot(nr,nc,6); hold on; plot(f,abs(P),'r--');
+Id = res.values;        % displacement
+figure(xf); subplot(nr,nc,1); hold on; plot(f,angle(Id)*deg,'r--');
+figure(xf); subplot(nr,nc,2); hold on; plot(f,abs(Id),'r--');
+Iv = Id./(1i*omega);    % velocity
+figure(xf); subplot(nr,nc,3); hold on; plot(f,angle(Iv)*deg,'r--');
+figure(xf); subplot(nr,nc,4); hold on; plot(f,abs(Iv),'r--');
+Ia = Id./(-omega.^2);   % acceleration
+figure(xf); subplot(nr,nc,5); hold on; plot(f,angle(Ia)*deg,'r--');
+figure(xf); subplot(nr,nc,6); hold on; plot(f,abs(Ia),'r--');
+if iprint==1, orient tall; print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,xf)); end
 
 end  % iresponse
 
-%=====================================
-
+%==========================================================================
 % PART 2: COMPUTE THE AMPLITUDE SPECTRUM OF ACCELERATION
 if iwaveform==1
     
@@ -144,10 +158,14 @@ w = waveform(ds,scnl,startTime,endTime);
 w = remove_calib(w);
 figure; plot(w); axis tight
 tstart = get(w,'start');
+if iprint==1, fontsize(14); print(gcf,'-depsc',sprintf('%sCAN_response_seis',pdir)); end
 
 % example of getting an absolute time from the seismogram
 tpick = 3*1e5;
 datestr(tstart + tpick/spdy,31)
+
+% uncomment this to compute the FFT of the time series
+break
 
 % for FFT (specifically for modes): demean and taper
 w = demean(w); 
@@ -156,11 +174,13 @@ nd = length(wd);
 taper = tukeywin(nd,1);     % matlab taper function
 wd = wd.*taper;
 w = set(w,'DATA',wd);
-fNyq = get(w,'NYQ');
+sps = get(w,'freq');        % samples per second
+dt = 1/sps;                 % time step
 
-% compute FFT -- this can take awhile
+% compute FFT -- this can take 5-10 minutes
 % note 1: this will attach the frequency version to the waveform object
-% note 2: the file fftmat.m will be saved in your local directory
+% note 2: the file fftmat.m will be saved in your local directory,
+%         so be sure to run Matlab from the same directory
 fname = 'fftcan';
 if ~exist([fname '.mat'],'file')
     tic, w = wf_fft.compute(w); toc

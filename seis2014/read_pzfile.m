@@ -4,6 +4,7 @@ function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,iwrite)
 % INPUT
 %   pzfile  pole-zero file produced by rdseed (v 5.2)
 %   ideriv  =0 for disp (default), =1 for vel, =2 for accel
+%   iwrite  OPTIONAL: if present, write the PZ file to the command window
 %
 % There are three essential points about the sac PZ files that are produced
 % by the program rdseed.
@@ -21,7 +22,9 @@ lines = textread(pzfile,'%s','delimiter','\n','whitespace','');
 
 % write file to command window
 if nargin==3
+    disp('======== read_pzfile.m ========');
     for ii=1:length(lines), disp(lines{ii}); end
+    disp('======== read_pzfile.m ========');
 end
 
 for ii=1:length(lines)
