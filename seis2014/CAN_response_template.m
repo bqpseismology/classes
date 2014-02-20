@@ -21,8 +21,8 @@ spdy = 86400;   % seconds per day
 
 %----------------------------------
 % USER CHANGE THESE
-iresponse = 1;  % Part 1
-iwaveform = 0;  % Part 2
+iresponse = 0;  % Part 1
+iwaveform = 1;  % Part 2
 
 % print figures to filesvn ci
 iprint = 0;

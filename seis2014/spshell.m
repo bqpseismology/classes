@@ -1,6 +1,6 @@
 %
 % spshell.m
-% Applied Seismology, UAF
+% Applied Seismology, Geos 626, UAF
 %
 % This program computes the toroidal modes for a spherical shell with
 % uniform rigidity and density.
@@ -56,12 +56,13 @@ surface_stress = surf_stress(f);
 jj = 1;             % counter for the root number (starting at one)
 
 % leave gap for T(n=0,l=1), which do not exist
-% note: these are useful when looping over l
+% note: these are useful when looping over degree l
 if and(l==1,rmax>1), jj = 2; end        % fill the n >= 1 entries
 if and(l==1,rmax==1), continue; end     % exit loop early
 
 froots = NaN*ones(rmax,1);
 for ii = 2:length(fvec)-1   % loop over frequencies
+    % frequency interval over which we check for a root
     oldf = f;
     f = fvec(ii);
 
@@ -103,10 +104,10 @@ for ii = 2:length(fvec)-1   % loop over frequencies
 end
 fprintf('l = %i, nroot = %i (rmax = %i)\n',l,sum(~isnan(froots)),rmax);
 
-% observations used in PREM (assumes lvec = 1:10)
+% observations used in PREM
 dfile = [ddir 'prem_Tmodes.txt'];
 [nobs,~,lobs,T,Tstd] = textread(dfile,'%f%s%f%f%f','headerlines',6);
-disp('normal mode observations:');
+disp('normal mode observations (measured from seismograms):');
 for ii=1:length(nobs)
    disp(sprintf('n = %i, l = %2i, T = %8.2f +/- %.2f s',nobs(ii),lobs(ii),T(ii),Tstd(ii))); 
 end
