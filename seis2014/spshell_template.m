@@ -1,5 +1,5 @@
 %
-% spshell.m
+% spshell_template.m
 % Applied Seismology, Geos 626, UAF
 %
 % This program computes the toroidal modes for a spherical shell with
