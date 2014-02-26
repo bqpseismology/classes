@@ -15,9 +15,7 @@
 % modifications by Carl Tape, UAF, 01/2012
 %
 
-close all
-clear all
-clc
+close all; clear all; clc
 
 % global variables
 global l radius sd rspan mu rho % omega
@@ -35,74 +33,125 @@ rspan = [3480000 earthr];
 rho = 4380;             % density
 mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
-l = 2;          % degree (l >= 1)
-rmax = 9;       % maximum number of roots/eigenfunctions/subplots (default = 9)
-iploteig = 1;   % plot eigenfunctions (=1) or not (=0)
+l = 2;                  % degree (l >= 1)
+rmax = 9;               % maximum number of roots/eigenfunctions/subplots (default = 9)
+iplot_eig_freqs = 0;    % plot eigenfunctions (=1) or not (=0)
+iplot_all_freqs = 1;
 
 % path to the directory containing the data file prem_Tmodes.txt
 ddir = './data/';
 
+iprint = 0; % print figures to file (=1) or not (=0)
+pdir = './';
+
 %------------------------------------------------
 
-% range of frequencies (note: omega = 2*pi*f)
+% range of frequencies (note: omega = 2*pi*f), in Hz
 fmin = 1/3600;      % initial frequency to start (T = one hour)
 df = 0.0002;        % frequency step size (chosen by trial and error)
-fmax = 0.08;        % stopping frequency (arbitrary)
+%fmax = 0.08;        % stopping frequency (somewhat arbitrary)
+fmax = 0.003;
 fvec = [fmin:df:fmax];
+disp(sprintf('frequency vector ranges from %.3f mHz to %.3f mHz',fmin*1e3,fmax*1e3));
+disp(sprintf('num frequency points is %i, df = %.3f mHz',length(fvec),df*1e3));
+disp(sprintf('--> period ranges from %.2f min to %.2f min',1/fmin/60,1/fmax/60));
+
+% THIS BLOCK IS FOR PLOTTING ONLY
+if iplot_all_freqs==1
+    for ii=1:length(fvec)
+        % update W(r) and T(r), stored within sd
+        surf_stress(fvec(ii));
+        
+        % plotting parameters
+        rplot = radius/1000;
+        xmx = 1.1; ymn = rspan(1)/1000; ymx = rspan(2)/1000; dy = 100;
+
+        % displacement for each frequency
+        Wplot = sd(:,1)/max(abs(sd(:,1)));
+        figure(2); hold on; plot(Wplot,rplot,'b');
+        text(Wplot(end),rplot(end)+dy/2,num2str(ii));
+        plot([0 0],rspan/1000,'k','linewidth',2);
+        xlabel('normalized displacement, W(r)'); ylabel('radius, km');
+        axis([-xmx xmx ymn-dy ymx+dy]);
+
+        % stress for each frequency
+        Tplot = sd(:,2)/max(abs(sd(:,2)));
+        figure(3); hold on; plot(Tplot,rplot,'r');
+        text(Tplot(end),rplot(end)+dy/2,num2str(ii));
+        plot([0 0],rspan/1000,'k','linewidth',2);
+        xlabel('normalized stress, T(r)'); ylabel('radius, km');
+        axis([-xmx xmx ymn-dy ymx+dy]);
+    end
+    
+    % print figures for HW
+    if iprint==1
+        figure(2); print(gcf,'-depsc',[pdir 'modes_Wr']);
+        figure(3); print(gcf,'-depsc',[pdir 'modes_Tr']);
+    end
+
+    % exit
+    break
+end
 
 % initial freqeuncy and corresponding surface stress
 f = fvec(1);
-surface_stress = surf_stress(f);
-jj = 1;             % counter for the root number (starting at one)
+Tsurf = surf_stress(f);
+nn = 1;             % counter for the root number (starting at one)
 
 % leave gap for T(n=0,l=1), which do not exist
 % note: these are useful when looping over degree l
-if and(l==1,rmax>1), jj = 2; end        % fill the n >= 1 entries
+if and(l==1,rmax>1), nn = 2; end        % fill the n >= 1 entries
 if and(l==1,rmax==1), continue; end     % exit loop early
 
+% THIS IS THE KEY LOOP OVER FREQUENCIES
 froots = NaN*ones(rmax,1);
-for ii = 2:length(fvec)-1   % loop over frequencies
+for ii = 2:length(fvec)-1
     % frequency interval over which we check for a root
     oldf = f;
     f = fvec(ii);
-
-    oldvalue = surface_stress;          % surface stress for previous f
-    surface_stress = surf_stress(f);    % surface stress for new f
-
+    
+    % The function surf_stress.m will updated the key variable sd,
+    % which contains the radial displacement W(r) in the first column
+    % and stress T(r) in the second column.
+    Tsurfold = Tsurf;          % surface stress for previous f
+    Tsurf = surf_stress(f);    % surface stress for new f
+    
     disp(sprintf('%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
-        ii, oldvalue, surface_stress, f*1e3, 1/f, 1/f/60));
+        ii, Tsurfold, Tsurf, f*1e3, 1/f, 1/f/60));
 
     % Check if the value of the surface-stress has changed sign,
     % which would indicate that we passed at least one root.
     % If we did cross a root, call the matlab function fzero to refine the root.
     % Then store the root in the vector froots and plot the results.
-    if (oldvalue * surface_stress < 0)
+    if (Tsurfold * Tsurf < 0)
         f0 = fzero('surf_stress',[oldf f]);
-        froots(jj) = f0;
+        froots(nn) = f0;
 
         % update eigenfunctions (sd, radius) for the exact frequency
         surf_stress(f0);
-        disp(sprintf('%3i %.2f mHz', ii, f0*1e3));
+        disp(sprintf('%3i %3i %.2f mHz', ii, nn-1, f0*1e3));
 
         % plotting eigenfunctions (displacement and stress as a function of radius)
-        if iploteig==1
+        if iplot_eig_freqs==1
             xmx = 1.2; ymn = rspan(1)/1000; ymx = rspan(2)/1000;
-            figure(1); if rmax==1, subplot(1,1,jj); else subplot(3,3,jj); end
+            figure(1); if rmax==1, subplot(1,1,nn); else subplot(3,3,nn); end
             hold on;
-            plot(sd(:,1)/max(abs(sd(:,1))),radius/1000,'b');    % displacement (blue)
-            plot(sd(:,2)/max(abs(sd(:,2))),radius/1000,'r');    % stress (red)
+            plot(sd(:,1)/max(abs(sd(:,1))),radius/1000,'b');    % W(r), displacement (blue)
+            plot(sd(:,2)/max(abs(sd(:,2))),radius/1000,'r');    % T(r), stress (red)
             plot([-xmx xmx],ymn*[1 1],'k',[-xmx xmx],ymx*[1 1],'k',[0 0],[ymn ymx],'k');
             axis([-xmx xmx ymn-300 ymx+300]); %grid on;
-            title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(jj)*1000,1/f0/60,l));
-            text(-1,ymx+100,sprintf('n = %i',jj-1));
-            if mod(jj-1,3)==0, ylabel('radius (km)'); end
+            title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(nn)*1000,1/f0/60,l));
+            text(-1,ymx+100,sprintf('n = %i',nn-1));
+            if mod(nn-1,3)==0, ylabel('radius (km)'); end
         end
         
-        if jj==rmax, break; end % this halts the search after rmax roots
-        jj = jj + 1;
+        if nn==rmax, break; end % this halts the search after rmax roots
+        nn = nn + 1;
     end
 end
 fprintf('l = %i, nroot = %i (rmax = %i)\n',l,sum(~isnan(froots)),rmax);
+
+break
 
 % observations used in PREM
 dfile = [ddir 'prem_Tmodes.txt'];

@@ -5,3 +5,5 @@ function [rho,mu] = earthfun(r)
 
 global rspan
 
+% ENTER YOUR CODE BELOW HERE
+
