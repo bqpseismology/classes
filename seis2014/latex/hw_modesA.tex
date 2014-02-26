@@ -1,0 +1,802 @@
+% dvips -t letter hw_modesA.dvi -o hw_modesA.ps ; ps2pdf hw_modesA.ps
+\documentclass[11pt,titlepage,fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage[round]{natbib}
+\usepackage{xspace}
+\usepackage{epsfig}
+\usepackage{bm}
+
+%--------------------------------------------------------------
+%       SPACING COMMANDS (Latex Companion, p. 52)
+%--------------------------------------------------------------
+
+\usepackage{setspace}    % double-space or single-space
+
+\renewcommand{\baselinestretch}{1.0}
+
+\textwidth 460pt
+\textheight 690pt
+\oddsidemargin 0pt
+\evensidemargin 0pt
+
+% see Latex Companion, p. 85
+\voffset     -50pt
+\topmargin     0pt
+\headsep      20pt
+\headheight   15pt
+\headheight    0pt
+\footskip     30pt
+\hoffset       0pt
+
+\include{NEWCOMMANDS}
+
+\newcommand{\Tnl}{\mbox{${}_nT_l$}}
+\newcommand{\Wnl}{\mbox{${}_nW_l$}}
+\newcommand{\omnl}{\mbox{${}_{n\hspace{-0.2 mm}}\omega_l$}}
+\newcommand{\fnl}{\mbox{${}_{n\hspace{-0.2 mm}}f_l$}}
+
+\graphicspath{
+  {./figures/}
+}
+
+%--------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------
+
+\begin{center}
+
+{\large \bf Problem Set 5: Toroidal modes of a spherically symmetric earth\footnote{This problem set was designed and written by Charles Ammon, Penn State University. I have made some modifications.}}
+
+GEOS 626: Applied Seismology, Carl Tape
+
+Assigned: February 25, 2014 --- Due: March 4, 2014
+
+Last compiled: \today
+
+\end{center}
+
+%------------------------
+
+\subsection*{Overview and instructions}
+
+\begin{itemize}
+\item This problem set provides a hands-on introduction to how normal modes of a particular earth model can be computed. The goal is to gain a better understanding for the concepts of normal modes, eigenfrequencies, eigenfunctions, and dispersion.
+
+\item The necessary starting Matlab scripts and data are available from \verb+seis2014+ directory on the linux network; type \verb+svn update+ to obtain the latest version of files. The relevant files are:
+%
+\begin{itemize}
+\item \verb+spshell_template.m+ (\refSec{sec:shell})
+\item \verb+surf_stress.m+ (\refSec{sec:surf})
+\item \verb+stress_disp_tor.m+ (\refSec{sec:stress})
+\end{itemize}
+
+\item Background reading:
+
+\citet[][Section 2.9]{SteinWysession}, \citet[][Ch.~8]{DT}
+
+Note the differences in nomenclature listed in \refTab{tab:names}.
+
+\item See \refTab{tab:waveparm} for a summary table of wave parameters.
+
+\end{itemize}
+
+%-----------------------------
+
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=6cm]{modes_shells.eps}
+\caption[]
+{{
+Cross section of the spherical shell model assumed in this problem. Since the outer core is fluid, a shell is representative of earth for toroidal vibrations. We assume this shell can have radial variations in density, $\rho(r)$, and rigidity, $\mu(r)$.
+\label{fig:shells}
+}}
+\end{center}
+\end{figure}
+
+%-----------------------------
+
+%------------------------
+
+%\pagebreak
+\begin{table}[h]
+\begin{center}
+\caption[]
+{{
+Differences in nomenclature between \citet{DT} (DT) and \citet{SteinWysession} (SW).
+\label{tab:names}
+}}
+\tgap
+\begin{tabular}{||c|c|c|c||}
+\hline
+symbol & range & DT label & SW label \\ \hline\hline
+$n$ & $0 \le n \le \infty$ & overtone number & radial order \\ \hline
+$l$ & $0 \le l \le \infty$ & (angular) degree & angular order \\ \hline
+$m$ & $-l \le m \le l$ & (azimuthal) order & azimuthal order \\ \hline
+$\omnl^m$ & $0 < $ $\omnl^m$ $ \le \infty$ & eigenfrequency for $(n,l,m)$ & eigenfrequency for $(n,l,m)$ \\ \hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\input{/home/carltape/latex/misc/wave_params_insert}
+
+\clearpage\pagebreak
+\begin{figure}
+\begin{center}
+\includegraphics[width=15.5cm]{dispersionApp.eps}
+\end{center}
+\caption[Dispersion of surface waves]
+{{
+Dispersion of surface waves, plotted as phase velocity $c(T)$ and group velocity $U(T)$. The curves are calculated using normal-modes summation with the 1D earth model PREM \citep{PREM}; each point corresponds to a normal mode with harmonic degree $l$. A couple points are labeled in A. These curves are for the fundamental spheroidal (Rayleigh) and toroidal (Love) modes ($n = 0$); dispersion curves of overtone branches ($n \ge 1$)  can be seen in Figures 11.5 and 11.6 of \citet{DT}.
+{\bf A.}~Phase velocity dispersion $c(T)$. Gray box shows region of C.
+{\bf B.}~Group velocity dispersion $U(T)$. Gray box shows region of D.
+{\bf C-D.}~Same as A-B, only with different axes ranges. With periods $T<300$s, Love waves travel faster than Rayleigh waves. Calculations courtesy of Ana Ferreira.
+}}
+\label{fig:dispersionApp}
+\end{figure}
+
+%------------------------
+
+\clearpage\pagebreak
+\section{Background}
+
+%One advantage of studying theoretical seismology today is the availability of computer tools that we can use to explore equations and their solutions. Tools such as Matlab create new opportunities for deeper understanding – 
+With the power of computing, we can investigate the nature of problems that have long been fundamental to the interpretation and understanding of seismograms. In these notes, I outline a Matlab solution for computing toroidal normal modes in radially symmetric earth models. To simplify the discussion, I work with simplest model: a uniform shell. This physical model is actually a surprisingly good approximation to earth at the longest periods of oscillation. Although earth has a very dense, mostly iron core, the fluid outer core results in a zero toroidal stress at the core-mantle boundary, much like the elastic shell model shown in \refFig{fig:shells}. To compute the eigenfrequencies and eigenfunctions of the model we must solve two problems. First, we must develop a tool to integrate two coupled first-order ordinary differential equations (ODE's), and second we must develop a tool to identify those values of frequency that produce a zero surface stress when the ODE's are integrated.
+
+\subsection*{Equations of Motion}
+
+A separation of variables solution to the homogeneous elastodynamic equations of motion results in three equations for the three space variables $(r, \theta, \phi)$. The longitudinal ($\phi$) equation is a simple second-order harmonic ordinary differential equation. The equation containing colatitude ($\theta$) reduces to the a form of Legendre's equation with solutions that are the Associated Legendre functions. The equation in radius is a form of Bessel's equation, which has solutions in terms of spherical Bessel functions. Alternatively, Bessel's second order differential equation can be reduced to a set of first-order, coupled ODE's. Specifically, for the {\bf toroidal modes of a radially symmetric model}, the radial equations are equivalent to the
+%eigenvalue problem
+first-order coupled system of equations
+%
+\begin{equation}
+\frac{d}{dr}
+\left[ \begin{array}{c} W \\ T \end{array} \right]
+=
+\left[ \begin{array}{cc}
+\frac{1}{r} & \frac{1}{\mu(r)} \\
+& \\
+\frac{(l+2)(l-1)\mu(r)}{r^2}-\omega^2\rho(r) & \frac{-3}{r}
+\end{array} \right]
+\left[ \begin{array}{c} W \\ T \end{array} \right]
+\label{ODEs}
+\end{equation}
+%
+\begin{itemize}
+\item $W(r)$ is the displacement
+\item $T(r)$ is the stress
+\item $\omega$ is the angular frequency
+\item $\rho(r)$ is the density
+\item $\mu(r)$ is the shear modulus
+\item $l$ is the angular order
+\end{itemize}
+%
+%$W(r)$ and $T(r)$ are the displacement and the stress, $\omega$ is the angular frequency, $\rho(r)$ is the density, $\mu(r)$ is the shear modulus, and $l$ is the
+%angular order
+%%radial order
+%(a separation of variables constant).
+You can find the derivations of \refEq{ODEs} in \cite{DT}; our \refEq{ODEs} corresponds to equations 8.114 and 8.115. For low frequencies and low
+angular orders,
+%radial orders,
+$l$, these equations can be integrated numerically using a Runge-Kutta approach \citep[\eg][]{Press1988}.
+
+Before you integrate \refEq{ODEs}, you must specify values of $l$, the density, the shear modulus, and the frequency $\omega$. Integration produces two functions of radius, $\hat{W}(r)$ and $\hat{T}(r)$. If the stress is zero at the top of the shell (earth surface) and the bottom of the shell (core-mantle boundary),
+%
+\begin{eqnarray}
+\hat{T}(a) &=& 0
+\\
+\hat{T}(b) &=& 0,
+\end{eqnarray}
+%
+then the assumed value of $\omega$ is an {\bf eigenfrequency} ($\omega^2$ is an {\bf eigenvalue}) and  $\hat{W}(r)$ and $\hat{T}(r)$ are {\bf eigenfunctions}.
+(See note \footnote{These are not eigenvalues and eigenfunctions of \refEq{ODEs} but rather of \citep[][Eq.~4.8-4.9]{DT}
+%
+\begin{equation*}
+{\boldmath \cal H} \bs = \omega^2 \bs.
+\end{equation*}
+%
+where ${\boldmath \cal H}$ is a linear operator with the eigensolution $\omega^2$ (eigenvalue) and $\bs$ (eigenfunction). It is best to think of {\em solution pairs} of $\omnl$ associated with functions $\Wnl(\omnl)$ and $\Tnl(\omnl)$.}.)
+We don't know {\em a priori} the eigenfrequencies that satisfy the zero-stress boundary condition on the top and bottom of the shell. However, if we start the integration at the bottom of the shell ($r = b$), then we can guarantee that the stress at the bottom is zero by using initial values for the displacement and the stress equal to 1.0 and 0.0 respectively. The arbitrary amplitude of the displacement can be accommodated in normalization terms.
+
+In general, there are an infinite number of frequencies that satisfy \refEq{ODEs} for each value of $l$. A systematic search must be performed to identify all the roots in a specific frequency range for a particular value of $l$. In essence, we must solve an equation that has the form
+%
+\begin{equation}
+F(\omnl) = 0.
+\end{equation}
+%
+The form of the function $F$ is described in \refEq{ODEs}, and we must solve those equations for the surface stress, $\hat{T}(a)$, for each assumed value of $l$ and $n$. Finding solutions that have zero surface stress is a numerical root-finding problem: you assume a value of and integrate the equations to see if it produces zero stress at the outer surface.
+
+%-----------------------------
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=12cm]{modes_workflow.eps}
+\caption[]
+{{
+Solving the eigenvalue problem for the vibrating shell is accomplished using three scripts. The main purpose of each script is described in the above chart, which also shows the dependences: {\tt spshell$\_$template.m} calls {\tt surf$\_$stress.m}, which requires {\tt stress$\_$disp$\_$tor.m}.
+\label{fig:workflow}
+}}
+\end{figure}
+
+%-----------------------------
+
+\subsection*{The Matlab Solution}
+
+Our solution will involve three different Matlab scripts (\refFig{fig:workflow}); two are needed to solve the equations of motion (\refeq{ODEs}), and the third is used to find the values of that are eigenfrequencies. The first two scripts handle the computation of the surface stress using the Runge-Kutta routines in Matlab (the surface-stress calculator). The third script repeatedly calls the surface-stress calculator as part of a simple root finding scheme that uses a fixed step size in frequency to identify regions containing the roots, and then relies on the Matlab root-finding routine \verb+fzero+ to refine the value of the eigenfrequency. I describe each script in more detail below.
+%, and conclude with some results for specific values of $l$.
+
+\subsubsection*{Computing the Surface Stress}
+
+To integrate the equations and evaluate the surface traction I created two scripts. The first script (\refSec{sec:stress}) computes the stress and displacement derivatives using the differential equations (\refeq{ODEs}). The input arguments and return values of this script are of the special form required by the Runge-Kutta functions in Matlab, and the name of this script is an argument to the Matlab Runge-Kutta function. The first input argument is the independent variable of integration (radius for our problem), the second is a vector that contains the dependent variables in the coupled first-order differential equations (displacement and stress). I set up $\mu$, $\rho$, $\omega$, and $l$ as {\bf global variables} so that they can be set and changed from the main script (listed later). The same global values are used in all the scripts. It's a good idea to keep this script as simple and short as you can, since it's executed often.
+
+The second script (\refSec{sec:surf}) calculates the surface stress. For a given value of $\omega$, the \verb+surface_stress.m+ performs the computations needed to compute the stress and displacement eigenvectors. Note the brevity and simplicity of the two scripts used to solve \refEq{ODEs}. Since the Runge-Kutta routines are implemented in Matlab, we need only a two-line script to compute the derivatives and a one-line call to \verb+ode45+ to integrate the equations. Once the integration is complete, we look up the surface stress (at $r = a = 6371$ km), which after execution is stored in the last element of array \verb+sd+.
+
+\subsubsection*{Finding the Roots}
+
+The third and final script (\refSec{sec:shell}) implements a simple root-finding search and provides visual feedback on the process. You should have no trouble finding lucid descriptions of the ideas behind searching for roots, or zeros, of a function \citep[\eg][]{Press1988}. The basic idea in this script is to begin a search at a small value of frequency (I chose $f = 1/3600$, corresponding to a period of one hour) and march forward with a small step size ($\Delta f$), looking for steps that produce a change in sign of the surface stress estimate, $\hat{T}(a)$. If the sign of the surface stress changes then we know that we’ve bracketed at least one zero of the function. Of course we have to be careful, a step size too large may jump more than one root in one step. If we choose too small a value for $\Delta f$, then we spend much more time searching. More clever approaches are more appropriate when dealing with more complicated models. For this example I opted to use a small step size rather than getting too fancy with something adaptive.
+
+Once I know two frequency values that bracket a root, I use the Matlab function \verb+fzero+ to find that root; \verb+fzero+ uses a bisection-interpolation procedure to find the root of the function. You must pass the name of the script used to calculate the surface stress and the bounding values of frequency to the \verb+fzero+ routine, and it returns the value of the root. Matlab allows you to control the options in the search for roots, but I found the default values suitable for this problem.
+
+%\subsection*{The Uniform Shell Model}
+
+%As mentioned earlier, the shell is a better approximation to earth than you might think. Approximate values of mantle parameters for PREM (Preliminary Reference Earth Model; \citet{PREM}) are 4380 kg/m and 5.93 km/s for the density and shear velocity respectively. We can compute the shear modulus using $\mu = \beta^2\rho$.
+
+%Much of the third script is actually devoted to plotting the results. What do they look like? Figure 3 is a plot of the results of running the scripts described above after setting $l = 2$, and Figure 4 and Figure 5 are similar plots for $l = 25$, and $l = 100$, respectively. In each illustration, the eigenfrequency in millihertz and the eigenperiod (to the nearest minute) are listed in the subplot title. The blue line identifies the displacement eigenfunction, the red line the stress eigenfunction. Note that each of the stress eigenfunctions satisfies the zero-stress boundary conditions at the shell's inner (2891 km) and outer (6371 km) radii. You can count the number of nodes in the each displacement eigenfunction and see the integer increase in nodes associated with each higher mode; this is a consequence of the fact that we are solving a Sturm-Liouville problem \citep[][]{DT}. Table 1 is a list of the values with more precision than shown on the illustrations.
+
+% NOTE: THESE NUMBERS ARE NOT CORRECT WITH THE MODIFIED RADIUS
+%The $l = 2$ case includes the gravest toroidal mode $_0\ssT_2$. The uniform shell with mantle-like properties predicts a vibration of 0.3638~mHz, or approximately 2748~seconds, which is about 45.8 minutes. The value predicted by PREM is about 44.0 minutes, the value observed by \citet{Widmer1992toroidal} is 44.25 minutes (0.3766~mHz). That means the uniform shell is predicting the period in minutes to within about $3.5\%$.
+
+%Observed eigenfrequencies: \citet{GD1975,PREM,Widmer1992toroidal}
+
+%-------------------------------------------------------------
+
+\pagebreak
+\bibliographystyle{agu08}
+\bibliography{preamble,refs_carl,REFERENCES}
+\normalsize
+
+%---------------------------------------------
+
+\begin{spacing}{1.0}
+
+%\pagebreak
+\section{Three Matlab scripts}
+
+\subsection{\tt spshell$\_$template.m}
+\label{sec:shell}
+
+\small
+\begin{verbatim}
+close all; clear all; clc
+
+% global variables
+global l radius sd rspan mu rho % omega
+
+%------------------------------------------------
+% USER INPUT
+
+% shell spans from CMB to surface
+earthr = 6371000;
+rspan = [3480000 earthr];
+
+% Earth model (uniform mantle shell)
+% WARNING: BECAUSE THESE ARE GLOBAL VARIABLES, THESE VALUES MAY BE
+% OVER-RIDDEN BY VALUES DEFINED IN OTHER FUNCTIONS.
+rho = 4380;             % density
+mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
+
+l = 2;          % degree (l >= 1)
+rmax = 9;       % maximum number of roots/eigenfunctions/subplots (default = 9)
+iploteig = 1;   % plot eigenfunctions (=1) or not (=0)
+
+% path to the directory containing the data file prem_Tmodes.txt
+ddir = './data/';
+
+%------------------------------------------------
+
+% range of frequencies (note: omega = 2*pi*f)
+fmin = 1/3600;      % initial frequency to start (T = one hour)
+df = 0.0002;        % frequency step size (chosen by trial and error)
+fmax = 0.08;        % stopping frequency (arbitrary)
+fvec = [fmin:df:fmax];
+disp(sprintf('frequency vector ranges from %.3f mHz to %.3f mHz, df = %.3f mHz',fmin*1e3,fmax*1e3,df*1e3));
+disp(sprintf('--> period ranges from %.2f min to %.2f min',1/fmin/60,1/fmax/60));
+
+% initial freqeuncy and corresponding surface stress
+f = fvec(1);
+surface_stress = surf_stress(f);
+jj = 1;             % counter for the root number (starting at one)
+
+% leave gap for T(n=0,l=1), which do not exist
+% note: these are useful when looping over degree l
+if and(l==1,rmax>1), jj = 2; end        % fill the n >= 1 entries
+if and(l==1,rmax==1), continue; end     % exit loop early
+
+froots = NaN*ones(rmax,1);
+for ii = 2:length(fvec)-1   % loop over frequencies
+    % frequency interval over which we check for a root
+    oldf = f;
+    f = fvec(ii);
+
+    oldvalue = surface_stress;          % surface stress for previous f
+    surface_stress = surf_stress(f);    % surface stress for new f
+
+    disp(sprintf('%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
+        ii, oldvalue, surface_stress, f*1e3, 1/f, 1/f/60));
+
+    % Check if the value of the surface-stress has changed sign,
+    % which would indicate that we passed at least one root.
+    % If we did cross a root, call the matlab function fzero to refine the root.
+    % Then store the root in the vector froots and plot the results.
+    if (oldvalue * surface_stress < 0)
+        f0 = fzero('surf_stress',[oldf f]);
+        froots(jj) = f0;
+
+        % update eigenfunctions (sd, radius) for the exact frequency
+        surf_stress(f0);
+        disp(sprintf('%3i %.2f mHz', ii, f0*1e3));
+
+        % plotting eigenfunctions (displacement and stress as a function of radius)
+        if iploteig==1
+            xmx = 1.2; ymn = rspan(1)/1000; ymx = rspan(2)/1000;
+            figure(1); if rmax==1, subplot(1,1,jj); else subplot(3,3,jj); end
+            hold on;
+            plot(sd(:,1)/max(abs(sd(:,1))),radius/1000,'b');    % displacement (blue)
+            plot(sd(:,2)/max(abs(sd(:,2))),radius/1000,'r');    % stress (red)
+            plot([-xmx xmx],ymn*[1 1],'k',[-xmx xmx],ymx*[1 1],'k',[0 0],[ymn ymx],'k');
+            axis([-xmx xmx ymn-300 ymx+300]); %grid on;
+            title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(jj)*1000,1/f0/60,l));
+            text(-1,ymx+100,sprintf('n = %i',jj-1));
+            if mod(jj-1,3)==0, ylabel('radius (km)'); end
+        end
+        
+        if jj==rmax, break; end % this halts the search after rmax roots
+        jj = jj + 1;
+    end
+end
+fprintf('l = %i, nroot = %i (rmax = %i)\n',l,sum(~isnan(froots)),rmax);
+
+% observations used in PREM
+dfile = [ddir 'prem_Tmodes.txt'];
+[nobs,~,lobs,T,Tstd] = textread(dfile,'%f%s%f%f%f','headerlines',6);
+disp('normal mode observations (measured from seismograms):');
+for ii=1:length(nobs)
+   disp(sprintf('n = %i, l = %2i, T = %8.2f +/- %.2f s',nobs(ii),lobs(ii),T(ii),Tstd(ii))); 
+end
+\end{verbatim}
+\normalsize
+
+%--------------------
+
+%\pagebreak
+\subsection{\tt surf$\_$stress.m}
+\label{sec:surf}
+
+\small
+\begin{verbatim}
+function value = surf_stress(f)
+
+global omega radius sd rspan % imod mu rho l
+
+sd0 = [1.0 0.0];        % the initial values of [displacement stress]
+
+omega = 2*pi*f;         % angular frequency (stress_disp_tor.m)
+
+% integration by Matlab, calling our function stress_disp_tor.m to
+% calculate derivatives (d/dr) of displacement and stress;
+% on return the vectors radius and sd contain the values of radius
+% and the displacement and stress eigenfunctions
+% note: the dimension of radius and sd is the number of points needed for
+%       the numerical integration -- this will vary
+[radius,sd] = ode45('stress_disp_tor',rspan,sd0);
+
+% try these setting if you need really accurate eigenfunctions
+%opts = odeset('reltol',1e-12,'abstol',1e-12);
+%[radius,sd] = ode45('stress_disp_tor',rspan,sd0,opts);
+
+value = sd(end,2);      % stress value at earth's surface (r = rspan(2))
+\end{verbatim}
+\normalsize
+
+%-------------------------
+
+\subsection{\tt stress$\_$disp$\_$tor.m}
+\label{sec:stress}
+
+\small
+\begin{verbatim}
+function dsdd = stress_disp_tor(r,s)
+
+global omega l rho mu % imod rspan radius sd
+
+% The input values of s(1) and s(2) are W(r) and T(r) respectively.
+% The returned deriatives are stored in dsdd
+
+% structural values at radius r: density and rigidity
+% note: use own function here or use globally defined rho and mu (constants)
+%[rho,mu] = earthfun(r);
+
+% displacement (first row of equation 1)
+dsdd(1,1) = s(1) / r + s(2) / mu;
+
+% stress (second row of equation 2)
+dsdd(2,1) = ((l-1)*(l+2)*mu/(r*r) - rho*omega*omega)*s(1) - 3*s(2)/r;
+\end{verbatim}
+\normalsize
+
+\end{spacing}
+
+%------------------------
+% HOMEWORK STARTS HERE
+%------------------------
+
+%------------------------
+
+\pagebreak
+\section*{Problem 1 (4.0). Eigenfunctions, eigenfrequencies, and dispersion}
+
+\begin{itemize}
+\item A key point is to recognize that ``the mode'' or ``the solution'' $_n\ssT_l$ (to \refeq{ODEs}) comprises three parts: an eigenfrequency, $\omnl$, and two eigenfunctions, $W$ and $T$, the latter of which is zero at $r = a = b$:
+%
+\begin{equation}
+_n\ssT_l \hspace{10pt} \left\{
+\begin{array}{l}
+\omnl \\
+\Wnl(r) \\
+\Tnl(r)
+\end{array} \right.
+\end{equation}
+
+\item In this problem we will assume a homogenous earth model with density $\rho = 4380$~kg/m$^3$ and shear modulus (rigidity) \makebox{$\mu = 1.54 \times 10^{11}$~Pa}. Before you proceed, make sure you follow the basic structure of the program; in particular, pay attention to the use of {\bf global variables} within each of the scripts.
+\end{itemize}
+
+\begin{enumerate}
+\item (0.3)
+%
+\begin{enumerate}
+\item Write down the system of equations represented by \refEq{ODEs} and the boundary conditions; show explicit $r$ dependence, $l$ dependence, and $n$ dependence (\eg $\omnl$).
+\item How many material variables are present?
+\item What is the physical meaning of $W(r)$ and $T(r)$?
+\end{enumerate}
+
+%---------
+
+\item (0.7) Execute the script \verb+spshell_template.m+ and analyze the output.
+
+\begin{enumerate}
+\item What is the relationship between the number of zero crossings of $\Wnl(r)$ (excluding endpoints) and $n$?
+\item What is the relationship between the number of zero crossings of $\Tnl(r)$ (excluding endpoints) and $n$?
+\item What is the qualitative relationship between $n$ and $\fnl$? (Note \footnote{The eigenfrequencies are given by $\omnl = 2\pi(\fnl)$. However the values in the program---and listed in dispersion plots, such as those in \citet{SteinWysession}---are $\fnl$, a quantity that is somewhat more intuitive.})
+\item What do all the $\Tnl(r)$ have in common?
+\item Try $l=25$ and $l=100$ ($n$=0-8).
+
+What is the qualitative relationship between $l$ and $\fnl$?
+\end{enumerate}
+
+%---------
+
+%\pagebreak
+\item (0.5) Modify your code to compute eigenfrequencies for $n=0$, $l$=2-9.
+%
+\begin{enumerate}
+\item List the predicted eigenperiods in \refTab{tab:mode_pred}.
+\item The gravest toroidal mode is $_0\ssT_2$ ($n=0$, $l=2$). Compute the eigenfrequency $_0f_2$ in mHz and eigenperiod $_0T_2$ in seconds and minutes. (Note \footnote{Notation might be confusing: $T$ is period, $T(r)$ is the stress eigenfunction (for toroidal modes), and $_n\ssT_l$ is the label for a toroidal mode. Usually it should be clear from the context.})
+\item Compare with the observed value in \refTab{tab:mode_obs}. What is the percent difference, $100\,\ln(T/T_{\rm obs})$?
+\end{enumerate}
+
+%---------
+
+\item (0.5) Generate a plot containing the two eigenfunctions $\Wnl(r)$ and $\Tnl(r)$ for $n=0$ and $l=40$.
+%
+\begin{enumerate}
+\item Compute various wave parameters and list your values in the left half of \refTab{tab:eigfun}.
+\item Include your plot, and mark the wavelength as a distance from the surface.
+\end{enumerate}
+
+\label{prob:0T40_homo}
+
+%---------
+
+\item (1.5) A dispersion plot based on PREM is shown in Figure 2.9-10 of \citet{SteinWysession}; the inset figure is relevant to this problem. Reproduce a similar plot for your homogeneous earth model. Use $l$=1-10 and plot with axes ranges \verb+[0 11 0 4]+, where the $y$-axis is frequency in mHz and the $x$-axis is $l$. (Note: some points $(l,\,\fnl)$ will be outside the plotting range.) On your dispersion diagram, plot the observations in \refTab{tab:mode_obs} with a different symbol (or color) from the predictions.
+\label{prob:disp}
+
+%---------
+
+\item (0.5) Consider the (normalized) L2-norm misfit between observed and predicted frequencies:
+%
+\begin{equation}
+F(\bem) = \sqrt{ \frac{1}{N} \sum_{i=1}^N \left[f_i^{\rm obs} - f_i(\bem)\right]^2 }
+\label{Fm}
+\end{equation}
+%
+where $i$ is the measurement index that represents some particular $n$-$l$ pair, $f_i(\bem)$ is the predicted mode frequency, $f_i^{\rm obs}$ is the observed mode frequency, and $\bem$ is the model representing $\mu(r)$ and $\rho(r)$.
+
+\begin{enumerate}
+\item Write the expression for $F(\bem)$ in the case of $N=1$.
+
+\item Compute $F(\bem)$ for all available observations (\refTab{tab:mode_obs}), and list the value in mHz in \refTab{tab:homo}.
+
+Tip: Initialize an $a \times b$ matrix as \verb+Fobs = NaN(a,b)+, then fill certain entries according to $n$ and $l$ listed in the observations. This ``observations matrix'' can be differenced with a corresponding ``predictions matrix''; the residual matrix can be turned into a vector as \verb+Fres(:)+.
+
+\end{enumerate}
+
+\label{prob:Fm}
+
+\end{enumerate}
+
+%------------------------
+
+\section*{Problem 2 (3.0). Changing the earth model}
+
+\begin{enumerate}
+\item (1.5) {\bf Homogeneous earth.} We want to explore how different homogeneous earth models fit the toroidal mode observations. We will assume a fixed value of density ($\rho = 4380$~kg/m$^3$), and only look for different values of shear modulus over the range $\mu = [1.2\times 10^{11},\; 1.8 \times 10^{11}]$ Pa (hint: use a {\tt for} loop). It is best to think of our model vector as $\bem = (\rho, \mu)$.
+
+Hint: For this misfit analysis, note that you only have observations up to $n = 3$ (\refTab{tab:mode_obs}). Consider adjusting your limits for root-finding in order to save some time.
+
+\begin{enumerate}
+\item 
+\begin{itemize}
+\item Find a value of $\mu$ that best fits all $N=20$ observed eigenfrequencies.
+\item Evaluate the misfit function, $F(\bem)$ (\refeq{Fm}).
+\item Justify your choice of the new $\mu$, either in words, Matlab output, or a figure.
+\item Show a dispersion plot as before (use \verb+axis([0 11 0 4])+) that contains both predictions and observations.
+\end{itemize}
+
+\item Repeat, but now use only the $N = 9$ observations for the fundamental mode ($n=0$). (This means that some of the observations in your plot will not have been used in detemining the new~$\mu$.)
+
+\item Repeat, but now use only the observed eigenfrequency for $_0\ssT_2$. (This means that all but one of the observations in your plot will not have been used in detemining the new~$\mu$.)
+
+What is the percent difference from the observed value, $100\,\ln(f/f_{\rm obs})$?
+
+\item Summarize your tests in \refTab{tab:homo}.
+\end{enumerate}
+
+\label{prob:earth_homo}
+
+%---------------
+
+%
+% HERE WE COULD GIVE THEM THE RHO COEFFICIENTS, THEN ASK THEM TO COMPUTE RHO(R) FOR PREM, THEN MU(R),
+% SINCE THEY ALREADY HAVE VS(R)
+%
+
+\item (1.0) {\bf Linear earth.} Adapt \verb+earthfun.m+ to create a function that inputs a radial value $r$ (or a vector of $r$ values) and outputs $\rho(r)$ and $\mu(r)$ described by a linear model with the ``endpoint'' values
+%
+\begin{eqnarray*}
+\rho(a) &=& 2690 \; {\rm kg/m^3}
+\\
+\mu(a) &=& 0.682 \times 10^{11} \; {\rm Pa}
+\\
+\rho(b) &=& 5560 \; {\rm kg/m^3}
+\\
+\mu(b) &=& 2.938 \times 10^{11} \; {\rm Pa}
+\end{eqnarray*}
+%
+where $r=a$ is the surface and $r=b$ is the core-mantle boundary. (The values are an approximation to PREM's $\rho(r)$ and $\mu(r)$.)
+
+Note: As suggested in \verb+earthfun.m+, it may be helpful to use \verb+rspan+ has a global variable.
+
+\begin{enumerate}
+\item Show your code for \verb+earthfun.m+.
+\item Uncomment the line in \verb+stress_disp_tor.m+ to use your linear model. Then generate a new dispersion plot with both predictions and observations, as in Problem 1-\ref{prob:disp}.
+\item List the misfit in \refTab{tab:homo}.
+\item What parameters would you search over if you wanted to obtain an optimal linear earth model?
+\end{enumerate}
+
+\label{prob:earth_linear}
+
+%---------------
+
+\item (0.5) {\bf Cubic earth.} Instead of using linear functions for $\rho(r)$ and $\mu(r)$, use the following cubic functions:
+%
+\begin{eqnarray*}
+\rho(r) &=& (-2.84710 \times 10^{-16})r^3 + (3.84976 \times 10^{-9})r^2 - (1.76479 \times 10^{-2})r + 3.24479 \times 10^{4}
+\\
+\mu(r) &=& (-8.11871 \times 10^{-9}) r^3 + (9.56717 \times 10^{-2})r^2 - (4.250608 \times 10^{5})r + 9.578569 \times 10^{11}
+\end{eqnarray*}
+%
+%\begin{eqnarray*}
+%\rho(r') &=& (-2.84710 \times 10^{-10})r'^3 + (3.84976 \times 10^{-6})r'^2 - (1.76479 \times 10^{-2})r' + 32.4479
+%\\
+%\mu(r') &=& (-8.11871) r'^3 + (9.56717 \times 10^4)r'^2 - (4.250608 \times 10^8)r' + 9.578569 \times 10^{11}
+%\end{eqnarray*}
+%
+%where $r' = 1000r$ is in km.
+This cubic function is a fit to the PREM profiles, so check that the numbers are sensible before moving on (no work needed).
+
+\begin{enumerate}
+\item Show your matlab code for the cubic function.
+\item Generate a new dispersion plot with both predictions and observations, as in Problem~1-\ref{prob:disp}.
+\item List the misfit in \refTab{tab:homo}.
+\end{enumerate}
+
+\label{prob:earth_cubic}
+
+%---------------
+
+%\item (0.0) {\bf PREM earth.} {\bf This problem is optional and will not be graded.} Instead of the cubic function, try using the exact function for PREM. You have a script for $\vs(r)$ from a previous homework; here you will need $\rho(r)$ and $\mu(r)$ instead.
+
+\end{enumerate}
+
+%------------------------
+
+%\pagebreak
+\section*{Problem 3 (3.0). Phase speed and group speed}
+
+For this problem we use the {\bf cubic model} and we consider the fundamental mode ($n=0$) only. In other words, $\fnl$ for $n > 0$ will not be needed.
+
+\begin{enumerate}
+\item (0.5) Consider the set of $l$, \verb+lvec = [10:30:400]+. Using the expressions in \refTab{tab:waveparm}, make two dispersion plots for the fundamental mode:
+%
+\begin{enumerate}
+\item frequency (mHz) vs degree
+\item phase speed (km/s) vs period; use the $x$ limits \verb+[0 300]+
+\end{enumerate}
+%
+Qualitatively, how do these compare with the predictions for PREM, shown in \refFig{fig:dispersionApp}c?
+
+\item (0.3)
+%
+\begin{enumerate}
+\item Repeat Problem 1-\ref{prob:0T40_homo} for $_0\ssT_{40}$ using the cubic model. List your values in \refTab{tab:eigfun}.
+\item How has the cubic model affected the depth sensitivity of $_0\ssT_{40}$?
+\item How has it affected the wavelength of $_0\ssT_{40}$?
+\end{enumerate}
+
+\label{prob:0T40_cubic}
+
+\item (1.0) Compute the group speed of $_0\ssT_{40}$ using \citep[][Eq. 11.67]{DT}:
+%
+\begin{equation}
+U = \frac{I_2}{cI_1}
+\end{equation}
+%
+where $c$ is phase speed (\refTab{tab:waveparm}) and expressions for $I_2$ and $I_1$ are in DT. The phase speed, $c$, and the group speed, $U$, have units of rad/s. Multiplication by $a$ (earth radius) will give the group speed in km/s ($U' = Ua$). List both $U$ and $U'$ in \refTab{tab:eigfun}. Also, repeat the calculation for the original homogeneous model, and list your two values in  \refTab{tab:eigfun}.
+
+Hint: For an adequate, crude numerical integration, use the command \verb+diff(radius)+ to get a discretized vector of $dr$ that can be multiplied with the discretized version of $W(r)$.
+
+\item (1.0) Check that each of the equations in \refeq{ODEs} is satisfied for $_0\ssT_{40}$: $_0W_{40}(r)$, $_0T_{40}(r)$, $_0\omega_{40}$.
+
+Notes:
+%
+\begin{itemize}
+\item You will need to compute $\rho(r)$ and $\mu(r)$ with commands such as
+
+\verb+[rho,mu] = earthfun(radius)+
+
+\noindent
+where \verb+radius+ is the discretized radius values associated with the eigenfunctions (see \verb+surf_stress.m+). 
+
+\item To check the solution, use the quantity \verb+norm(a - b)/norm(a)+ where \verb+a+ is the left-hand side and \verb+b+ is the right-hand side of \refEq{ODEs}. You want this value to be $< 10^{-3}$; you may need to lower the tolerance in the \verb+ode45+ solver in \verb+surf_stress.m+.
+
+\item Use the command \verb+gradient(f,r)+ to obtain $df/dr$ where \verb+f+ and \verb+r+ are equal-length vectors.
+\end{itemize}
+
+\item (0.2)
+%
+\begin{enumerate}
+\item How do the calculations of $_0f_{40}$ compare for with and without the lowered tolerance for the \verb+ode45+ solver?
+\item Use $|\ln(f_a/f_b)|$ as a quantitative comparison, with $f_a$ and $f_b$ listed to four decimal points (in mHz).
+\item What does this imply about the accuracy of $\fnl$ relative to the accuracy of $\Wnl(r)$ and $\Tnl(r)$ in the numerical solutions?
+\end{enumerate}
+
+\end{enumerate}
+
+%------------------------
+
+%\pagebreak
+\section*{Problem}
+
+Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+
+%-------------------------------------------------------------
+
+\clearpage\pagebreak
+
+\begin{figure}
+\centering
+\includegraphics[width=10cm]{SW_F2.9-10.eps}
+\caption[]
+{{
+Inset figure from \citet{SteinWysession}, Figure 2.9-10.
+\label{fig:}
+}}
+\end{figure}
+
+\begin{table}
+\centering
+\caption[]
+{{
+Observed toroidal modes eigenperiods (in seconds) for earth \citep{PREM}. These data can be found in the text file {\tt prem$\_$Tmodes.txt}.
+\label{tab:modes}
+}}
+\begin{tabular}{||r|r|r|r|r|r|r|r|r|r|r||}
+\hline
+      & $l=1$ & $l=2$ & $l=3$ & $l=4$ & $l=5$ & $l=6$ & $l=7$ & $l=8$ & $l=9$ & $l=10$ \\ \hline\hline
+$n=0$ & NA & 2636.38 & 1705.95 & 1305.92 & 1075.98 & 925.84 & 819.31 & 736.86 & 671.80 & 618.97 \\ \hline
+$n=1$ & -- & 756.57 & 695.18 & -- & -- & 519.09 & 475.17 & 438.49 & 407.74 & 381.65 \\ \hline
+$n=2$ & -- & -- & -- & 420.46 & -- & -- & 363.65 & 343.34 & -- & -- \\ \hline
+$n=3$ & -- & -- & -- & -- & -- & -- & -- & -- & 259.26 & -- \\ \hline
+\hline
+\end{tabular}
+\label{tab:mode_obs}
+\end{table}
+
+
+%\pagebreak
+\begin{table}
+\centering
+\caption[]
+{{
+Toroidal modes eigenperiods (in seconds) predicted for a homogeneous earth model with $\rho = 4380$~kg/m$^3$, $\mu = 1.54 \times 10^{11}$~Pa.
+See \refTab{tab:modes} for the corresponding observed periods.
+List your values with 0.1 precision.
+%Compare your predictions with the observations listed in \refTab{tab:modes}.
+\label{tab:mode_pred}
+}}
+\begin{tabular}{||r|r|r|r|r|r|r|r|r|r|r||}
+\hline
+      & $\;l=1\;$ & $\;l=2\;$ & $\;l=3\;$ & $\;l=4\;$ & $\;l=5\;$ & $\;l=6\;$ & $\;l=7\;$ & $\;l=8\;$ & $\;l=9\;$ & $\;l=10\;$ \\ \hline\hline
+$n=0$ & NA &  &  &  &  &  &  &  &  &  \\  \hline
+$n=1$ & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\  \hline
+$n=2$ & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\  \hline
+$n=3$ & -- & -- & -- & -- & -- & -- & -- & -- & -- & -- \\  \hline
+\hline
+\end{tabular}
+\end{table}
+
+%\pagebreak
+\begin{table}
+\caption[]
+{{
+Wave parameters (\refTab{tab:waveparm}) for $_0\ssT_{40}$ ($n=0$, $l=40$) addressed in Problems 1-\ref{prob:0T40_homo} and 3-\ref{prob:0T40_cubic}. List your values with three significant figures.
+\label{tab:eigfun}
+}}
+\begin{spacing}{1.5}
+\hspace{-1.0cm}
+\begin{tabular}{||c|c|l|l||l|l||}
+\hline
+& & \multicolumn{2}{c||}{homogeneous model ($\#$1-\ref{prob:0T40_homo} )} & \multicolumn{2}{c||}{cubic model ($\#$3-\ref{prob:0T40_cubic})}  \\ \hline\hline
+period & $T$ & \hspace{2cm}s & -- & \hspace{2cm}s & -- \\  \hline
+frequency & $f$ & \hspace{2cm}mHz & -- & \hspace{2cm}mHz & -- \\  \hline
+angular frequency & $\omega$ & \hspace{2cm}mHz & --  & \hspace{2cm}mHz & -- \\  \hline
+wavelength & $\lambda$ & \hspace{2cm}rad & \hspace{2cm}km & \hspace{2cm}rad & \hspace{2cm}km \\  \hline
+wavenumber & $k$ & \hspace{2cm} & \hspace{2cm}1/km & \hspace{2cm} & \hspace{2cm}1/km \\  \hline
+phase speed & $c$ & \hspace{2cm}rad/s & \hspace{2cm}km/s & \hspace{2cm}rad/s & \hspace{2cm}km/s \\  \hline\hline
+group speed ($\#$3-\ref{prob:0T40_cubic}) & $U$ & -- & -- & \hspace{2cm}rad/s & \hspace{2cm}km/s \\  \hline
+\hline
+\end{tabular}
+\end{spacing}
+\end{table}
+
+\begin{table}
+\centering
+\caption[]
+{{
+Summary of misfit tests for different earth models.
+The first misfit value is for the $N$ observations used.
+The second misfit value is the same model, but computing $F(\bem)$ for all $N=20$ observations in \refTab{tab:mode_obs}. List your values with 0.001 precision or with three significant figures.
+\label{tab:homo}
+}}
+\begin{spacing}{1.5}
+\begin{tabular}{||c|c|c|c|c|c||c|}
+\hline
+problem & model & $\rho(r)$ & $\mu(r)$ & $N$ & $F(\bem)$ ($N$) & $F(\bem)$ ($N_{\rm total}$) \\
+& index & kg m$^{-3}$ & $10^{11}$ Pa & & mHz & mHz \\ \hline\hline
+$\#$1-\ref{prob:Fm} & 1 & 4380 & 1.54 & 20 & NA &  \\  \hline
+$\#$2-\ref{prob:earth_homo} & 3 & 4380 &      & 1  &  &  \\  \hline
+$\#$2-\ref{prob:earth_homo} & 4 & 4380 &      & 9  &  &  \\  \hline
+\hline
+$\#$2-\ref{prob:earth_homo} & 2 & 4380 &      & 20 & NA  &  \\  \hline
+$\#$2-\ref{prob:earth_cubic} & 5 & linear & linear & 20 & NA  & \\ \hline
+$\#$2-\ref{prob:earth_cubic} & 6 & cubic & cubic & 20 & NA  & \\ \hline
+\hline
+\end{tabular}
+\end{spacing}
+\end{table}
+
+%-------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------
