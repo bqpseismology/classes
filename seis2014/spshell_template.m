@@ -9,7 +9,7 @@
 %    stress_disp_tor.m
 %    surf_stress.m
 %
-% GLOBAL VARIABLES: l radius sd rspan mu rho
+% GLOBAL VARIABLES: l radius WT rspan mu rho
 %
 % by Charles Ammon, Penn State, 2000
 % modifications by Carl Tape, UAF, 01/2012
@@ -18,7 +18,7 @@
 close all; clear all; clc
 
 % global variables
-global l radius sd rspan mu rho % omega
+global l radius WT rspan mu rho % omega
 
 %------------------------------------------------
 % USER INPUT
@@ -35,7 +35,7 @@ mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
 l = 2;                  % degree (l >= 1)
 rmax = 9;               % maximum number of roots/eigenfunctions/subplots (default = 9)
-iplot_eig_freqs = 0;    % plot eigenfunctions (=1) or not (=0)
+iplot_eig_freqs = 1;    % plot eigenfunctions (=1) or not (=0)
 iplot_all_freqs = 1;
 
 % path to the directory containing the data file prem_Tmodes.txt
@@ -59,7 +59,7 @@ disp(sprintf('--> period ranges from %.2f min to %.2f min',1/fmin/60,1/fmax/60))
 % THIS BLOCK IS FOR PLOTTING ONLY
 if iplot_all_freqs==1
     for ii=1:length(fvec)
-        % update W(r) and T(r), stored within sd
+        % update W(r) and T(r), stored within WT
         surf_stress(fvec(ii));
         
         % plotting parameters
@@ -67,7 +67,7 @@ if iplot_all_freqs==1
         xmx = 1.1; ymn = rspan(1)/1000; ymx = rspan(2)/1000; dy = 100;
 
         % displacement for each frequency
-        Wplot = sd(:,1)/max(abs(sd(:,1)));
+        Wplot = WT(:,1)/max(abs(WT(:,1)));
         figure(2); hold on; plot(Wplot,rplot,'b');
         text(Wplot(end),rplot(end)+dy/2,num2str(ii));
         plot([0 0],rspan/1000,'k','linewidth',2);
@@ -75,7 +75,7 @@ if iplot_all_freqs==1
         axis([-xmx xmx ymn-dy ymx+dy]);
 
         % stress for each frequency
-        Tplot = sd(:,2)/max(abs(sd(:,2)));
+        Tplot = WT(:,2)/max(abs(WT(:,2)));
         figure(3); hold on; plot(Tplot,rplot,'r');
         text(Tplot(end),rplot(end)+dy/2,num2str(ii));
         plot([0 0],rspan/1000,'k','linewidth',2);
@@ -110,7 +110,7 @@ for ii = 2:length(fvec)-1
     oldf = f;
     f = fvec(ii);
     
-    % The function surf_stress.m will updated the key variable sd,
+    % The function surf_stress.m will updated the key variable WT,
     % which contains the radial displacement W(r) in the first column
     % and stress T(r) in the second column.
     Tsurfold = Tsurf;          % surface stress for previous f
@@ -127,7 +127,7 @@ for ii = 2:length(fvec)-1
         f0 = fzero('surf_stress',[oldf f]);
         froots(nn) = f0;
 
-        % update eigenfunctions (sd, radius) for the exact frequency
+        % update eigenfunctions (WT, radius) for the exact frequency
         surf_stress(f0);
         disp(sprintf('%3i %3i %.2f mHz', ii, nn-1, f0*1e3));
 
@@ -136,8 +136,8 @@ for ii = 2:length(fvec)-1
             xmx = 1.2; ymn = rspan(1)/1000; ymx = rspan(2)/1000;
             figure(1); if rmax==1, subplot(1,1,nn); else subplot(3,3,nn); end
             hold on;
-            plot(sd(:,1)/max(abs(sd(:,1))),radius/1000,'b');    % W(r), displacement (blue)
-            plot(sd(:,2)/max(abs(sd(:,2))),radius/1000,'r');    % T(r), stress (red)
+            plot(WT(:,1)/max(abs(WT(:,1))),radius/1000,'b');    % W(r), displacement (blue)
+            plot(WT(:,2)/max(abs(WT(:,2))),radius/1000,'r');    % T(r), stress (red)
             plot([-xmx xmx],ymn*[1 1],'k',[-xmx xmx],ymx*[1 1],'k',[0 0],[ymn ymx],'k');
             axis([-xmx xmx ymn-300 ymx+300]); %grid on;
             title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(nn)*1000,1/f0/60,l));
