@@ -161,4 +161,12 @@ for ii=1:length(nobs)
    disp(sprintf('n = %i, l = %2i, T = %8.2f +/- %.2f s',nobs(ii),lobs(ii),T(ii),Tstd(ii))); 
 end
 
+if 0==1
+    % example code for calculating misfit in arrays with NaN
+    A = rand(4,10); A([3 5 21 3]) = NaN
+    B = rand(4,10); B(12) = NaN
+    D = (A - B).^2
+    sum(D(~isnan(D)))
+end
+
 %==========================================================================
