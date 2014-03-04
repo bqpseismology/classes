@@ -66,6 +66,7 @@ for ii=1:length(ipick)
     if ikeep(jj)==0
         disp('time series was visibly problematic so spectrum was not computed');
     else
+        % load pre-stored seismogram and pre-stored frequency spectrum
         fname = strcat('w',tag{jj},'.mat');
         ifile = [ddir 'full_length/' fname];
         load(ifile);
@@ -78,7 +79,7 @@ for ii=1:length(ipick)
         xlabel('frequency, mHz'); ylabel('amplitude');
         
         % save amplitude of a particular peak
-        f1 = 0.94; f2 = 0.95;   % CHANGE THESE
+        f1 = 0.94; f2 = 0.95;   % USER: CHANGE THESE
         pamp(ii) = max(A(and(f*1e3 > f1, f*1e3 < f2)));
     end
 end

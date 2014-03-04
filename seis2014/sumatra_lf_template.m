@@ -1,9 +1,8 @@
-% sumatra_lf.m
+%
+% sumatra_lf_template.m
 % 
 % Template script for analyzing direct arrival waveforms from Sumatra:
 %    channel LHZ, duration up to 10 days
-%
-% Adapted from run_getwaveform.m
 %
 % This assumes that you have added the path to the GEOTOOLS directories.
 %
@@ -32,15 +31,16 @@ idatabase = 7;
 channel = {'LHZ'};
 iint = 0;
 iprocess = 1;           % calibration applied (nm/s)
-cutoff = []; samplerate = []; axb = []; sacdir = [];
+cutoff = []; samplerate = []; stasub = []; sacdir = [];
 % source parameters from GCMT catalog
 elat = 3.09;
 elon = 94.26;
 edep_km = 28.6;
 mag = 8.9974;
 eid = 'M122604A';
+% KEY COMMAND to getwaveform.m
 w = getwaveform(idatabase,startTime,endTime,channel,iint,...
-    iprocess,cutoff,samplerate,axb,sacdir,originTime,elat,elon,edep_km,mag,eid);
+    iprocess,cutoff,samplerate,stasub,sacdir,originTime,elat,elon,edep_km,mag,eid);
 nw = length(w);
 
 disp('here is a list of the waveforms you have:');
@@ -56,6 +56,7 @@ w0 = w;
 % RERUN THE BLOCK BELOW WHEN SELECTING YOUR STATIONS
 
 % pick a subset of waveforms
+% note: alternatively you can use wkeep.m
 %ipick = [1:nw];                % default
 ipick = [22 30 31 120:124];     % CHANGE THIS     
 w = w0(ipick);
