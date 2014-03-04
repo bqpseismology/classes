@@ -24,7 +24,7 @@ spdy = 86400;   % seconds per day
 iresponse = 1;  % Part 1 (lab_sumatra.pdf)
 iwaveform = 0;  % Part 2 (Sumatra Homework, Part I)
 
-% print figures to filesvn ci
+% print figures to files
 iprint = 0;
 pdir = './';
 
@@ -61,10 +61,12 @@ fmax = 1e2;
 f = logspace(log10(fmin),log10(fmax),100)';
 omega = 2*pi*f;
 
+aran = 10.^[-20 1.5];
+
 % default option: get response from antelope database
 % FIGURE 1
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
-response_plot(res0); xlim([fmin fmax]);
+response_plot(res0); xlim([fmin fmax]); ylim(aran);
 title('response_get_from_db.m','interpreter','none');
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig1',pdir)); end
 
@@ -84,7 +86,8 @@ for kk=1:2
     response.values = eval_response(respObject,omega);
     response.frequencies = f;
     response_plot(response);
-    xlim([fmin fmax]); title(rfile0,'interpreter','none');
+    xlim([fmin fmax]); ylim(aran);
+    title(rfile0,'interpreter','none');
     if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,kk+1)); end
 end
 
@@ -96,7 +99,7 @@ polezero.poles = p;
 polezero.zeros = z;
 polezero.normalization = A0;    % needed to match normalization
 res = response_get_from_polezero(f,polezero);
-response_plot(res); xlim([fmin fmax]);
+response_plot(res); xlim([fmin fmax]); ylim(aran);
 title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig4',pdir)); end
 
@@ -118,8 +121,10 @@ for kk=1:3
     res = response_get_from_polezero(f,polezero);
     % complex instrument response to either displacement, velocity, or acceleration
     Ix = res.values;
+    % phase response
     subplot(nr,nc,2*kk-1); semilogx(f,angle(Ix)*deg); axis([fmin fmax -180 180]);
     xlabel('frequency, Hz'); ylabel('phase, deg');
+    % amplitude response
     subplot(nr,nc,2*kk); loglog(f,abs(Ix)); xlim([fmin fmax]);
     xlabel('frequency, Hz'); ylabel('amplitude');
     title(sprintf('sac pole-zero file (%s)',dlabs{kk}));
@@ -135,14 +140,14 @@ polezero.zeros = z;
 polezero.normalization = c;
 res = response_get_from_polezero(f,polezero);
 Id = res.values;        % displacement
-figure(xf); subplot(nr,nc,1); hold on; plot(f,angle(Id)*deg,'r--');
-figure(xf); subplot(nr,nc,2); hold on; plot(f,abs(Id),'r--');
+figure(xf); subplot(nr,nc,1); hold on; plot(f,angle(Id)*deg,'r--'); grid on;
+figure(xf); subplot(nr,nc,2); hold on; plot(f,abs(Id),'r--'); axis(10.^[-4 2 -5 12]); grid on;
 Iv = Id./(1i*omega);    % velocity
-figure(xf); subplot(nr,nc,3); hold on; plot(f,angle(Iv)*deg,'r--');
-figure(xf); subplot(nr,nc,4); hold on; plot(f,abs(Iv),'r--');
+figure(xf); subplot(nr,nc,3); hold on; plot(f,angle(Iv)*deg,'r--'); grid on;
+figure(xf); subplot(nr,nc,4); hold on; plot(f,abs(Iv),'r--'); axis(10.^[-4 2 -5 12]); grid on;
 Ia = Id./(-omega.^2);   % acceleration
-figure(xf); subplot(nr,nc,5); hold on; plot(f,angle(Ia)*deg,'r--');
-figure(xf); subplot(nr,nc,6); hold on; plot(f,abs(Ia),'r--');
+figure(xf); subplot(nr,nc,5); hold on; plot(f,angle(Ia)*deg,'r--'); grid on;
+figure(xf); subplot(nr,nc,6); hold on; plot(f,abs(Ia),'r--'); axis(10.^[-4 2 -5 12]); grid on;
 if iprint==1, orient tall; print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,xf)); end
 
 end  % iresponse

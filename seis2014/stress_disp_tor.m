@@ -1,13 +1,13 @@
 function dWT = stress_disp_tor(r,WT)
 
-global omega l rho mu % rspan rvec WT
+global omega l imod rho mu % rspan rvec WT
 
 % The input values of WT(1) and WT(2) are W(r) and T(r) respectively.
 % The returned deriatives are stored in dWT
 
 % structural values at radius r: density and rigidity
-% note: use own function here or use globally defined rho and mu (constants)
-%[rho,mu] = earthfun(r);
+% note: if imod=0, then the program will use the rho and mu from spshell.m
+if imod~=0, [rho,mu] = earthfun(r); end
 
 % displacement (first row of equation 1)
 dWT(1,1) = WT(1) / r + WT(2) / mu;

@@ -19,18 +19,22 @@ close all; clear all; clc
 
 % global variables
 % WARNING: DO NOT CHANGE THE DIMENSION OF ANY OF THESE VARIABLES
-global l rvec WT rspan mu rho % omega
+global l rvec WT rspan imod rho mu % omega
 
 %------------------------------------------------
 % USER INPUT
 
-% shell spans from CMB to surface
+% shell spans from CMB (b) to surface (a)
 earthr = 6371000;
-rspan = [3480000 earthr];
+rspan = [3480000 earthr];   % [b a]
 
 % Earth model (uniform mantle shell)
+imod = 0;               % index for Earth model (see earthfun.m)
+                        % =0 for homogeneous
+                        % =1 for linear rho(r) and mu(r)
+                        % =2 for cubic rho(r) and mu(r)
 % WARNING: BECAUSE THESE ARE GLOBAL VARIABLES, THESE VALUES MAY BE
-% OVER-RIDDEN BY VALUES DEFINED IN OTHER FUNCTIONS.
+% OVER-RIDDEN BY VALUES DEFINED IN OTHER FUNCTIONS.                        
 rho = 4380;             % density
 mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
