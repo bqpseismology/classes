@@ -35,7 +35,7 @@ samplerate = [];
 cutoff = [];
 
 % USER CHANGE THIS OR ADD YOUR OWN EXAMPLE
-iex = 3;
+iex = 1;
 
 switch iex
     case 1
@@ -99,7 +99,7 @@ switch iex
         T2 = 1;
         
     case 4
-        % VLF event near Kantishna
+        % very low frequency (VLF) event near Kantishna
         idatabase = 1;
         % source parameters (some can be empty)
         originTime = datenum('2014/01/22 12:14:34');
@@ -220,7 +220,9 @@ end
 
 break
 
-wBOOM = wkeep(w,{'BOOM'});
+% subset of stations
+stasubset = {'BOOM'};       % use BOOM with example 1
+wsubset = wkeep(w,stasubset);
 
 % enter the following settings
 % 1. click AutoUpdate
@@ -231,6 +233,6 @@ wBOOM = wkeep(w,{'BOOM'});
 % 6. set MAX 112
 % 7. from the tab at top, Plot --> Specgram2
 % WHEN YOU ARE DONE OR IF YOU WANT TO MAKE A NEW PLOT, CLOSE THE FIGURE
-figure; uispecgram(wBOOM);
+figure; uispecgram(wsubset(1));     % will only work for a single 
 
 %==========================================================================
