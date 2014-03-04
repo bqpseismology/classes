@@ -9,6 +9,18 @@ clear
 clc
 close all
 
+% simple example of getting waveforms from a database
+if 0==1
+    startTime = datenum(2012,4,11,8,41,57);
+    endTime   = datenum(2012,4,11,10,21,57);
+    ds = datasource('uaf_continuous');
+    sta = {'MDM'};
+    cha = {'BHZ'};
+    scnl = scnlobject(sta,cha,'','');
+    w = waveform(ds,scnl,startTime,endTime);
+    figure; plot(w);
+end
+
 spdy = 86400;
 
 % default parameters for plotting record sections
