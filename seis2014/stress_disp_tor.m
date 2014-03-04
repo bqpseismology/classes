@@ -1,6 +1,6 @@
 function dWT = stress_disp_tor(r,WT)
 
-global omega l rho mu % rspan radius WT
+global omega l rho mu % rspan rvec WT
 
 % The input values of WT(1) and WT(2) are W(r) and T(r) respectively.
 % The returned deriatives are stored in dWT

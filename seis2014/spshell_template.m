@@ -9,16 +9,17 @@
 %    stress_disp_tor.m
 %    surf_stress.m
 %
-% GLOBAL VARIABLES: l radius WT rspan mu rho
+% GLOBAL VARIABLES: l rvec WT rspan mu rho
 %
-% by Charles Ammon, Penn State, 2000
+% by Charles Ammon, Pen State, 2000
 % modifications by Carl Tape, UAF, 01/2012
 %
 
 close all; clear all; clc
 
 % global variables
-global l radius WT rspan mu rho % omega
+% WARNING: DO NOT CHANGE THE DIMENSION OF ANY OF THESE VARIABLES
+global l rvec WT rspan mu rho % omega
 
 %------------------------------------------------
 % USER INPUT
@@ -33,8 +34,12 @@ rspan = [3480000 earthr];
 rho = 4380;             % density
 mu  = 5930*5930*rho;    % rigidity (mu = 1.54e11 Pa)
 
+% options for searching solution space
 l = 2;                  % degree (l >= 1)
-rmax = 9;               % maximum number of roots/eigenfunctions/subplots (default = 9)
+nmax = 8;               % maximum n (default = 8)
+                        % nmax+1 is the max number of roots/eigenfunctions/subplots
+                        % nmax=0 will return the first root (n=0)
+% plotting options                        
 iplot_eig_freqs = 1;    % plot eigenfunctions (=1) or not (=0)
 iplot_all_freqs = 1;
 
@@ -52,18 +57,20 @@ df = 0.0002;        % frequency step size (chosen by trial and error)
 %fmax = 0.08;        % stopping frequency (somewhat arbitrary)
 fmax = 0.003;
 fvec = [fmin:df:fmax];
+numf = length(fvec);
 disp(sprintf('frequency vector ranges from %.3f mHz to %.3f mHz',fmin*1e3,fmax*1e3));
-disp(sprintf('num frequency points is %i, df = %.3f mHz',length(fvec),df*1e3));
+disp(sprintf('num frequency points is %i, df = %.3f mHz',numf,df*1e3));
 disp(sprintf('--> period ranges from %.2f min to %.2f min',1/fmin/60,1/fmax/60));
 
-% THIS BLOCK IS FOR PLOTTING ONLY
+% THIS BLOCK IS FOR INITIAL PLOTTING ONLY
 if iplot_all_freqs==1
-    for ii=1:length(fvec)
+    for ii=1:numf
+        disp(sprintf('%2i/%2i: f = %.3f mHz',ii,numf,fvec(ii)*1e3));
         % update W(r) and T(r), stored within WT
         surf_stress(fvec(ii));
         
         % plotting parameters
-        rplot = radius/1000;
+        rplot = rvec/1000;
         xmx = 1.1; ymn = rspan(1)/1000; ymx = rspan(2)/1000; dy = 100;
 
         % displacement for each frequency
@@ -94,18 +101,19 @@ if iplot_all_freqs==1
 end
 
 % initial freqeuncy and corresponding surface stress
+% NOTE: surf_stress.m calls stress_disp_tor.m, which depends on degree l
 f = fvec(1);
 Tsurf = surf_stress(f);
-nn = 1;             % counter for the root number (starting at one)
+n = 0;             % counter for n (n=0 is the first root)
 
 % leave gap for T(n=0,l=1), which do not exist
 % note: these are useful when looping over degree l
-if and(l==1,rmax>1), nn = 2; end        % fill the n >= 1 entries
-if and(l==1,rmax==1), continue; end     % exit loop early
+if and(l==1,nmax>0), n = 1; end        % fill the n >= 1 entries
+if and(l==1,nmax==0), continue; end     % exit loop early (mode 0T1 does not exist)
 
 % THIS IS THE KEY LOOP OVER FREQUENCIES
-froots = NaN*ones(rmax,1);
-for ii = 2:length(fvec)-1
+froots = NaN*ones(nmax+1,1);
+for ii = 2:numf-1
     % frequency interval over which we check for a root
     oldf = f;
     f = fvec(ii);
@@ -125,31 +133,37 @@ for ii = 2:length(fvec)-1
     % Then store the root in the vector froots and plot the results.
     if (Tsurfold * Tsurf < 0)
         f0 = fzero('surf_stress',[oldf f]);
-        froots(nn) = f0;
+        froots(n+1) = f0;
 
-        % update eigenfunctions (WT, radius) for the exact frequency
+        % update eigenfunctions (WT, rvec) for the exact frequency
         surf_stress(f0);
-        disp(sprintf('%3i %3i %.2f mHz', ii, nn-1, f0*1e3));
+        disp(sprintf('n=%i %.3f mHz l=%i', n,f0*1e3,l));
 
         % plotting eigenfunctions (displacement and stress as a function of radius)
         if iplot_eig_freqs==1
             xmx = 1.2; ymn = rspan(1)/1000; ymx = rspan(2)/1000;
-            figure(1); if rmax==1, subplot(1,1,nn); else subplot(3,3,nn); end
+            rplot = rvec/1000;
+            Wplot = WT(:,1)/max(abs(WT(:,1)));
+            Tplot = WT(:,2)/max(abs(WT(:,2)));
+            figure(1); if nmax==0, subplot(1,1,n+1); else subplot(3,3,n+1); end
             hold on;
-            plot(WT(:,1)/max(abs(WT(:,1))),radius/1000,'b');    % W(r), displacement (blue)
-            plot(WT(:,2)/max(abs(WT(:,2))),radius/1000,'r');    % T(r), stress (red)
+            plot(Wplot,rplot,'b');    % W(r), displacement (blue)
+            plot(Tplot,rplot,'r');    % T(r), stress (red)
             plot([-xmx xmx],ymn*[1 1],'k',[-xmx xmx],ymx*[1 1],'k',[0 0],[ymn ymx],'k');
             axis([-xmx xmx ymn-300 ymx+300]); %grid on;
-            title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(nn)*1000,1/f0/60,l));
-            text(-1,ymx+100,sprintf('n = %i',nn-1));
-            if mod(nn-1,3)==0, ylabel('radius (km)'); end
+            title(sprintf('f = %.2f mHz, T = %.2f min (l = %i)',froots(n+1)*1000,1/f0/60,l));
+            text(-1,ymx+100,sprintf('n = %i',n));
+            if mod(n-1,3)==0, ylabel('radius (km)'); end
         end
         
-        if nn==rmax, break; end % this halts the search after rmax roots
-        nn = nn + 1;
+        % exit the loop when you reach n=nmax
+        if n==nmax, break; end
+        % count for the next root
+        n = n + 1;
     end
 end
-fprintf('l = %i, nroot = %i (rmax = %i)\n',l,sum(~isnan(froots)),rmax);
+fprintf('/// l = %i, nroots = %i (nmax = %i, fmax = %.3f mHz)\n',...
+    l,sum(~isnan(froots)),nmax,fmax*1e3);
 
 break
 
@@ -163,10 +177,16 @@ end
 
 if 0==1
     % example code for calculating misfit in arrays with NaN
-    A = rand(4,10); A([3 5 21 3]) = NaN
-    B = rand(4,10); B(12) = NaN
-    D = (A - B).^2
-    sum(D(~isnan(D)))
+    % say that A is observations, B is predictions
+    A = rand(4,10); A([3 5 21 3]) = NaN;
+    B = rand(4,10); B([3 12 14]) = NaN;
+    a = A(:);
+    b = B(:);
+    r = a - b;
+    % you cannot sum a vector that has NaN
+    sum(r.^2)
+    % so just sum the values that are NOT NaN
+    dmis = sum(d(~isnan(d)).^2)
 end
 
 %==========================================================================

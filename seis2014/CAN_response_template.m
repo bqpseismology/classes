@@ -21,8 +21,8 @@ spdy = 86400;   % seconds per day
 
 %----------------------------------
 % USER CHANGE THESE
-iresponse = 0;  % Part 1
-iwaveform = 1;  % Part 2
+iresponse = 1;  % Part 1 (lab_sumatra.pdf)
+iwaveform = 0;  % Part 2 (Sumatra Homework, Part I)
 
 % print figures to filesvn ci
 iprint = 0;
@@ -153,15 +153,20 @@ if iwaveform==1
     
 % load waveform
 ds = datasource('antelope',dbname); 
-scnl = scnlobject(station,channel ,netwk,'');
+scnl = scnlobject(station,channel,netwk,'');
 w = waveform(ds,scnl,startTime,endTime);
 w = remove_calib(w);
 figure; plot(w); axis tight
-tstart = get(w,'start');
 if iprint==1, fontsize(14); print(gcf,'-depsc',sprintf('%sCAN_response_seis',pdir)); end
 
+% get some info about the seismogram
+[tstart,tdur,sps] = getm(w,'start','duration','freq');
+dt = 1/sps;
+disp(sprintf('duration is %.3f days = %.2f hours = %.2f min = %.3e s',...
+    tdur,tdur*24,tdur*24*60,tdur*24*60*60));
+
 % example of getting an absolute time from the seismogram
-tpick = 3*1e5;
+tpick = 3*1e5;      % based on the plot
 datestr(tstart + tpick/spdy,31)
 
 % uncomment this to compute the FFT of the time series
