@@ -3,7 +3,7 @@
 % 
 % Template script for analyzing modes spectra for sumatra
 %
-% For a view of the spectra, open this file:
+% For a view of the 139/169 spectra from 'kept' seismograms, open this file:
 %    /home/admin/databases/SUMATRA/data/wfobject/all_sumatra_modes.pdf
 %
 % This assumes that you have added the path to the GEOTOOLS directories.
@@ -13,7 +13,7 @@ clear
 close all
 clc
 
-iload = 0;      % USER: CHANGE THIS
+iload = 1;      % USER: CHANGE THIS
 
 % add path in order to access additional files and scripts
 ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
@@ -21,11 +21,12 @@ addpath(ddir);
 
 % first load all the data
 if iload==1
+    % get waveforms from the database (calls getwaveform.m)
     sumatra_modes_fft;
-    disp('bad records that will not be used:');
+    disp(sprintf('%i/%i bad records that will not be used:',length(scut),nw));
     stas(scut)
     
-    % plot the time series that were manually cut from the analysis
+    % plot the 30 time series that were manually cut from the analysis
     for ii = 1:nw   % loop over all time series
         if any(ii==scut)  
             stag = [stas{ii} '_' chans{ii} '_' nets{ii}];

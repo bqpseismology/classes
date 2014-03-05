@@ -11,7 +11,7 @@ omega = 2*pi*f;         % angular frequency (stress_disp_tor.m)
 % on return the vectors rvec and WT contain the values of radius
 % and the displacement and stress eigenfunctions
 % note: the dimension of rvec and WT is the number of points needed for
-%       the numerical integration -- THIS WILL VARY
+%       the numerical integration -- this will vary
 
 % try this option to use default tolerance on numerical solution
 [rvec,WT] = ode45('stress_disp_tor',rspan,WT0);
