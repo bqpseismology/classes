@@ -24,15 +24,16 @@ global l rvec WT rspan imod rho mu % omega
 %------------------------------------------------
 % USER INPUT
 
-% shell spans from CMB (b) to surface (a)
-earthr = 6371000;
-rspan = [3480000 earthr];   % [b a]
+% shell spans from core-mantle boundary (b) to surface (a)
+earthr = 6371000;       % radius of earth, in meters (a)
+cmbr = 3480000;         % radius of core-mantle boundary, in meters (b)
+rspan = [cmbr earthr];  % [b a]
 
-% Earth model (uniform mantle shell)
+% Earth model
 imod = 0;               % index for Earth model (see earthfun.m)
-                        % =0 for homogeneous
-                        % =1 for linear rho(r) and mu(r)
-                        % =2 for cubic rho(r) and mu(r)
+                        %   =0 for homogeneous
+                        %   =1 for linear rho(r) and mu(r)
+                        %   =2 for cubic rho(r) and mu(r)
 % WARNING: BECAUSE THESE ARE GLOBAL VARIABLES, THESE VALUES MAY BE
 % OVER-RIDDEN BY VALUES DEFINED IN OTHER FUNCTIONS.                        
 rho = 4380;             % density

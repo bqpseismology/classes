@@ -5,18 +5,19 @@ function [rho,mu] = earthfun(r)
 
 global rspan imod
 
-b = rspan(1);
-a = rspan(2);
-
 switch imod
     case 1
         % linear model
         % ENTER YOUR CODE HERE
+        cmbr = rspan(1);    % b
+        earthr = rspan(2);  % a
+        
         error('earthfun.m imod=1 not yet implemented');
         
     case 2
         % cubic model
         % ENTER YOUR CODE HERE
+        
         error('earthfun.m imod=2 not yet implemented');
     
     otherwise

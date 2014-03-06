@@ -160,8 +160,8 @@ if iwaveform==1
 ds = datasource('antelope',dbname); 
 scnl = scnlobject(station,channel,netwk,'');
 w = waveform(ds,scnl,startTime,endTime);
-w = remove_calib(w);
-figure; plot(w); axis tight
+wraw = remove_calib(w);
+figure; plot(wraw); axis tight
 if iprint==1, fontsize(14); print(gcf,'-depsc',sprintf('%sCAN_response_seis',pdir)); end
 
 % get some info about the seismogram
@@ -173,9 +173,6 @@ disp(sprintf('duration is %.3f days = %.2f hours = %.2f min = %.3e s',...
 % example of getting an absolute time from the seismogram
 tpick = 3*1e5;      % based on the plot
 datestr(tstart + tpick/spdy,31)
-
-% uncomment this to compute the FFT of the time series
-break
 
 % for FFT (specifically for modes): demean and taper
 w = demean(w); 
@@ -202,13 +199,12 @@ f    = get(w,'fft_freq');
 wAmp = get(w,'fft_amp');    % amplitude of H(w)
 wPhs = get(w,'fft_phase');  % phase of H(w)
 
-%----------------------------------
+%--------------------------------------------------------------------------
 % HOMEWORK/LAB EXERCISE STARTS HERE
 
 
 
-
-%----------------------------------
+%--------------------------------------------------------------------------
 
 end  % iwaveform
 
