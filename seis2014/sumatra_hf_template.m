@@ -98,6 +98,25 @@ get(w,'station')
 tshift = [1186 1250 845 1440];
 plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
+if 0==1
+    % alternative way to do the same thing -- use predicted P arrival
+    % add Jeffrey-Bullen travel time for P arrival
+    % WARNING: only works for epicentral distances <100 deg
+    dist_deg = get(w,'GCARC');
+    Pjb = get_JB_Ptime(edep_km,dist_deg);
+    if any(isnan(Pjb))
+        disp('WARNING: JB times are NaN, since no direct P for Delta > 100 deg');
+        Pjb(isnan(Pjb)) = 1000;  % dummy arrival time (use tauP in the future!)
+    end
+    for ii=1:length(w), w(ii) = addfield(w(ii),'JBP',Pjb(ii)); end
+    % check that you added a new field
+    get(w,'JBP')
+    
+    tshift = Pjb;
+    tmark = originTime;
+    plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+end
+
 % example of resetting plotting range
 % Note that the amplitude scaling is based on the full-length seismogram,
 % not the (subset) time interval that is plotted.
