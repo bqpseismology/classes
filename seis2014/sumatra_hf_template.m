@@ -93,37 +93,44 @@ w([4 6]) = [];  % cut a bad record (WAKE) and a repeated record (KDAK)
 plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
 % example of applying a relative time shift to each seismogram
-% Note this is in the order of listed stations (NOT as ordered in the record section).
+% Note: This is in the order of listed stations (NOT as ordered in the record section).
+% Note: The DT are w.r.t. the origin time and are listed on the labels.
 get(w,'station')
 tshift = [1186 1250 845 1440];
 plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
+% an easier way (though less accurate) is to estimate the P travel time
+% based on the source-station distance
+dist_deg = get(w,'GCARC');
+Vest = 11;                      % km/s
+Ptt = deg2km(dist_deg) / Vest;  % very crude estimation for 30 < Delta < 85
+
 if 0==1
-    % alternative way to do the same thing -- use predicted P arrival
-    % add Jeffrey-Bullen travel time for P arrival
-    % WARNING: only works for epicentral distances <100 deg
-    dist_deg = get(w,'GCARC');
-    Pjb = get_JB_Ptime(edep_km,dist_deg);
-    if any(isnan(Pjb))
+    % A better way to do this is to use the Jeffreys-Bullen travel time tables
+    % to get the P wave travel time
+    % WARNING: our version only works for epicentral distances <100 deg
+    Ptt = get_JB_Ptime(edep_km,dist_deg);
+    if any(isnan(Ptt))
         disp('WARNING: JB times are NaN, since no direct P for Delta > 100 deg');
-        Pjb(isnan(Pjb)) = 1000;  % dummy arrival time (use tauP in the future!)
+        Ptt(isnan(Ptt)) = 1000;  % dummy arrival time (use tauP in the future!)
     end
-    for ii=1:length(w), w(ii) = addfield(w(ii),'JBP',Pjb(ii)); end
-    % check that you added a new field
+    for ii=1:length(w), w(ii) = addfield(w(ii),'JBP',Ptt(ii)); end
+    % check that you added a new field to each w(ii)
     get(w,'JBP')
-    
-    tshift = Pjb;
-    tmark = originTime;
-    plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 end
+
+% now replot
+% Here the time shift is relative to the marker time (originTime),
+% so the DT in the record section is the predicted P travel time (Ptt).
+tshiftmark = Ptt;
+tmark = originTime;
+plotw_rs(w,isort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
 % example of resetting plotting range
 % Note that the amplitude scaling is based on the full-length seismogram,
 % not the (subset) time interval that is plotted.
-tlims = [-200 800];
-plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+tlims = [-50 700];
+plotw_rs(w,isort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
 % START YOUR ANALYSIS HERE
 
-
-%==========================================================================
