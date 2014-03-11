@@ -145,16 +145,14 @@ switch iex
         
     case 6
         % Sumatra Mw 8.6 in Alaska and triggered earthquakes
-        idatabase = 0;
-        % four origin times (iex = 10 and 11)
+        idatabase = 1;
+        % four different events
         originTimeS = datenum('2012/04/11 08:38:37.30');    % Sumatra (CMT-PDE)
         originTimeA = datenum('2012/04/11 09:00:09.71');    % Andreanof (NEIC)
         originTimeN = datenum('2012/04/11 09:21:57.44');    % Nenana (NEIC)
         originTimeI = datenum('2012/04/11 09:40:58.02');    % Iliamna slab (NEIC)
-        dFs = 16.5; originTimeF = originTimeN - dFs/spdy;   % Nenana foreshock
         elatS = 2.24; elonS = 92.78; edepS = 40.03; emagS = 8.6;
         elatA = 51.36; elonA = -176.10; edepA = 20; emagA = 5.5;
-        % analyzed_2012_04_11.origin / CAP results for mag and depth
         elatN = 64.9222; elonN = -148.9461; edepN = 19.4; emagN = 3.88;
         elatI = 60.10; elonI = -152.83; edepI = 101; emagI = 2.9;
         
@@ -163,8 +161,6 @@ switch iex
         eid = '201204110838A';  % GCMT
         originTime = originTimeS;
         chan = {'BHZ'};
-
-        cutoff = []; %cutoff = [1/500 2];
         dmax_deg = 25;
         stasub = [elonN elatN 0 dmax_deg 0 360];
 
@@ -176,7 +172,32 @@ switch iex
         iunit = 2;
         % three different triggered events are visible
         tmark = [originTimeA originTimeN originTimeI];
+        
+    case 7
+        % one of the triggered earthquakes
+        idatabase = 1;
+        % four different events
+        originTimeS = datenum('2012/04/11 08:38:37.30');    % Sumatra (CMT-PDE)
+        originTimeA = datenum('2012/04/11 09:00:09.71');    % Andreanof (NEIC)
+        originTimeN = datenum('2012/04/11 09:21:57.44');    % Nenana (NEIC)
+        originTimeI = datenum('2012/04/11 09:40:58.02');    % Iliamna slab (NEIC)
+        elatS = 2.24; elonS = 92.78; edepS = 40.03; emagS = 8.6;
+        elatA = 51.36; elonA = -176.10; edepA = 20; emagA = 5.5;
+        elatN = 64.9222; elonN = -148.9461; edepN = 19.4; emagN = 3.88;
+        elatI = 60.10; elonI = -152.83; edepI = 101; emagI = 2.9;
+        
+        % source
+        originTime = originTimeN; elat = elatN; elon = elonN; edep_km = edepN; mag = emagN; stasub = [0 200];   % Nenana
+        %originTime = originTimeA; elat = elatA; elon = elonA; edep_km = edepA; mag = emagA; stasub = [0 2000];   % Andreanof
+        %originTime = originTimeI; elat = elatI; elon = elonI; edep_km =edepI; mag = emagI; stasub = [0 400];   % Iliamna
+        eid = [];
+        chan = {'BHZ'};
 
+        % parameters for triggered waveforms across Alaska
+        duration_s = 200; oshift = 10; T1 = 1/4; T2 = 1/2;    % Nenana
+        %duration_s = 600; oshift = 10; T1 = 1/4; T2 = 1/2;    % Andreanof
+        %duration_s = 200; oshift = 10; T1 = 1/4; T2 = 1/2;    % Iliamna
+        
 end
 
 % tshift (and trshift) are for plotting record sections only
