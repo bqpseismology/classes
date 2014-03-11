@@ -172,7 +172,7 @@ fprintf('/// l = %i, nroots = %i (nmax = %i, fmax = %.3f mHz)\n',...
 
 break
 
-% observations used in PREM
+% toroidal mode observations used in PREM
 dfile = [ddir 'prem_Tmodes.txt'];
 [nobs,~,lobs,T,Tstd] = textread(dfile,'%f%s%f%f%f','headerlines',6);
 disp('normal mode observations (measured from seismograms):');
