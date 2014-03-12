@@ -92,7 +92,7 @@ end
 % diplay the properties of the object
 w(4)
 % get properties of the object
-[slon,slat,dist_deg,az] = getm(w(4),'STLA','STLO','GCARC','AZ');
+[slon,slat,dist_deg,az] = getm(w(4),'STLO','STLA','GCARC','AZ');
 
 break
 
