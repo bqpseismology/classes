@@ -1,13 +1,13 @@
 %
 % CAN_response_template.m
-% 
-% This script shows some conventions for instrument response files
-% associated with GISMO/Antelope and rdseed/sac.
-% 
-% calls numerous GISMO functions and also read_pzfile.m
+%
+% Template script for deconvolving the instrument response in the frequency
+% domain.
 %
 % The example waveform is from CAN (Canberra, Australia) for the
 % 2004 Mw 9.X Sumatra-Andaman earthquake.
+%
+% Be sure to run lab_response.m (and see lab_response.pdf) before proceeding.
 %
 % Carl Tape, 03/31/2012
 %

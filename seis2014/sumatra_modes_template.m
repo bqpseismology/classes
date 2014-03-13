@@ -93,10 +93,10 @@ end
 w(4)
 % get properties of the object
 % here are some examples
-% STLO station longitude
-% STLA station latitude
+% STLO  station longitude
+% STLA  station latitude
 % GCARC source-station epicentral distance, in degrees
-% AZ source-station azimuthal angle, in degrees measured from north
+% AZ    source-station azimuthal angle, in degrees measured from north
 [slon,slat,dist_deg,az] = getm(w(4),'STLO','STLA','GCARC','AZ');
 
 break

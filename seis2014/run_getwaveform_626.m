@@ -268,4 +268,16 @@ wsubset = wkeep(w,stasubset);
 % WHEN YOU ARE DONE OR IF YOU WANT TO MAKE A NEW PLOT, CLOSE THE FIGURE
 figure; uispecgram(wsubset(1));     % will only work for a single 
 
+% in case you want to analyze the filtered version that you see in the
+% record section, you can return wfilt
+[isort,wfilt] = plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+get(w,'station')
+get(wfilt,'station')
+get(wfilt(isort),'station')
+get(wfilt,'station')
+% plot kth station that appears in the ORDERED record section
+kk = 1;     % order 
+% plot that single record
+figure; plot(wfilt(isort(kk)));
+
 %==========================================================================
