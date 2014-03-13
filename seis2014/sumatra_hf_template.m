@@ -92,7 +92,7 @@ plot_event_station(elat(1),elon(1),rlat,rlon,sta);
 w([4 6]) = [];  % cut a bad record (WAKE) and a repeated record (KDAK)
 plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
 
-% example of applying a relative time shift to each seismogram
+% OPTION A: example of applying a relative time shift to each seismogram
 % Note: This is in the order of listed stations (NOT as ordered in the record section).
 % Note: The DT are w.r.t. the origin time and are listed on the labels.
 get(w,'station')
@@ -102,13 +102,14 @@ plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit
 % an easier way (though less accurate) is to estimate the P travel time
 % based on the source-station distance
 dist_deg = get(w,'GCARC');
-Vest = 11;                      % km/s
-Ptt = deg2km(dist_deg) / Vest;  % very crude estimation for 30 < Delta < 85
-
 if 0==1
-    % A better way to do this is to use the Jeffreys-Bullen travel time tables
-    % to get the P wave travel time
-    % WARNING: our version only works for epicentral distances <100 deg
+    % OPTION B: assume a constant velocity (as suggested in the homework)
+    Vest = 11;                      % km/s
+    Ptt = deg2km(dist_deg) / Vest;  % very crude estimation for 30 < Delta < 85
+    
+else
+    % OPTION C: use the Jeffreys-Bullen traveltime tables
+    % WARNING: our simplified version only works for epicentral distances <100 deg
     Ptt = get_JB_Ptime(edep_km,dist_deg);
     if any(isnan(Ptt))
         disp('WARNING: JB times are NaN, since no direct P for Delta > 100 deg');

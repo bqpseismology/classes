@@ -13,7 +13,7 @@ clear
 close all
 clc
 
-iload = 1;      % USER: CHANGE THIS
+iload = 0;      % USER: CHANGE THIS
 
 % add path in order to access additional files and scripts
 ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
@@ -92,6 +92,11 @@ end
 % diplay the properties of the object
 w(4)
 % get properties of the object
+% here are some examples
+% STLO station longitude
+% STLA station latitude
+% GCARC source-station epicentral distance, in degrees
+% AZ source-station azimuthal angle, in degrees measured from north
 [slon,slat,dist_deg,az] = getm(w(4),'STLO','STLA','GCARC','AZ');
 
 break
@@ -104,6 +109,8 @@ n = 1e5;
 figure; plot(fplot*1e3,Astack);
 xlabel('frequency, mHz');
 ylabel('stacked amplitude spectrum');
+% note: matrix A contains all spectra
+figure; plot(fplot,A);
 
 % START MODES PROBLEM HERE
 
