@@ -19,9 +19,9 @@ fsize = 8;
 %--------------------------------------------------------------------------
 
 % target periods for measurements
-Tvec = [20 30 40 50]';
-fvec = 1./Tvec;
-numf = length(fvec);
+Ttarvec = [20 30 40 50]';
+ftarvec = 1./Ttarvec;
+numtar = length(ftarvec);
 
 ax1 = [18 52 2.8 4.6];
 delx = 331;             % distance between PAS and NEE (km)
@@ -122,13 +122,20 @@ Hn = fft(ynee);
 whos ti ypas ynee f Hp Hn
 
 tlims = [2600 2800];
-numf = length(fvec);
-for ii=1:numf
-    ftar = fvec(ii);    % target frequency for harmonic
+for ii=1:numtar
+    % target frequency for harmonic
+    ftar = ftarvec(ii);
     
     % initialize fourier transforms
     Hp2 = complex(zeros(npt,1),0);
     Hn2 = complex(zeros(npt,1),0);
+    
+    % get BOTH target f values in the frequency vector
+    % (this will avoid having matlab tell you that it will ignore the
+    % complex conjugate parts when using ifft)
+    [~,itemp] = sort(abs(f-ftar),'ascend');
+    itemp = itemp(1:2)
+    f(itemp)
     
     % CODE HERE FOR HARMONICS
     
