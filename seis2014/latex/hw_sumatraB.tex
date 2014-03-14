@@ -33,6 +33,9 @@
 
 \include{NEWCOMMANDS}
 
+\newcommand{\snl}[2]{\mbox{$_{#1}\ssS_{#2}$}}
+\newcommand{\snlm}[3]{\mbox{$_{#1}\ssS_{#2}^{#3}$}}
+
 \graphicspath{
   {./figures/}
 }
@@ -101,12 +104,12 @@ The purpose of this problem set is to handle a large data set of seismograms and
 \item Directivity: \citet[][Section 4.3.2]{SteinWysession} 
 \item Sumatra earthquake: \citep{Lay2005,Ammon2005,Park2005,Ni2005,SSteinOkal2007}
 \item Modes: \citet[][Section 2.9]{SteinWysession} and \citet[][Ch.~8]{DT}. See also ``Computational details'' in Section 10.5.1 of DT.
-\item PDFs of all referenced Sumatra papers are available on the network.
-
-%\begin{verbatim}
-%/home/admin/databases/SUMATRA/papers/
-%/home/admin/databases/SUMATRA/papers/SCIENCE_2005/
-%\end{verbatim}
+\item PDFs of all referenced Sumatra papers can be found in one of two directories:
+%
+\begin{verbatim}
+/home/admin/databases/SUMATRA/papers/
+/home/admin/databases/SUMATRA/papers/SCIENCE_2005/
+\end{verbatim}
 
 \end{itemize}
 
@@ -152,34 +155,60 @@ You do not need more than one seismogram for each site. In general the multiple 
 %\pagebreak
 \section*{Problem 1 (4.0). Splitting of normal mode frequencies}
 
-Template script: \verb+sumatra_modes_template.m+. DISCLAIMER: Our spectra are computed from the calibration-applied seismograms; the complete instrument response has not been deconvolved, as we did in the previous homework. However, because we are not computing the relative amplitudes between modes, this should not be an issue.
+The template script is \verb+sumatra_modes_template.m+. See note \footnote{In this problem, our spectra are computed from the calibration-applied seismograms; the complete instrument response has not been deconvolved, as we did in the earlier homework. This should not impact our main findings, since we are not computing the {\em relative} amplitudes between modes within a given spectrum.}.
 
 \begin{enumerate}
+\item Recall the modes spectrum that we computed for station CAN that emulated Figure~1 of \citet{Park2005}. Having done the homework on toroidal modes, you should now have a better understanding of what the modes peaks are.
+
+Run \verb+modes_PREMobs.m+ to see the observed modes that were used in constructing PREM back in 1980 \citep{PREM}. The dispersion plot identifies the frequency range 0.2--1.0~mHz that is used in Figure~1 of \citet{Park2005}, which is a spectrum of the {\bf vertical component} of ground motion.
+%
+\begin{enumerate}
+\item List the toroidal modes, 0.2--1.0~mHz, that were observed in 1980. List them in increasing frequency.
+\item List the spheroidal modes, 0.2--1.0~mHz, that were observed in 1980.
+\item What toroidal and spheroidal modes are observed (or at least labeled) in Figure~1 of \citet{Park2005} but not observed in 1980?
+\item What toroidal and spheroidal modes observed in 1980 are not present in Figure~1 of \citet{Park2005}?
+\item What two modes are on top of each other?
+\end{enumerate}
+
 \item Run \verb+sumatra_modes_template.m+ and examine the stations that were cut from the analysis. Describe three ``errors'' in these records.
 
-\item Browse \verb+all_sumatra_modes.pdf+ to pick a subset of at least 20 stations for this analysis. The stations should be selected based on high signal-to-noise within the frequency range 0.2 to 1.0~mHz, and, notably, the $_0S_2$ peak.
+\item Browse \verb+all_sumatra_modes.pdf+ to pick a subset of at least 20 stations for this analysis. The stations should be selected based on high signal-to-noise within the frequency range 0.2 to 1.0~mHz, and, notably, the \snl{0}{2} peak.
 See also ``Tips on picking stations'' in the instructions above.
 
 \item Set \verb+iload = 0+ in \verb+sumatra_modes_template.m+, then modify \verb+ipick+ (or use \verb+wkeep.m+) and plot your selected stations.
 
-Compute the amplitude of the $_0S_0$ peak for all your stations. List the median value.
+Compute the amplitude of the \snl{0}{0} peak for all your stations. List the median value.
 
-\item ``Stacking'' refers to summing similar functions in order to enhance the signal-to-noise ratio. Use the function \verb+w2fstack.m+ to generate a stack of your spectra over the frequency range 0--10~mHz. Include a plot of the stacked spectrum over two ranges: 0--10~mHz and 0.2--1.0~mHz. Qualitatively, describe the meaning of this spectrum (\eg why are there spikes)?
+\item ``Stacking'' refers to summing similar functions in order to enhance the signal-to-noise ratio. Use the function \verb+w2fstack.m+ to generate a stack of your spectra.
+%
+\begin{enumerate}
+\item Include a plot of the stacked spectrum over two ranges: 0.2--10~mHz and 0.2--1.0~mHz.
+\item Qualitatively, describe the meaning of this spectrum (\eg why are there spikes)?
+\end{enumerate}
+%
+% PROBABLY NO NEED TO REMIND EVERYONE ABOUT TIDES HERE, THOUGH IT IS THE LARGEST PEAK IN THE ENTIRE SPECTRUM
 
 \item Several peaks in the Sumatra spectrum are clearly split; the central peak is the ``degenerate'' frequency ($m=0$), and the split peaks are known as ``singlets'' ($m = -l,\ldots,l$). 
+%
+\begin{enumerate}
+\item Use \verb+w2fstack.m+ to generate a stack of \snl{0}{2}, and include this plot.
+\item Label the peaks \snlm{0}{2}{-2}, \ldots, \snlm{0}{2}{2} on the plot.
+\item Measure the frequency of the central peak, $_0f_2^0$ ($m=0$), and the spacing between peaks, $\Delta f$.
+Assuming a linear model, write an expression for the singlet frequency $_0f_2^m(m)$.
+\end{enumerate}
 
-Use \verb+w2fstack.m+ to generate a stack of $_0S_2$, and include this plot. Measure the frequency of the central peak, $_0f_2^0$ ($m=0$), and the spacing between peaks, $\Delta f$. Assuming a linear model, write an expression for the singlet frequency $_0f_2^m$.
+\item  Analyze \snl{0}{2} as a function of latitude. You may find it helpful to use 
 
-\item  Analyze the splitting and amplitude of $_0S_2$ as a function of latitude. Qualitatively, how does the relative sizes of the singlet peaks vary as a function of latitude?
+Qualitatively, how does the relative sizes of the singlet peaks vary as a function of latitude?
 %How does the amplitude of the degenerate peak vary with latitude.
 
 See \citet[][Figure 3]{SSteinOkal2007} for additional background.
 
 \item Repeat the previous problem but for epicentral distance (instead of latitude). Epicentral distance can be extracted from the \verb+GCARC+ header. What pattern might you expect to see? (Hint: think about the nodal lines for this mode.)
 
-\item  The PREM theoretical frequencies, $f_0$, can be found in Table V of \citet{PREM}. With these frequencies as a guide, see if you can identify the peaks for $_0S_0$, $_1S_0$, and $_2S_0$ in the stacked Sumatra spectrum. What is special about these peaks and why?
+\item Table 5 of \citet{PREM} lists the observed frequencies of spheroidal modes; these are also read in by \verb+modes_PREMobs.m+. See if you can identify the peaks for \snl{0}{0}, $_1S_0$, and $_2S_0$ in the stacked Sumatra spectrum. What is special about these peaks and why?
 
-%Using \verb+w2fstack.m+, select appropriate frequency limits to examine the peaks $_0S_0$, $_1S_0$, $_2S_0$. The PREM theoretical frequencies, $f_0$, can be found in Table V of \citet{PREM}; use $\Delta f = 0.04$~mHz on either side of $f_0$ to pick the plotting limits.
+%Using \verb+w2fstack.m+, select appropriate frequency limits to examine the peaks \0s0, $_1S_0$, $_2S_0$. The PREM theoretical frequencies, $f_0$, can be found in Table V of \citet{PREM}; use $\Delta f = 0.04$~mHz on either side of $f_0$ to pick the plotting limits.
 
 See \citet[][p. 106]{SteinWysession} for background.
 
@@ -203,52 +232,114 @@ See \citet[][p. 106]{SteinWysession} for background.
 As derived in \citet[][Section 4.3.2]{SteinWysession}, the apparent rupture time as measured on a seismogram is given by
 %
 \begin{equation}
-T_r = L\left(\frac{1}{v_r} - \frac{\cos(\alpha-\alpha_0)}{v}\right)
+T_r(\alpha) = L\left(\frac{1}{v_r} - \frac{\cos(\alpha-\alpha_0)}{v}\right)
 \label{Tr}
 \end{equation}
 %
-where $v_r$ is the rupture velocity, $v = 11$~km/s is the velocity of the medium, $L$ is the fault length, and $\alpha$ is the azimuth to the station, and $\alpha_0$ is the rupture direction.
+where $v_r$ is the rupture velocity, $v$ is the velocity of the medium (11~km/s), $L$ is the fault length, and $\alpha$ is the azimuth to the station, and $\alpha_0$ is the rupture direction. In answering the following questions, note that {\bf no numbers are needed (only algebra).}
 %
 \begin{enumerate}
-\item What are $\alpha$ values for the minimum and maximum values of $T_r$?
-\item The range of $T_r$ is given by $T_{\rm max} - T_{\rm min}$.
+\item What $\alpha$ will produce a minimum $T_r(\alpha)$, $T_{\rm min}$?
+%What are $\alpha$ values for the minimum and maximum values of $T_r$?
+\item What $\alpha$ will produce a maximum $T_r(\alpha)$, $T_{\rm max}$?
+\item The range of $T_r$ is given by $T_{\rm max} - T_{\rm min}$. \\
 What is the range, considering variations in $\alpha$ only?
 \item What is $\overline{T}_r$, the azimuthal average of $T_r$?
 \item Show that, with our assumptions, \refeq{Tr} can be written in terms of only $T_{\rm min}$, $T_{\rm max}$, $\alpha$, and $\alpha_0$.
+
+Hint: \refEq{Tr} is an equation with 6 unknowns: $T_r$, $L$, $v_r$, $v$, $\alpha$, $\alpha_0$. Your equations for $T_{\rm min}$ and $T_{\rm max}$ give you two additional equations with two additional unknowns ($T_{\rm min}$, $T_{\rm max}$). You are asked to write an equation with 5 unknowns (including $T_r$). Therefore you start with a system of 3 equations with 8 unknowns, and you can reduce this to 1 equation with 5 unknowns.
+
 \end{enumerate}
 
-% let A = mean(Tr) = 500 s
-% let B = Trmax - Trmin = 200 s
-% B = 2L/v --> L = Bv/2
-% A = L/vr --> vr = L/A
+%--------------------
 
-\item (2.0) Using the template script \verb+sumatra_hf_template.m+, reproduce the analysis of \citet{Ni2005} to estimate the rupture direction ($\alpha_0$), the rupture length ($L$), the rupture time ($\overline{T}_r$), and the rupture velocity ($v_r$). {\bf You do not need to compute the smoothed envelopes---the bandpassed seismograms are enough.} (Though computing the envelopes is easy to do.) Use at least 10 stations in your analysis; note that the epicentral distances must be $30^\circ < \Delta < 85^\circ$.
+\item (1.2) Using the template script \verb+sumatra_hf_template.m+, (and referring to the earlier homework), reproduce \citet[][Figure~1d]{Ni2005}, and include a plot of your record section.
 
-Include a plot of $T_r$ vs $\alpha$ for your data \citep[see Figure~S1 of][]{Ni2005}.
+Notes:
+%
+\begin{itemize}
+\item Note that the epicentral distances must be $30^\circ < \Delta < 85^\circ$, so specify \\
+\verb+stasub = deg2km([30 85])+ when requesting waveforms.
 
-Hint: when requesting the waveforms, specify \verb+stasub = deg2km([30 85])+; this will give you a starting subset to choose from.
+\item Use at least 10 stations with high-quality seismograms.
 
-\item (1.0) Using the template script \verb+sumatra_lf_template.m+, show that the directivity can also be inferred from the relative amplitudes of R1 and R2, the ``minor orbit'' and ``major orbit'' Rayleigh wave arrivals\footnote{See Figure 2.7-3 of \citet{SteinWysession}.}. See Figure S1 of \citet{Ammon2005} as a guide.
+\item {\bf You do not need to compute the smoothed envelopes---the bandpassed seismograms are enough.} (Though computing the envelopes is easy to do; see previous homework solutions.) 
+\end{itemize}
 
-Is your rupture direction ($\alpha_0$) different for the high-frequency P wave estimate than it is for the long-period Rayleigh wave estimate. Why might this be the case? Hint: see \refFig{fig:sumatra_chen}.
+%--------------------
+
+\item (0.4) Make a plot of $T_r$ vs $\alpha$ for your data \citep[see Figure~S1 of][]{Ni2005}.
+
+(This will be very approximate, since it is difficult to measure $T_r$.)
+
+%--------------------
+
+\item (0.4) Using your data, estimate $T_{\rm min}$ and $T_{\rm max}$, then calculate the following quantities:
+%
+\begin{enumerate}
+\item rupture direction, $\alpha_0$
+\item rupture length, $L$
+\item rupture time, $\overline{T}_r$
+\item rupture velocity, $v_r$
+\end{enumerate}
+
+\item (1.0)
+%
+\begin{enumerate}
+\item Using the template script \verb+sumatra_lf_template.m+, show that the directivity can also be inferred from the relative amplitudes of R1 and R2, the ``minor orbit'' and ``major orbit'' Rayleigh wave arrivals\footnote{See Figure 2.7-3 of \citet{SteinWysession}.}. See Figure S1 of \citet{Ammon2005} as a guide.
+
+Note: you may find the command \verb+extract+ and \verb+max+ useful for quantifying the amplitude ratio, though quantification is not required.
+
+\item Is your rupture direction ($\alpha_0$) different for the high-frequency P wave estimate than it is for the long-period Rayleigh wave estimate. Why might this be the case? \\
+Hint: think about \refFig{fig:sumatra_chen}.
+\end{enumerate}
+
 \end{enumerate}
 
 %------------------------
 
+%\pagebreak
 \section*{Problem 3 (2.0). Miscellaneous}
 
 In this problem, you will find it helpful to use an appropriate input for \verb+stasub+ so that \verb+getwaveform.m+ will return only a subset of stations/waveforms.
 
 \begin{enumerate}
-\item Using the template script \verb+sumatra_lf_template.m+, show the maximal displacement (not velocity) of some ``near-source'' stations. See Figure S12 of \citet{Ammon2005} for reference and checking.
+\item (1.0) Using the template script \verb+sumatra_lf_template.m+, show the maximal displacement (not velocity) of some ``near-source'' stations. See Figure S12 of \citet{Ammon2005} for reference and checking.
+%
+\begin{enumerate}
+\item (0.4) Include plots of seismograms (or a record section) for calibration applied (\verb+iprocess=1+).
+\item (0.4) Include plots of seismograms (or a record section) for instrument deconvolved (\verb+iprocess=2+).
+\item (0.2) How different are the waveform shapes and amplitudes?
+\item (0.0) On the basis of your results, can you infer whether the seismograms in \citet{Ammon2005} were instrument deconvolved or not?
+\end{enumerate}
+%
+Notes:
+%
+\begin{itemize}
+\item Note: Let us assume that \citet{Ammon2005} used the label H1 to denote the E channel (nominally east) and H2 to denote the N channel (nominally north).
 
-Include plots of the seismograms for calibration applied (\verb+iprocess=1+) and instrument deconvolved (\verb+iprocess=2+). How different are the waveform shapes and amplitudes?
+\item Converting to displacement is trivial (see \verb+plotw_rs.m+ or \verb+getwaveform.m+). If you use \verb+plotw_rs.m+, then you may want to output the modified (\ie filtered) \verb+w+ to analyze.
 
-(Note: It appears that \citet{Ammon2005} used the label H1 to denote the E channel (nominally east) and H2 to denote the N channel (nominally north). )
+\end{itemize}
 
-\item Using the template script \verb+sumatra_hf_template.m+, reproduce the azimuthal record section of P waves shown in Figure S11 of \citet{Ammon2005}. (Plot with one column, not two.) Order the seismograms starting with the direction of the rupture direction (\verb+azcen+ parameter in \verb+plotw_rs.m+). Qualitatively describe the variations in the P waves as a function of azimuth from the rupture direction.
+%------------
 
-\item Using the template script \verb+sumatra_hf_template.m+, filter the BHZ time series from 4 to 6 Hz. I suggest using the modes-quality stations you selected in Problem 1, but it might be easier just to load the entire data set and browse the stations. See if you observe any post-rupture signals in these records. (Remember what we saw for CAN with the \trange{10}{30} surface waves.)
+\item (0.5) 
+%
+\begin{enumerate}
+\item (0.4) Using the template script \verb+sumatra_hf_template.m+, reproduce the azimuthal record section of P waves shown in Figure S11 of \citet{Ammon2005}. (Plot with one column, not two.) Order the seismograms starting with the direction of the rupture direction (\verb+azcen+ parameter in \verb+plotw_rs.m+).
+\item (0.1) Qualitatively describe the variations in the P waves as a function of azimuth from the rupture direction.
+\end{enumerate}
+
+%------------
+
+\item (0.5) Using the template script \verb+sumatra_hf_template.m+, filter the BHZ time series from \frange{4}{8}. I suggest using the modes-quality stations you selected in Problem 1, but it might be easier to load the entire data set and browse the stations. Recall what we saw for CAN in the earlier homework.
+%
+\begin{enumerate}
+\item (0.3) Identify other stations (if any) that exhibit high-frequency, post-rupture signals.
+\item (0.2) Is there anything systematic about the other stations? \\
+Provide your interpretation of these signals.
+\end{enumerate}
 
 \end{enumerate}
 
