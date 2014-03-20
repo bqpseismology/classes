@@ -49,17 +49,31 @@ dlabs = {'m to counts','m/s to counts','m/s^2 to counts'};
 % specify frequencies
 fmin = 1e-4;
 fmax = 1e2;
-f = logspace(log10(fmin),log10(fmax),100)';
+numf = 100;
+f = logspace(log10(fmin),log10(fmax),numf)';
 omega = 2*pi*f;
 
 aran = 10.^[-20 1.5];
 
-% default option: get response from antelope database
+% default option: get instrument response from antelope database
 % FIGURE 1
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
 response_plot(res0); xlim([fmin fmax]); ylim(aran);
 title('response_get_from_db.m','interpreter','none');
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig1',pdir)); end
+
+if 0==1
+    % res0 is a matlab structure
+    % note: the amplitude of abs(res0.values) is NORMALIZED to 1 (by calib)
+    res0
+    res0.calib
+    res0.units
+    Ivcheck = res0.values / (res0.calib*1e-9);  % to match results below
+    figure;
+    subplot(2,1,1); semilogx(res0.frequencies,angle(Ivcheck));
+    subplot(2,1,2); loglog(res0.frequencies,abs(Ivcheck));
+    break
+end
 
 % Here we create a response object by directly specifying the response file.
 % For one file we manually removed the FIR filters in order to show that it
@@ -94,6 +108,10 @@ response_plot(res); xlim([fmin fmax]); ylim(aran);
 title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig4',pdir)); end
 
+% relationship between PZ constants and calib
+% note: c
+res0.calib*1e-9, 1/k
+
 %-----------------------
 % compare displacement, velocity, and acceleration spectra
 % Note that all response plots are normalized such that the
@@ -105,7 +123,7 @@ xf = 5;  % figure index
 figure(xf); nr=3; nc=2;
 for kk=1:3
     ideriv = kk-1;
-    [p,z,c,A0,k] = read_pzfile(pzfile,ideriv);
+    [p,z,c,A0,k] = read_pzfile(pzfile,ideriv);   % c = A0*k
     polezero.poles = p;
     polezero.zeros = z;
     polezero.normalization = c;    % note c, not A0
@@ -118,7 +136,9 @@ for kk=1:3
     % amplitude response
     subplot(nr,nc,2*kk); loglog(f,abs(Ix)); xlim([fmin fmax]);
     xlabel('frequency, Hz'); ylabel('amplitude');
-    title(sprintf('sac pole-zero file (%s)',dlabs{kk}));
+    [maxI,imax] = max(abs(Ix));
+    title({sprintf('sac pole-zero file (%s)',dlabs{kk})...
+        sprintf('max = %.3e at %.3e Hz',maxI,f(imax)) });
 end
 
 % THIS IS ONLY A CHECK
