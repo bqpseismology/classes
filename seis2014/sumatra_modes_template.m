@@ -13,7 +13,7 @@ clear
 close all
 clc
 
-iload = 0;      % USER: CHANGE THIS
+iload = 1;      % USER: CHANGE THIS
 
 % add path in order to access additional files and scripts
 ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
@@ -27,7 +27,7 @@ if iload==1
     stas(scut)
     
     % plot the 30 time series that were manually cut from the analysis
-    for ii = 1:nw   % loop over all time series
+    for ii = 1:nw   % loop over all 169 time series
         if any(ii==scut)  
             stag = [stas{ii} '_' chans{ii} '_' nets{ii}];
             stdur = sprintf('duration = %.2f days',get(w(ii),'duration'));
@@ -72,7 +72,10 @@ w(1,npick) = waveform;  % initialize array of waveforms
 pamp = zeros(npick,1);
 for ii=1:length(ipick)
     jj = ipick(ii);
-    % load pre-stored seismogram and pre-stored frequency spectrum
+    % load PRE-STORED seismogram and frequency spectrum
+    % note: these were saved in sumatra_modes_fft.m / sumatra_loop.m
+    % note: time series had calibration applied,
+    %       but the full instrument response was NOT removed
     fname = strcat('w',tag{jj},'.mat');
     ifile = [ddir 'full_length/' fname];
     load(ifile);
