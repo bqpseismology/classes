@@ -1,4 +1,4 @@
-function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,iwrite)
+function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,listfile)
 % READ_PZFILE reads sac-convention poles and zeros from a sac pole-zero file
 %
 % INPUT
@@ -9,10 +9,12 @@ function [p,z,c,A0,k] = read_pzfile(pzfile,ideriv,iwrite)
 % There are three essential points about the sac PZ files that are produced
 % by the program rdseed.
 %    1. The response is always for DISPLACEMENT in units of meters.
-%    2. The FIR filters are not included (though they are in the RESP file).
+%    2. Filters associated with the digitizer or decimation (FIR) are
+%          NOT included (though they are in the RESP file).
 %    3. The INPUT is meters, the OUTPUT is counts (not the other way).
 %
-% also: CONSTANT = A0 * SENSITIVITY (c = A0*k)
+% note: CONSTANT = A0 * SENSITIVITY (c = A0*k)
+% note: the antelope 'calib' field is 1/CONSTANT (adjusting for units)
 %
 % Carl Tape, 3/29/2012
 %
@@ -22,9 +24,11 @@ lines = textread(pzfile,'%s','delimiter','\n','whitespace','');
 
 % write file to command window
 if nargin==3
-    disp('======== read_pzfile.m ========');
-    for ii=1:length(lines), disp(lines{ii}); end
-    disp('======== read_pzfile.m ========');
+    if listfile
+        disp('======== read_pzfile.m ========');
+        for ii=1:length(lines), disp(lines{ii}); end
+        disp('======== read_pzfile.m ========');
+    end
 end
 
 for ii=1:length(lines)

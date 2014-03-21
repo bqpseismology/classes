@@ -98,18 +98,19 @@ end
 
 % compare CAN response in antelope database (no FIR) with PZs from sac file
 % FIGURE 4 (should match Figure 3)
-ideriv = 1;     % velocity
-[p,z,c,A0,k] = read_pzfile(pzfile,ideriv,1);   % velocity response
+ideriv = 1;     % response to VELOCITY
+listfile = true;
+[p,z,c,A0,k] = read_pzfile(pzfile,ideriv,listfile);
 polezero.poles = p;
 polezero.zeros = z;
-polezero.normalization = A0;    % needed to match normalization
+polezero.normalization = A0;    % A0 (not c) needed to match normalization
 res = response_get_from_polezero(f,polezero);
 response_plot(res); xlim([fmin fmax]); ylim(aran);
 title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig4',pdir)); end
 
-% relationship between PZ constants and calib
-% note: c
+% relationship between PZ constants (sac) and calib (antelope)
+% note: c = A0*k <==> CONSTANT = A0*SENSITIVITY
 res0.calib*1e-9, 1/k
 
 %-----------------------
