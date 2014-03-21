@@ -63,7 +63,7 @@ ipick = [21 22 107 67 68 165];     % USER: CHANGE THIS
 w = w0(ipick);
 
 % PLOTTING PARAMETERS FOR plotw_rs.m (USER: CHANGE THESE AS NEEDED)
-isort = 2;      % =1 by azimuth, =2 by distance
+rssort = 2;      % =1 by azimuth, =2 by distance
 iabs = 0;
 tshift = [];
 tmark = [];
@@ -72,14 +72,14 @@ iintp = 0;
 inorm = 1;
 tlims = [];
 nfac = 1;
-azcen = [];
+azstart = [];
 iunit = 2;
 imap = 0;
 
 % plot record section
 T1 = [];
 T2 = [];
-plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % plot global map
 [sta,rlat,rlon,elat,elon] = getm(w,'station','STLA','STLO','EVLA','EVLO');
@@ -90,14 +90,14 @@ plot_event_station(elat(1),elon(1),rlat,rlon,sta);
 % example of cutting a record
 % note: you can alternatively use wcut.m
 w([4 6]) = [];  % cut a bad record (WAKE) and a repeated record (KDAK)
-plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % OPTION A: example of applying a relative time shift to each seismogram
 % Note: This is in the order of listed stations (NOT as ordered in the record section).
 % Note: The DT are w.r.t. the origin time and are listed on the labels.
 get(w,'station')
 tshift = [1186 1250 845 1440];
-plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % an easier way (though less accurate) is to estimate the P travel time
 % based on the source-station distance
@@ -125,13 +125,13 @@ end
 % so the DT in the record section is the predicted P travel time (Ptt).
 tshiftmark = Ptt;
 tmark = originTime;
-plotw_rs(w,isort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % example of resetting plotting range
 % Note that the amplitude scaling is based on the full-length seismogram,
 % not the (subset) time interval that is plotted.
 tlims = [-50 700];
-plotw_rs(w,isort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshiftmark,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % START YOUR ANALYSIS HERE
 

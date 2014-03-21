@@ -25,7 +25,7 @@ spdy = 86400;
 
 % default parameters for plotting record sections
 % note: you can over-ride these within each example below
-isort = 2;      % =1 by azimuth, =2 by distance
+rssort = 2;      % =1 by azimuth, =2 by distance
 iabs = 0;
 T1 = [];
 T2 = [];
@@ -35,7 +35,7 @@ pmax = 50;
 iintp = 0;
 inorm = 1;
 nfac = 1;
-azcen = [];
+azstart = [];
 iunit = 1;
 tlims = [];     % time limits for plotting
 imap = 1;
@@ -245,7 +245,7 @@ if and(irs==1,~isempty(w))
 
     % plot record section
     % note: these can be printed to file by setting iprint=1 in plotw_rs.m
-    plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+    plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 end
 
 %--------------------------------------------------------------------------
@@ -270,7 +270,7 @@ figure; uispecgram(wsubset(1));     % will only work for a single
 
 % in case you want to analyze the filtered version that you see in the
 % record section, you can return wfilt
-[isort,wfilt] = plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+[isort,wfilt] = plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 get(w,'station')
 get(wfilt,'station')
 get(wfilt(isort),'station')

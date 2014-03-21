@@ -62,7 +62,7 @@ ipick = [22 30 31 120:124];     % CHANGE THIS
 w = w0(ipick);
 
 % PLOTTING PARAMETERS FOR plotw_rs.m (CHANGE THESE AS NEEDED)
-isort = 2;      % =1 by azimuth, =2 by distance
+rssort = 2;      % =1 by azimuth, =2 by distance
 iabs = 0;
 tmark = [];
 pmax = 40;
@@ -70,14 +70,14 @@ iintp = 0;
 inorm = 1;
 tlims = [];
 nfac = 1;
-azcen = [];
+azstart = [];
 iunit = 2;
 imap = 0;
 
 % plot record section
 T1 = 100;
 T2 = 1000;
-plotw_rs(w,isort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azcen,iunit,imap);
+plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 
 % plot map
 [sta,rlat,rlon,elat,elon] = getm(w,'station','STLA','STLO','EVLA','EVLO');
