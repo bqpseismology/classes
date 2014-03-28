@@ -10,7 +10,8 @@ global k rspan rvec WT mbeta mmu omega
 k = k0; 
 
 % calculate initial conditions at r=0 within the mantle halfspace
-nub = sqrt(k^2 - omega^2/mbeta^2);
+km = omega/mbeta;
+nub = sqrt(k^2 - km^2);
 Tbot = mmu*nub;
 WT0 = [1.0 Tbot];   % the initial values of [displacement stress]
 
