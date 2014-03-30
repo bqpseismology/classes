@@ -1,6 +1,7 @@
 %
 % lab_linefit.m
-% Carl Tape
+% Carl Tape, GEOS 626, Applied Seismology
+% Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % This program introduces the least squares method for the example of
 % fitting a line (i.e., a model with two parameters) to a set of scattered
@@ -88,8 +89,8 @@ m1_ran = 1;
 m2_ran = 1;
 
 % number controlling the number of gridpoints in model space
-nx = 100;
-%nx = 10;   % for gradient plot
+nx = 100;   % for the misfit function plot
+%nx = 10;   % for the gradient plot (fewer arrows)
 
 % generate grid for the model space
 m1_vec = linspace(mtar(1)-m1_ran, mtar(1)+m1_ran, nx);
@@ -102,7 +103,7 @@ m2 = reshape(M2,ng,1);
 
 % compute misfit function (and gradient)
 RSS = zeros(ng,1);              % initialize misfit function
-                                % initialize the gradient
+% INITIALIZE GRADIENT HERE      % initialize the gradient
 for kk=1:ng
     mtry = [m1(kk) m2(kk)]';    % a sample from model space
     dtry = G*mtry;              % predictions from the model
