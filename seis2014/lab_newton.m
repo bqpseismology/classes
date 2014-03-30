@@ -1,12 +1,13 @@
 %
 % lab_newton.m
-% Carl Tape
+% Carl Tape, GEOS 626, Applied Seismology
+% Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % This is a template for implementing an iterative Newton algorithm.
 % See Tarantola (2005), Eq. 6.291.
-% This is a preparatory exercise for hwoptim.m
+% See lab_newton.pdf for instructions to this lab exercise.
 %
-% See lab_iter.pdf for instructions to this lab exercise.
+% This is a preparatory exercise for genlsq_template.m
 %
 
 close all
@@ -29,12 +30,12 @@ mA = -2;
 mB = 2;
 m = linspace(mA,mB,100);
 
-% COMPUTE MINIMUM OF MISFIT FUNCTION HERE
+% COMPUTE MINIMUM OF MISFIT FUNCTION HERE USING MATLAB BLACK BOX
 
 
 figure; hold on;
 plot(m,F(m));
-% PLOT MINIMUM HERE
+% PLOT MATLAB MINIMUM HERE
 xlabel('model m'); ylabel('misfit function, F(m)');
 
 %---------------------------------
@@ -43,6 +44,6 @@ xlabel('model m'); ylabel('misfit function, F(m)');
 m0 = -1.5;
 %m0 = mA + (mB-mA)*rand; % try a random starting value
 
-% IMPLEMENT NEWTON ALGORITHM HERE (see class notes on Least Squares)
+% IMPLEMENT NEWTON ALGORITHM HERE (see class notes "Taylor series and least squares")
 
 

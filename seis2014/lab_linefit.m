@@ -8,6 +8,8 @@
 % data.  We show three options for solving the problem, each which gives
 % the same result. No regularization is needed (or used) in this example.
 %
+% See lab_linefit.pdf for instructions to this exercise.
+%
 
 clear
 close all
