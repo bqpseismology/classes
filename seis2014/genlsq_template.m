@@ -1,9 +1,10 @@
 %
-% hw_optim_template.m
-% Carl Tape
+% genlsq_template.m
 %
-% Template scripts for the iterative quasi-Newton method for a 4-parameter
-% inversion for epicenter, origin time, and velocity.
+% Template script for the iterative quasi-Newton method for a 4-parameter
+% inversion for epicenter (xs, ys), origin time (ts), and velocity (V).
+% The algorithm employs generalized least squares, where by both data
+% covariances and model covariances are used.
 %
 % Background reading: Tarantola book (2005), Ch. 3 and Appendix 6.22
 %
@@ -52,12 +53,12 @@ dinitial = d(minitial);
 if ifig==1
     % plot different histograms of properties of the prior model covariance samples
     figure; nr=2; nc=2;
-    for ii=1:nparm
-        sigma = sigma_prior(ii);
+    for kk=1:nparm
+        sigma = sigma_prior(kk);
         edges = [-4*sigma: sigma/2 : 4*sigma];
-        etemp = cov_samples_m(ii,:);
-        subplot(nr,nc,ii); plot_histo(etemp,edges); ylim([0 0.4]); grid on;
-        title({['mprior samples: Model parameter ' num2str(ii) ' (' mlabs{ii} ')'],
+        etemp = cov_samples_m(kk,:);
+        subplot(nr,nc,kk); plot_histo(etemp,edges); ylim([0 0.4]); grid on;
+        title({['mprior samples: Model parameter ' num2str(kk) ' (' mlabs{kk} ')'],
             ['mean = ' sprintf('%.5f',mean(etemp)) ...
             '; std = ' sprintf('%.5f',std(etemp)) ]});
     end
@@ -127,16 +128,16 @@ Sd_vec(1) = Sd_0;
 Sm_vec(1) = Sm_0;
 S_vec(1) = S_0;
 
-for ii = 1:niter
+for nn = 1:niter
     %///////////////////////////////
     % CODE HERE for quasi-Newton algorithm
 
     
 
     % fill misfit function S_vec, Sd_vec, Sm_vec for plotting later
-    %Sd_vec(ii+1) = 
-    %Sm_vec(ii+1) = 
-    %S_vec(ii+1) = 
+    %Sd_vec(nn+1) = 
+    %Sm_vec(nn+1) = 
+    %S_vec(nn+1) = 
     
     %///////////////////////////////
 end
@@ -144,8 +145,8 @@ end
 % misfit function values
 disp('summary of misfit function:');
 disp(sprintf('%8s%16s%16s%16s','iter','Sd','Sm','S = Sm + Sd'));
-for ii = 1:niter+1
-    disp(sprintf('%8i%16.10f%16.10f%16.10f',iter_vec(ii),Sd_vec(ii),Sm_vec(ii),S_vec(ii)));
+for nn = 1:niter+1
+    disp(sprintf('%8i%16.10f%16.10f%16.10f',iter_vec(nn),Sd_vec(nn),Sm_vec(nn),S_vec(nn)));
 end
 
 if ifig==1
@@ -204,7 +205,7 @@ Lpost = chol(cpost0,'lower');
 % samples of the posterior distribution
 mpost_samples = zeros(nparm,nsamples);
 mcov_samples = zeros(nparm,nsamples);
-for ii=1:nsamples, randn_vecs_m(:,ii) = randn(nparm,1); end
+for xx=1:nsamples, randn_vecs_m(:,xx) = randn(nparm,1); end
 mcov_samples  = Lpost * randn_vecs_m;
 mpost_samples = repmat(mpost,1,nsamples) + mcov_samples;
 
@@ -226,9 +227,9 @@ disp('  ');
 % compute the predictions associated with the posterior samples,
 % then compare std_d_samples with sigma_post_d
 d_samples = zeros(ndata,nsamples);
-for ii=1:nsamples
-    ms = mpost_samples(:,ii);
-    d_samples(:,ii) = d(ms);
+for xx=1:nsamples
+    ms = mpost_samples(:,xx);
+    d_samples(:,xx) = d(ms);
 end
 covd_samples = cov(d_samples');
 rhod_samples = corrcov(covd_samples);
@@ -247,16 +248,16 @@ disp('  ');
 if ifig==1
     % display distributions for each model parameter (nparm ROWS of cov_samples_m)
     figure; nr=2; nc=2;
-    for ii=1:nparm
-        sigma = sigma_post(ii);
+    for kk=1:nparm
+        sigma = sigma_post(kk);
         edges = [-4*sigma: sigma/2 : 4*sigma];
-        etemp = mcov_samples(ii,:);
-        subplot(nr,nc,ii); plot_histo(etemp,edges); ylim([0 0.4]); grid on;
+        etemp = mcov_samples(kk,:);
+        subplot(nr,nc,kk); plot_histo(etemp,edges); ylim([0 0.4]); grid on;
         stl1 = 'mpost samples';
-        stl2 = ['Model parameter ' num2str(ii) ' (' mlabs{ii} ')'];
+        stl2 = ['Model parameter ' num2str(kk) ' (' mlabs{kk} ')'];
         stl3 = ['mean = ' sprintf('%.5f',mean(etemp)) ...
             '; std = ' sprintf('%.5f',std(etemp)) ];
-        if ii==1, title({stl1,stl2,stl3});
+        if kk==1, title({stl1,stl2,stl3});
         else title({stl2,stl3}); end
     end
     if iprint==1, print(gcf,'-depsc',[pdir 'mpost2_' ftag]); end
