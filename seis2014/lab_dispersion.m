@@ -34,9 +34,9 @@ cran = [3.1 3.9; 3.0 4.3; 3.3 4.5; 3.3 4.5];
 % load data files
 ww1 = 'pas.dat';
 ww2 = 'nee.dat';
-str1 = '/home/carltape/classes/caltech/kanamori_ge162/hw3/';
-load([str1 ww1]);
-load([str1 ww2]);
+ddir = './data/';
+load([ddir ww1]);
+load([ddir ww2]);
 
 ti = nee(:,1);
 dt = ti(2) - ti(1);
