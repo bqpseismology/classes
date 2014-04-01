@@ -1,5 +1,15 @@
 function y2 = bandpass(t,y,fa,fb)
-% BANDPASS apply bandpass filter on a time series
+%BANDPASS apply bandpass filter [fa,fb] on a time series
+%
+% INPUT
+%   t       n x 1 vector of time points (s)
+%   y       n x 1 vector of amplitude variations
+%   fa      lower frequency limit of bandpass (Hz)
+%   fb      upper frequency limit of bandpass (Hz)
+%
+% OUTPUT
+%   y2      n x 1 vector of amplitude variations, bandpass-filtered between
+%              frequencies of fa and fb
 %
 % Code from Muller and MacDonald, Ice Ages and Astronomical Causes, p. 294
 %
@@ -22,5 +32,3 @@ ft(k2:k3) = zeros(k3-k2+1, 1);
 ft(k4:n)  = zeros(k1-1, 1);
 
 y2 = real(ifft(ft));
-
-%==========================================================================
