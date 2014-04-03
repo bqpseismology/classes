@@ -1,6 +1,6 @@
 %
-% compute_Gik_ray.m
-% Applied Seismology, GEOS 694, Spring 2012
+% compute_Gik_ray_template.m
+% Applied Seismology, GEOS 626, Carl Tape
 %
 % Template script for computing an element of the partial derivatives matrix, Gik.
 %
@@ -73,7 +73,7 @@ end
 ndata = nrec*nsrc;
 
 % initialize the design matrix
-Gik = zeros(ndata, nspline);
+Gik = zeros(ndata,nspline);
 
 % NOW FILL THE ENTRIES OF THE PARTIAL DERIVATIVES MATRIX
 % USE THE INDEXING ABOVE TO LOOP OVER ROWS OF Gik

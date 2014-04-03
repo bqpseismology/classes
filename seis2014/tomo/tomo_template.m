@@ -1,8 +1,8 @@
 %
-% tomography_hw.m
-% Applied Seismology, April 2012, Carl Tape
+% tomo_template.m
+% GEOS 626, Applied Seismology, Carl Tape
 % 
-% Starting script for homework on seismic tomography.
+% Template script for homework on seismic tomography.
 %
 
 clear
