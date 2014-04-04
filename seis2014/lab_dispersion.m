@@ -17,26 +17,31 @@ deg = 180/pi;
 fsize = 8;
 
 %--------------------------------------------------------------------------
+% INPUT PARAMETERS
 
 % target periods for measurements
 Ttarvec = [20 30 40 50]';
 ftarvec = 1./Ttarvec;
 numtar = length(ftarvec);
 
+% distance between PAS and NEE (km)
+delx = 331;
+
+% axes limits for dispersion plots of speed (km/s) vs period (s)
 ax1 = [18 52 2.8 4.6];
-delx = 331;             % distance between PAS and NEE (km)
     
 % we are told that the phase velocity at each period must fall within these ranges
 cran = [3.1 3.9; 3.0 4.3; 3.3 4.5; 3.3 4.5];
 
 %--------------------------------------------------------------------------
+% LOAD AND PLOT SEISMOGRAMS
 
 % load data files
-ww1 = 'pas.dat';
-ww2 = 'nee.dat';
+file1 = 'pas.dat';
+file2 = 'nee.dat';
 ddir = './data/';
-load([ddir ww1]);
-load([ddir ww2]);
+load([ddir file1]);
+load([ddir file2]);
 
 ti = nee(:,1);
 dt = ti(2) - ti(1);
@@ -57,23 +62,24 @@ xran = [ti(1) ti(end)];
 
 subplot(nr,nc,1); hold on;
 plot(ti,ypas,'b');
-%plot(ti,ypasen,'r--',ti,-ypasen,'r--');    % envelope
+%plot(ti,ypasen,'k--',ti,-ypasen,'k--');    % envelope
 xlabel('Time (s)'); ylabel('Amplitude'); title('Pasadena, LHZ');
 xlim(xran);
 
 subplot(nr,nc,2); hold on;
 plot(ti,ynee,'r');
-%plot(ti,yneeen,'b--',ti,-yneeen,'b--');    % envelope
+%plot(ti,yneeen,'k--',ti,-yneeen,'k--');    % envelope
 xlim(xran);
 xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
 %print(gcf,'-depsc',[pdir 'PAS_NEE_seis']);
 
 %--------------------------------------------------------------------------
+% COMPUTE FOURIER TRANSFORM, THEN PLOT AMPLITUDE SPECTRUM
 
-% CONSTRUCT FREQUENCY VECTOR
+% frequency vector
 npt = nt;
-f = fftvec(ti);
-f = abs(f);      % we do not have negative frequencies here
+forig = fftvec(ti);
+f = abs(forig);  % we do not have negative frequencies here
 
 Hp = fft(ypas);  %
 Ap = abs(Hp);    % =sqrt(H.*conj(H)), where P=H.*conj(H) is the power spectral density
@@ -99,10 +105,21 @@ if 0==1
 
     % check the ordering of the complex entries of H
     figure; plot(real(H(2:imax-1)) - real(H(npt:-1:imax+1)),'.');
+    
+    break
 end
 
 %-------------
 % plot the spectrum for PAS and NEE
+
+% positive and negative frequencies
+figure; hold on; 
+plot(forig,Ap,'b'); plot(forig,An,'r');
+legend('PAS','NEE');
+xlabel('frequency (Hz)'); ylabel('spectral amplitude');
+%print(gcf,'-depsc',[pdir 'PAS_NEE_spec_fneg']);
+
+% positive frequencies only
 figure; hold on; 
 plot(f,Ap,'b'); plot(f,An,'r');
 legend('PAS','NEE');
@@ -113,15 +130,17 @@ xlabel('frequency (Hz)'); ylabel('spectral amplitude');
 % CODE HERE FOR GROUP SPEED (use bandpass.m)
 
 
+
 %==========================================================================
-% CODE HERE FOR HARMONICS
+% CODE HERE FOR HARMONICS (do not use bandpass.m)
 
 Hp = fft(ypas);
 Hn = fft(ynee);
 
+% dimensions of variables
 whos ti ypas ynee f Hp Hn
 
-tlims = [2600 2800];
+tlims = [2580 2780];
 for ii=1:numtar
     % target frequency for harmonic
     ftar = ftarvec(ii);
