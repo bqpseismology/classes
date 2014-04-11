@@ -1,0 +1,289 @@
+% dvips -t letter hw_genlsq.dvi -o hw_genlsq.ps ; ps2pdf hw_genlsq.ps
+\documentclass[11pt,titlepage,fleqn]{article}
+
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{latexsym}
+\usepackage[round]{natbib}
+\usepackage{xspace}
+\usepackage{epsfig}
+\usepackage{bm}
+
+%--------------------------------------------------------------
+%       SPACING COMMANDS (Latex Companion, p. 52)
+%--------------------------------------------------------------
+
+\usepackage{setspace}    % double-space or single-space
+
+\renewcommand{\baselinestretch}{1.15}
+
+\textwidth 460pt
+\textheight 690pt
+\oddsidemargin 0pt
+\evensidemargin 0pt
+
+% see Latex Companion, p. 85
+\voffset     -50pt
+\topmargin     0pt
+\headsep      20pt
+\headheight   15pt
+\headheight    0pt
+\footskip     30pt
+\hoffset       0pt
+
+\include{NEWCOMMANDS}
+
+\graphicspath{
+  {./figures/}
+}
+
+%--------------------------------------------------------------
+\begin{document}
+%-------------------------------------------------------------
+
+\begin{spacing}{1.2}
+\begin{center}
+{\large \bf Problem Set 10: Earthquake location with generalized least squares} \\
+GEOS 626: Applied Seismology, Carl Tape \\
+Assigned: April 15, 2014 --- Due: April 24, 2014 \\
+Last compiled: \today
+\end{center}
+\end{spacing}
+
+%------------------------
+
+\vspace{1cm}
+\begin{figure}[h]
+\begin{center}
+\includegraphics[width=12cm]{optimhw_fig02.eps}
+\caption[Source-receiver geometry]
+{{
+Source--receiver geometry for the earthquake location problem. The ray paths are drawn between the (fixed) receivers and the initial epicenter, $\bem_{\rm initial}$. The target data are computed from the target model, $\bem_{\rm target}$, with errors added. Both $\bem_{\rm initial}$ and $\bem_{\rm target}$ are samples within the prior distribution, which is centered at $\bem_{\rm prior}$ and represented by the 1000 dots. Alternatively, one could choose $\bem_{\rm prior}$ to be $\bem_{\rm initial}$.
+\label{fig:srcrec}
+}}
+\end{center}
+\end{figure}
+
+%------------------------
+
+\vspace{-1cm}
+\subsection*{Overview and instructions}
+
+Generalized least squares was introduced by Tarantola \citep{TarantolaValette1982quest,TarantolaValette1982nonlinear}; a comprehensive review can be found in \citet{Tarantola2005}, available as a pdf (note~\footnote{The author's website states: ``If you can not purchase the book, download it for free.''}). Generalized least squares is a Bayesian probabilistic inverse problem that assumes Gaussian uncertainties for model parameters and data.
+
+A Matlab solution to a least squares problem may be as simple as \verb+m = G\d+, but what is the meaning (and computation) behind this expression? The objective of this assignment is to ``demystify'' some of the black-box elements of least-squares inverse problems. This will involve a combination of reading \citet{Tarantola2005}, solving some equations, and implementing the equations within Matlab. We approach these topics with the classic example of earthquake location.
+
+See \citet[][Chapter 7]{SteinWysession} for an introduction to the earthquake location problem. However, note that they do not approach the problem from a generalized least squares perspective, as we do in this assignment. In particular, they do not consider the model misfit term, $(\bem-\mprior)^T \cpriori (\bem-\mprior)$. But they do introduce the concept of the data covariance matrix and posterior model covariance matrix on p. 421.
+
+Throughout the assignment, and in the code, keep in mind the interchangability of these terms:
+%
+\begin{eqnarray*}
+\mpost &=& \bem_{\rm final}
+\\
+\mtarget &=& \bem_{\rm true}
+\end{eqnarray*}
+%
+The posterior model is the same as the final model of an iterative problem. And the ``target model'' is the same as the ``true model'': this is the model used to generate the ``target data'' or ``true data''. We will use the notation $\mpost$ and $\mtarget$.
+
+\bigskip\noindent
+{\bf To get the necessary scripts for this assignment, go into your {\tt seis2014} directory and type {\tt svn update}. Be sure you have done the exercise {\tt lab$\_$newton.m} before working on {\tt genlsq$\_$template.m}.}
+
+%------------------------
+
+%\pagebreak
+\subsection*{Problem 1 (2.0). Generalized least squares solutions}
+
+\begin{enumerate}
+\item (1.5) Show the equivalence of the three expressions for the posterior Gaussian that are listed in \citet[][p.~66]{Tarantola2005}:
+%
+\begin{eqnarray}
+\mpost &=& \left(\bG^{\tssT} \covdi \bG + \cpriori \right)^{-1}
+\left( \bG^{\tssT} \covdi \bd + \cpriori\mprior \right)
+\label{mpost1}
+\\
+&=& \mprior + \left(\bG^{\tssT} \covdi \bG + \cpriori \right)^{-1} \bG^{\tssT} \covdi \left( \bd - \bG \mprior\right)
+\label{mpost2}
+\\
+&=& \mprior + \cprior \bG^{\tssT} \left( \bG \cprior \bG^{\tssT} + \Cd\right)^{-1} \left( \bd - \bG \mprior\right)
+\label{mpost3}
+\end{eqnarray}
+%
+HINT: You may find it useful to use the two matrix identities that we derived in class and in \citet[][Eq.~6.525]{Tarantola2005}, as well as the expressions for the posterior covariance,
+%
+\begin{eqnarray}
+\cpost &=& \left(\bG^{\tssT} \covdi \bG + \cpriori \right)^{-1}
+\label{cpost1}
+\\
+&=& \cprior - \cprior \bG^{\tssT} \left( \bG \cprior \bG^{\tssT} + \covd \right)^{-1} \bG \cprior
+\label{cpost2}
+\end{eqnarray}
+
+\item (0.5) Assuming there are $M$ model parameters and $N$ observations, what are the dimensions of each non-$\bC$ matrix in \refEqab{mpost1}{cpost2} that must be inverted?
+\end{enumerate}
+
+%------------------------
+
+\pagebreak
+\subsection*{Problem 2 (2.0). Earthquake location}
+
+\begin{enumerate}
+\item (0.7) Derive an equation for the arrival time, $t_r$,  of a seismic wave that originates at source location ($x_s, y_s$) at origin time $t_s$ and is recorded at receiver location ($x_r, y_r$). Assume that the medium is homogeneous and characterized with a single wavespeed, $V$.
+
+\item (0.2) Let $t_r = g(\bem)$, where $\bem = (x_s,y_s,t_s,V)$.
+Is $g$ a linear function of $t_s$? Is it a linear function of $x_s$, $y_s$, or $V$?
+Is it a linear function of $\bem$?
+
+\item (0.2) Apply the variable transformation $v = \ln(V/V_0)$, where $V_0$ is a normalizing constant such that $v$ is unitless. Write $g(\bem)$ in terms of the model parameters $t_s$, $x_s$, $y_s$, and $v$.
+
+\item (0.7) Write expressions for the partial derivatives of $g(\bem)$: $\partial g/ \partial x_s$, $\partial g/ \partial y_s$, etc.
+
+\item (0.2) Write the matrix form for $G_{ik} = \partial g_i/ \partial m_k$, where $i$ is the receiver (or arrival time) index. (Here the subscript $i$ for data index and $r$ for receiver index are the same, since there is one measurement per receiver.) Do not write out the full expressions. For example, the upper left element of your matrix should be $\partial g_1/\partial x_s$. Use $\cdots$ to indicate an element within a sequence.
+
+\end{enumerate}
+
+%------------------------
+
+\subsection*{Problem 3 (6.0). Implementation and interpretation}
+
+\begin{enumerate}
+\item (0.5) I have provided a set of Matlab scripts to get you started on this problem. {\bf Do not change any of the user parameters until you have finished these questions. The questions depend on the default settings, as given.}
+
+First, run \verb+genlsq_template.m+, then hit ``0'' to exit. You should generate six figures, one of which is \refFig{fig:srcrec}. Examine \verb+genlsq_template.m+ and \verb+forward_epicenter.m+ to see what is being plotted in these figures. Answer the following questions ``in words,'' that is, without excerpts from the code.
+
+\begin{enumerate}
+\item How is the prior model and the prior model covariance matrix determined?
+
+\item Explain how the prior model, initial model, and target model are determined (in the hypothetical case that \verb+random_initial_model=1+ and \verb+irandom_target_model=1+.)
+
+\item Explain what the ``observations'' are and how they are generated.
+
+\item What do the functions \verb+tt+, \verb+d+, \verb+G+, and \verb+S+ do? List the dimensions and units associated with the output returned from these functions.
+\end{enumerate}
+
+Note: Generating samples (from $\cprior$ and $\bC_{\rm D}$) is not required to solve this problem. We use the samples mainly to ``illuminate'' the covariance matrices.
+
+%------------------
+
+\item (0.3) 
+
+\begin{enumerate}
+\item Write down the quasi-Newton algorithm from \citet[][Eq.~6.319]{Tarantola2005}. Use $\nu_n = 1$, use $\cprior$ instead of $\covm$, and use $\bg(\bem_n)$ to represent the predictions of the forward model.
+
+\item List the dimensions of the quantities in \refTab{tab:vars}, assuming $M$ model parameters and $N$ observations.
+
+\item Compare Eq.~6.319 with Eq.~6.291,
+%
+\begin{equation}
+\bem_{n+1} \approx \bem_{n} - \bHh^{-1}_n \bgammah_n.
+\end{equation}
+%
+What are $\bgammah$ and $\bHh$?
+
+\end{enumerate}
+
+\begin{table}
+\centering
+\caption[]{{
+Classification of variables for generalized least squares. In the first column, list the name of the corresponding variable in {\tt genlsq$\_$template.m}. Assume $M$ model parameters and $N$ observations (in our problem, $N=12$ arrival times).
+\label{tab:vars}
+}}
+\begin{tabular}{c|c|c|l}
+\hline
+term & {\tt genlsq$\_$template.m} & dimension & description \hspace{2cm} \\
+\hline\hline 
+$\bem_n$ & -- & $M \times 1$ & model vector \\ \hline
+$\cprior$ & \verb+cprior+ & & \\ \hline
+$\covd$ & & & \\ \hline
+$\bG_n = \bG(\bem_n)$ & & & \\ \hline
+$\bd$ & & & \\ \hline
+$\bg(\bem_n)$ & & & \\ \hline\hline
+$S(\bem_n)$ & & & \\ \hline
+$\covdi (\bg(\bem_n) - \bd)$ & -- & & -- \\ \hline
+$\bG^T\covdi$ & -- & & -- \\ \hline
+$\cprior^{-1} (\bem_n - \mprior)$ & -- & & -- \\ \hline
+\end{tabular}
+\end{table}
+
+
+%------------------
+
+\item (1.0) In the space provided in \verb+genlsq_template.m+, implement the quasi-Newton algorithm. Show your lines of code.
+
+%------------------
+
+\item (1.0) In the space provided in \verb+genlsq_template.m+, compute the posterior model, posterior covariance matrix, and arrival time predictions. Show your lines of code.
+
+List $\mpost$ and $\cpost$ after four iterations. Note that the posterior model is simply the final model of your iterative algorithm.
+
+%------------------
+
+\item (0.5) In the space provided in \verb+genlsq_template.m+, use $\cpost$ to compute the posterior correlation matrix and the posterior standard deviations for each model parameter. Show your lines of code. Do not use the Matlab command \verb+corrcov+ in you computation, but you can use this command to check.
+
+What is the correlation matrix for $\cprior$?
+
+%------------------
+
+\item (0.3)
+\begin{enumerate}
+\item How do the uncertainty estimates for the model parameters change from the prior model to the posterior model?
+\item Which parameter has the greatest reduction in uncertainty?
+\item Which has the least reduction?
+\end{enumerate}
+
+%------------------
+
+\item (0.3) Does $\bem_{\rm post}$ match $\bem_{\rm target}$? Why or why not?
+
+%------------------
+
+\item (0.3) Express the solution $\bem_{\rm post}$ with units. List $\pm\sigma$ uncertainties with two significant figures.
+
+%------------------
+
+\item (0.5) What is the physical meaning of a positive correlation coefficient in the model correlation matrix? Find the largest positive off-diagonal correlation coefficient, and infer why this is present.
+
+%------------------
+
+\item (0.5) What is the physical meaning of a negative corelation entry in the model correlation matrix? Find the largest negative off-diagonal correlation coefficient, and infer why this is present.
+
+%------------------
+
+\item (0.3)
+%
+\begin{enumerate}
+\item How many iterations are needed for convergence in this example?
+\item What indications do we have that convergence has occurred?
+\item Explain the relationships among the convergence curves for the data misfit, model misfit, and total misfit.
+\end{enumerate}
+
+%------------------
+
+\item (0.5) Set \verb+irandom_initial_model = 1+, \verb+irandom_target_model = 1+, and \verb+idata_errors = 2+. Then re-run.
+%
+\begin{enumerate}
+\item Include two figures: (1) convergence curves, (2) posterior distribution plotted on \refFig{fig:srcrec} but without ray paths. \\
+{\bf Note: these figures are automatically generated by \verb+genlsq_template.m+.}
+\item How many iterations are needed for convergence?
+\item Try a few runs. \\
+Does the positive correlation that you previously identified continue to appear? \\
+Does the negative correlation that you previously identified continue to appear?
+\item Is there any pattern to the position of $\mpost$ relative to $\mtarget$?
+\end{enumerate}
+
+\end{enumerate}
+
+%------------------------
+
+%\pagebreak
+\subsection*{Problem}
+
+Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+
+%-------------------------------------------------------------
+\bibliographystyle{agu08}
+\bibliography{preamble,refs_carl,REFERENCES}
+%-------------------------------------------------------------
+
+%-------------------------------------------------------------
+\end{document}
+%-------------------------------------------------------------
