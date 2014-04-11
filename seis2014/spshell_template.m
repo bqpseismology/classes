@@ -118,7 +118,7 @@ if and(l==1,nmax==0), continue; end     % exit loop early (mode 0T1 does not exi
 
 % THIS IS THE KEY LOOP OVER FREQUENCIES
 froots = NaN*ones(nmax+1,1);
-for ii = 2:numf-1
+for ii = 2:numf
     % frequency interval over which we check for a root
     oldf = f;
     f = fvec(ii);
@@ -129,20 +129,21 @@ for ii = 2:numf-1
     Tsurfold = Tsurf;          % surface stress for previous f
     Tsurf = surf_stress(f);    % surface stress for new f
     
-    disp(sprintf('%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
-        ii, Tsurfold, Tsurf, f*1e3, 1/f, 1/f/60));
+    disp(sprintf('freq %3i/%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
+        ii, numf, Tsurfold, Tsurf, f*1e3, 1/f, 1/f/60));
 
     % Check if the value of the surface-stress has changed sign,
     % which would indicate that we passed at least one root.
-    % If we did cross a root, call the matlab function fzero to refine the root.
+    % If we did cross a root, call fzero to refine the root.
     % Then store the root in the vector froots and plot the results.
     if (Tsurfold * Tsurf < 0)
+        % note: fzero is a built-in matlab function
         f0 = fzero('surf_stress',[oldf f]);
         froots(n+1) = f0;
 
         % update eigenfunctions (WT, rvec) for the exact frequency
         surf_stress(f0);
-        disp(sprintf('n=%i %.3f mHz l=%i', n,f0*1e3,l));
+        disp(sprintf('T(a)=0 --> n=%i %.3f mHz l=%i', n,f0*1e3,l));
 
         % plotting eigenfunctions (displacement and stress as a function of radius)
         if iplot_eig_freqs==1
@@ -174,10 +175,17 @@ break
 
 % toroidal mode observations used in PREM
 dfile = [ddir 'prem_Tmodes.txt'];
-[nobs,~,lobs,T,Tstd] = textread(dfile,'%f%s%f%f%f','headerlines',6);
+[nobs,~,lobs,Tobs,Tobs_std] = textread(dfile,'%f%s%f%f%f','headerlines',6);
 disp('normal mode observations (measured from seismograms):');
 for ii=1:length(nobs)
-   disp(sprintf('n = %i, l = %2i, T = %8.2f +/- %.2f s',nobs(ii),lobs(ii),T(ii),Tstd(ii))); 
+   disp(sprintf('n = %i, l = %2i, T = %8.2f +/- %.2f s',nobs(ii),lobs(ii),Tobs(ii),Tobs_std(ii))); 
+end
+% it may be useful to store these in a matrix
+maxl = max(lobs);
+maxn = max(nobs);
+Tmat = NaN(maxn+1,maxl);
+for ii=1:length(nobs)
+   Tmat(nobs(ii)+1,lobs(ii)) = Tobs(ii);
 end
 
 if 0==1
