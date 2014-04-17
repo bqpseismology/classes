@@ -205,7 +205,7 @@ Lpost = chol(cpost0,'lower');
 % samples of the posterior distribution
 mpost_samples = zeros(nparm,nsamples);
 mcov_samples = zeros(nparm,nsamples);
-for xx=1:nsamples, randn_vecs_m(:,xx) = randn(nparm,1); end
+randn_vecs_m = randn(nparm,nsamples);
 mcov_samples  = Lpost * randn_vecs_m;
 mpost_samples = repmat(mpost,1,nsamples) + mcov_samples;
 
