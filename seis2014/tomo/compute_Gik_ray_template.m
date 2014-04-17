@@ -48,35 +48,33 @@ c0 = 3500;      % m/s
 %==========================================================================
 % compute design matrix
 
-% spline evaluations
-opts = {1};
-q = 8;
+% spline evaluations (DO NOT CHANGE THESE)
+opts = {1};     % with this option, spline_vals.m will return only the function evaluation (not the derivatives)
+q = 8;          % scale of spherical spline basis function
 
 % number of points along each ray path
 nump = 1000;
 
-% test the ordering scheme for the rows of G -- each row i should be
-% thought of as a measurement index with an associated ray path
-if 1==1
-    %i = 0;
-    disp('     i   isrc  irec ');
-    for isrc = 1:nsrc
-        for irec = 1:nrec
-            %i = i+1;
-            i = (isrc-1)*nrec + irec;
-            disp(sprintf('%6i%6i%6i',i,isrc,irec));
-        end
-    end
-end
-
 % number of measurements (one per station or ray)
 ndata = nrec*nsrc;
 
-% initialize the design matrix
+% initialize the partial derivatives matrix
 Gik = zeros(ndata,nspline);
 
-% NOW FILL THE ENTRIES OF THE PARTIAL DERIVATIVES MATRIX
-% USE THE INDEXING ABOVE TO LOOP OVER ROWS OF Gik
+% FILL THE ENTRIES OF THE PARTIAL DERIVATIVES MATRIX
+
+% THIS SHOWS HOW THE MEASUREMENTS (AND ROWS OF Gik) ARE INDEXED
+disp('     i  isrc irec');
+for isrc = 1:nsrc
+    for irec = 1:nrec
+        i = (isrc-1)*nrec + irec;
+        disp(sprintf('%6i%6i%6i',i,isrc,irec));
+        
+        
+        
+        
+    end
+end
 
 
 %==========================================================================
