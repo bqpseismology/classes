@@ -54,22 +54,35 @@ Last compiled: \today
 
 \vspace{1cm}
 \begin{figure}[h]
-\begin{center}
+\centering
 \includegraphics[width=12cm]{optimhw_fig02.eps}
 \caption[Source-receiver geometry]
 {{
 Source--receiver geometry for the earthquake location problem. The ray paths are drawn between the (fixed) receivers and the initial epicenter, $\bem_{\rm initial}$. The target data are computed from the target model, $\bem_{\rm target}$, with errors added. Both $\bem_{\rm initial}$ and $\bem_{\rm target}$ are samples within the prior distribution, which is centered at $\bem_{\rm prior}$ and represented by the 1000 dots. Alternatively, one could choose $\bem_{\rm prior}$ to be $\bem_{\rm initial}$.
 \label{fig:srcrec}
 }}
-\end{center}
 \end{figure}
 
 %------------------------
 
-\vspace{-1cm}
+%\vspace{-1cm}
+\pagebreak
 \subsection*{Overview and instructions}
 
 Generalized least squares was introduced by Tarantola \citep{TarantolaValette1982quest,TarantolaValette1982nonlinear}; a comprehensive review can be found in \citet{Tarantola2005}, available as a pdf (note~\footnote{The author's website states: ``If you can not purchase the book, download it for free.''}). Generalized least squares is a Bayesian probabilistic inverse problem that assumes Gaussian uncertainties for model parameters and data.
+
+Following \citet[][p.~205]{Tarantola2005}, the general form of a {\bf nonlinear least-squares misfit function} is
+%
+\begin{eqnarray}
+\misfitvar(\bem) &=& \misfitvar_{\rm D}(\bem) + \misfitvar_{\rm M}(\bem) 
+\nonumber \\
+&=& \hlf \left\| \bg(\bem) - \bd_{\rm obs} \right\|^2_{\rm D} + \hlf \left\| \bem - \mprior \right\|^2_{\rm M}
+\nonumber \\
+&=& \hlf \left( \bg(\bem) - \bd_{\rm obs}\right)^T \; \covdi \left( \bg(\bem) - \bd_{\rm obs} \right)
+\;+\; \hlf \left( \bem - \mprior \right)^T \; \covmi \left( \bem - \mprior \right).
+\nonumber \\
+\label{misfit_gen}
+\end{eqnarray}
 
 A Matlab solution to a least squares problem may be as simple as \verb+m = G\d+, but what is the meaning (and computation) behind this expression? The objective of this assignment is to ``demystify'' some of the black-box elements of least-squares inverse problems. This will involve a combination of reading \citet{Tarantola2005}, solving some equations, and implementing the equations within Matlab. We approach these topics with the classic example of earthquake location.
 
@@ -90,9 +103,11 @@ The posterior model is the same as the final model of an iterative problem. And 
 
 %------------------------
 
-%\pagebreak
+\pagebreak
 \subsection*{Problem 1 (2.0). Generalized least squares solutions}
 
+Here you will derive formulas for generalized least squares under the assumption of a linear model $\bg(\bem) = \bG\bem$.
+%
 \begin{enumerate}
 \item (1.5) Show the equivalence of the three expressions for the posterior Gaussian that are listed in \citet[][p.~66]{Tarantola2005}:
 %
@@ -123,7 +138,7 @@ HINT: You may find it useful to use the two matrix identities that we derived in
 
 %------------------------
 
-\pagebreak
+%\pagebreak
 \subsection*{Problem 2 (2.0). Earthquake location}
 
 \begin{enumerate}
@@ -143,12 +158,28 @@ Is it a linear function of $\bem$?
 
 %------------------------
 
+\pagebreak
 \subsection*{Problem 3 (6.0). Implementation and interpretation}
 
-\begin{enumerate}
-\item (0.5) I have provided a set of Matlab scripts to get you started on this problem. {\bf Do not change any of the user parameters until you have finished these questions. The questions depend on the default settings, as given.}
+\begin{itemize}
+\item Be sure you have done Problem~2 before starting this problem.
 
-First, run \verb+genlsq_template.m+, then hit ``0'' to exit. You should generate six figures, one of which is \refFig{fig:srcrec}. Examine \verb+genlsq_template.m+ and \verb+forward_epicenter.m+ to see what is being plotted in these figures. Answer the following questions ``in words,'' that is, without excerpts from the code.
+\item I have provided a set of Matlab scripts to get you started on this problem. {\bf Do not change any of the user parameters until you have finished these questions. The questions depend on the default settings, as given.}
+
+\item Note: Generating samples (from $\cprior$ and $\covd$) is not required to solve this problem. We use the samples mainly to ``illuminate'' the covariance matrices.
+
+\item It may help to relate this problem to a real-world example of earthquake location. Imagine that you detect a P wave at some particular station (``station X''). The next closest station, which has not yet ``seen'' the P wave, is 20~km away. At that moment you might assume a prior model for the epicenter $(x_s, y_s)$ that is centered on station X and has a Gaussian distribution characterized by $\sigma = 20$~km. 
+Your prior model for the structure of the medium is assumed to be homogeneous with P-velocity reference value $V = 5$~km/s (with some associated uncertainty). Your prior model for the origin time could be the arrival time at station X (with some associated uncertainty).
+
+You then record the P wave arrival times at all other stations. You choose an initial model; a sensible choice might be the prior model that is station X, P arrival time at station X, and velocity $V$. With this initial model, you compute predicted arrival times at all stations. Using \refEq{misfit_gen}, you quantify the misfit between your predicted arrival times and the observed arrival times. The rest is optimization.
+
+\end{itemize}
+
+%----------------------------------------------
+
+\begin{enumerate}
+\item (0.5)
+Run \verb+genlsq_template.m+, then hit ``0'' to exit. You should generate six figures, one of which is \refFig{fig:srcrec}. Examine \verb+genlsq_template.m+ and \verb+forward_epicenter.m+ to see what is being plotted in these figures. Answer the following questions ``in words,'' that is, without excerpts from the code.
 
 \begin{enumerate}
 \item How is the prior model and the prior model covariance matrix determined?
@@ -158,9 +189,23 @@ First, run \verb+genlsq_template.m+, then hit ``0'' to exit. You should generate
 \item Explain what the ``observations'' are and how they are generated.
 
 \item What do the functions \verb+tt+, \verb+d+, \verb+G+, and \verb+S+ do? List the dimensions and units associated with the output returned from these functions.
+
+\item What are the two main reasons for generating samples of $\covm$?
+
 \end{enumerate}
 
-Note: Generating samples (from $\cprior$ and $\bC_{\rm D}$) is not required to solve this problem. We use the samples mainly to ``illuminate'' the covariance matrices.
+%------------------
+
+\item (0.0) Try the following tests to better understand \refFig{fig:srcrec}. Be sure to undo your changes when you are done.
+%
+\begin{enumerate}
+\item Run \verb+forward_epicenter.m+ a couple times. \\
+What dots remain fixed? What dots change?
+
+\item Change $\sigma_{x_s}$ from 10~km to 20~km, then run \verb+forward_epicenter.m+. What do you see?
+
+\item Instead of generating samples of the prior model using \verb+randn+, see what happens when you use \verb+rand+. Why is this the case?
+\end{enumerate}
 
 %------------------
 
@@ -280,6 +325,7 @@ Does the negative correlation that you previously identified continue to appear?
 Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
 
 %-------------------------------------------------------------
+\pagebreak
 \bibliographystyle{agu08}
 \bibliography{preamble,refs_carl,REFERENCES}
 %-------------------------------------------------------------
