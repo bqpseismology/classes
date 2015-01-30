@@ -19,7 +19,7 @@ close all
 %---------------------------
 
 % USER PARAMETERS (CHANGE THESE)
-n = 100;                    % number of observations
+n = 50;                     % number of observations
 sigma = 0.3;                % standard deviations of added errors
 
 % TARGET model vector (y-intercept, slope)
