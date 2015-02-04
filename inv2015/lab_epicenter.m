@@ -69,3 +69,31 @@ axis([xmin xmax -1 1.1*max(-log(pcurve))]);
 xlabel('x'); ylabel('F(x) = -ln(p(x))'); title('(f)');
 
 %==========================================================================
+% PRACTICE WITH IN-LINE FUNCTIONS AND PLOTTING
+
+break
+
+% IMPLEMENT YOUR IN-LINE FUNCTION f HERE
+
+
+% practice plotting this function
+nx = 100;
+ny = nx+1;      % avoid square arrays (for debugging)
+n = nx*ny;
+w = 2;
+xvec = linspace(-w,w,nx);
+yvec = linspace(-w,w,ny);
+[X,Y] = meshgrid(xvec,yvec);
+% OPTION A -- pass vector to f(), then plot as matrix
+x = X(:);
+y = Y(:);
+fplot = f(x,y);
+Fplot = reshape(fplot,ny,nx);
+figure; pcolor(X,Y,Fplot); shading flat;
+% OPTION B -- pass matrix to f(), then plot as matrix
+Fplot = f(X,Y);
+figure; pcolor(X,Y,Fplot); shading flat;
+% OPTION C -- plot as vector
+figure; scatter(x,y,4^2,fplot,'fill');
+
+%==========================================================================
