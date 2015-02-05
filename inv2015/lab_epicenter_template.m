@@ -36,19 +36,19 @@ NTRY = 1e5;
 xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
 % sample the function
-pmax = max([A1 A2]);
-ptry = p(xtry) / pmax;          % SET A: values between 0 and 1
-chance = rand(NTRY,1);          % SET B: values between 0 and 1
+A = max([A1 A2]);           % note: only true for our choice of p(x)
+ptry = p(xtry) / A;         % SET A: values between 0 and 1
+chance = rand(NTRY,1);      % SET B: values between 0 and 1
 
 % plot
 xcurve = linspace(xmin,xmax,1000);
 pcurve = p(xcurve);
 figure; nr=3; nc=2;
-edges1 = [xmin:0.2:xmax];
-edges2 = [0:0.05:1];
-subplot(nr,nc,1); plot(xcurve,pcurve/pmax);
+edges1 = [xmin:0.2:xmax]; ne1 = length(edges1);
+edges2 = [0:0.05:1];      ne2 = length(edges2);
+subplot(nr,nc,1); plot(xcurve,pcurve/A);
 xlabel('x'); ylabel('p(x)'); title('(a)'); axis([xmin xmax 0 1.2]);
-subplot(nr,nc,2); plot_histo(xtry,edges1);
+subplot(nr,nc,2); plot_histo(xtry,edges1); xlim([xmin xmax]);
 xlabel('xtry'); title('(b)'); 
 subplot(nr,nc,3); plot_histo(ptry,edges2);
 xlabel('p(xtry)'); title('(c)'); 
@@ -60,8 +60,8 @@ xlabel('chance'); title('(d)');
 ikeep = find(ptry > chance);
 xkeep = xtry(ikeep);
 
-subplot(nr,nc,5); plot_histo(xkeep,edges1);
-xlabel('xkeep');  title('(e)'); xlim([xmin xmax]);
+subplot(nr,nc,5); plot_histo(xkeep,edges1); xlim([xmin xmax]);
+xlabel('xkeep'); title('(e)');
 
 % if p is a probability density and F is the misfit function, then
 %    p(x) = exp(-F(x))
@@ -71,11 +71,50 @@ axis([xmin xmax -1 1.1*max(-log(pcurve))]);
 xlabel('x'); ylabel('F(x) = -ln(p(x))'); title('(f)');
 
 %==========================================================================
+% ADDITIONAL PLOTTING TO UNDERSTAND THE PATTERN IN (c)
+
+break  % first break
+
+subplot(nr,nc,1); hold on;
+
+ileftbin = ne2 - 1;
+Pcut1 = edges2(ileftbin);
+Pcut2 = edges2(ileftbin+1);
+isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/pmax,'r.');
+plot([xmin xmax],Pcut1*[1 1],'r--',[xmin xmax],Pcut2*[1 1],'r--');
+
+ileftbin = round(ne2/2);
+Pcut1 = edges2(ileftbin);
+Pcut2 = edges2(ileftbin+1);
+isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/pmax,'k.');
+plot([xmin xmax],Pcut1*[1 1],'k--',[xmin xmax],Pcut2*[1 1],'k--');
+
+ileftbin = 1;
+Pcut1 = edges2(ileftbin);
+Pcut2 = edges2(ileftbin+1);
+isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/pmax,'c.');
+plot([xmin xmax],Pcut1*[1 1],'c--',[xmin xmax],Pcut2*[1 1],'c--');
+
+%==========================================================================
+
+break  % second break
+
+% summary plot
+figure; nr=2; nc=2; 
+subplot(nr,nc,1); plot_histo(xtry,edges1); xlim([xmin xmax]); xlabel('xtry');
+subplot(nr,nc,2); plot_histo(ptry,edges2); xlabel('p(xtry)');
+subplot(nr,nc,3); plot_histo(xkeep,edges1); xlim([xmin xmax]); xlabel('xkeep');
+subplot(nr,nc,4); plot_histo(ptry(ikeep),edges2); xlabel('p(xkeep)');
+
+%==========================================================================
 % PRACTICE WITH IN-LINE FUNCTIONS AND PLOTTING
 
-break
+break  % third break
 
-% IMPLEMENT YOUR IN-LINE FUNCTION f HERE
+% IMPLEMENT YOUR IN-LINE FUNCTION p HERE
 
 
 % practice plotting this function
