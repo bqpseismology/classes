@@ -31,6 +31,7 @@ p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
 whos
 
 % generate samples
+% KEY: what does rand do?
 NTRY = 1e5;
 xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
@@ -38,11 +39,6 @@ xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 pmax = max([A1 A2]);
 ptry = p(xtry) / pmax;          % SET A: values between 0 and 1
 chance = rand(NTRY,1);          % SET B: values between 0 and 1
-
-% KEY COMMAND: compare pairs of test samples in sets A and B,
-%              then accept or reject the test sample
-ikeep = find(ptry > chance);
-xkeep = xtry(ikeep);
 
 % plot
 xcurve = linspace(xmin,xmax,1000);
@@ -58,6 +54,12 @@ subplot(nr,nc,3); plot_histo(ptry,edges2);
 xlabel('p(xtry)'); title('(c)'); 
 subplot(nr,nc,4); plot_histo(chance,edges2);
 xlabel('chance'); title('(d)'); 
+
+% KEY COMMAND: compare pairs of test samples in sets A and B,
+%              then accept or reject the test sample
+ikeep = find(ptry > chance);
+xkeep = xtry(ikeep);
+
 subplot(nr,nc,5); plot_histo(xkeep,edges1);
 xlabel('xkeep');  title('(e)'); xlim([xmin xmax]);
 
@@ -84,16 +86,16 @@ w = 2;
 xvec = linspace(-w,w,nx);
 yvec = linspace(-w,w,ny);
 [X,Y] = meshgrid(xvec,yvec);
-% OPTION A -- pass vector to f(), then plot as matrix
+% OPTION A -- pass vector to p(), then plot as matrix
 x = X(:);
 y = Y(:);
-fplot = f(x,y);
-Fplot = reshape(fplot,ny,nx);
-figure; pcolor(X,Y,Fplot); shading flat;
-% OPTION B -- pass matrix to f(), then plot as matrix
-Fplot = f(X,Y);
-figure; pcolor(X,Y,Fplot); shading flat;
+pplot = p(x,y);
+Pplot = reshape(pplot,ny,nx);
+figure; pcolor(X,Y,Pplot); shading flat;
+% OPTION B -- pass matrix to p(), then plot as matrix
+Fplot = p(X,Y);
+figure; pcolor(X,Y,Pplot); shading flat;
 % OPTION C -- plot as vector
-figure; scatter(x,y,4^2,fplot,'fill');
+figure; scatter(x,y,4^2,pplot,'fill');
 
 %==========================================================================
