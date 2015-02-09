@@ -7,14 +7,15 @@ function Cd = covC(id,parms)
 %   icov    type of covariance function (=1 Gaussian; =2 exponential)
 %   iL      length scale (same units as id)
 %   sigma   amplitude factor
-%   nu      parameter for Matern covariance (icov=4 only)
+%   nu      OPTIONAL: parameter for Matern covariance (icov=4 only)
 %
 % OPTIONS FOR SPECIFYING LENGTH SCALE
 %   (1) iL and id are indices for a spatial grid
 %   (2) iL and id are actual lengths for a spatial grid
 % 
-% For details of these covariance functions, see Tarantola (2005),
-% Section 5.3.3 (p. 113). To match his convention for L, set LFACTOR = 1.
+% For context for the first theree covariance functions,
+% see Tarantola (2005), Section 5.3.3 (p. 113).
+% To match his convention for L, set LFACTOR = 1.
 % My preference is to use LFACTOR = 2, since this provides invariance
 % of C(L) for covariance functions within the Matern family (vary nu).
 % For the circular covariance function, our L is Tarantola's D.
@@ -64,6 +65,7 @@ switch icov
     case 4
         % Matern covariance
         % http://en.wikipedia.org/wiki/Mat%C3%A9rn_covariance_function
+        % note this uses the built-in functions gamma and besselk
         iL = iL / LFACTOR;
         b = besselk(nu, sqrt(2*nu)*id/iL);
         Cd = sigma^2 * (1/(gamma(nu)*2^(nu-1))) * (sqrt(2*nu)*id/iL).^nu .* b;
