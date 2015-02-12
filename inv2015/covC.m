@@ -13,7 +13,7 @@ function Cd = covC(id,parms)
 %   (1) iL and id are indices for a spatial grid
 %   (2) iL and id are actual lengths for a spatial grid
 %
-% EXAMPLE: d = linspace(0,100); Cd = covC(d,{1,30,4}); figure; plot(d,Cd); grid on;
+% EXAMPLE: d = linspace(0,100); Cd = covC(d,{1,30,3}); figure; plot(d,Cd); grid on;
 % 
 % For context for the first theree covariance functions,
 % see Tarantola (2005), Section 5.3.3 (p. 113).
