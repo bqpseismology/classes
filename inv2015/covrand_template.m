@@ -18,6 +18,7 @@ ddir = './data/';
 % P is the number of samples
 load([ddir 'covhwdata']);
 whos
+break
 [M,P] = size(m_samples);
 xmin = min(x);
 xmax = max(x);
@@ -56,17 +57,18 @@ title({sprintf('Distances between pairs of points (dmax = %.1f)',max(D(:))),...
 
 %--------------------------------------------------------------------------
 
-% START HERE
+% START PROBLEM 3 HERE
 
 
 
 
 break
 
+% START PROBLEM 4 HERE
 % CODE FOR COMPUTING NORMS OF YOUR ESTIMATED SAMPLES
 % THIS ASSUMES YOU HAVE VARIABLES NAMED mc_samples and Pnew
 
-% compute mean, std, and norm for each sample
+% compute mean, std, and norm for EACH SAMPLE
 mean_samples  = zeros(Pnew,1);
 std_samples   = zeros(Pnew,1);
 norm_samples  = zeros(Pnew,1);
