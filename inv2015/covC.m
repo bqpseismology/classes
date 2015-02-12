@@ -12,6 +12,8 @@ function Cd = covC(id,parms)
 % OPTIONS FOR SPECIFYING LENGTH SCALE
 %   (1) iL and id are indices for a spatial grid
 %   (2) iL and id are actual lengths for a spatial grid
+%
+% EXAMPLE: d = linspace(0,100); Cd = covC(d,{1,30,4}); figure; plot(d,Cd); grid on;
 % 
 % For context for the first theree covariance functions,
 % see Tarantola (2005), Section 5.3.3 (p. 113).
@@ -45,7 +47,7 @@ LFACTOR = 2;    % our preference
 switch icov
     case 1
         % Gaussian covariance
-        % --> The factor of 2 leads to smoother models
+        % --> The factor of 2 in (2*iL^2) leads to smoother models
         iL = iL / LFACTOR;
         Cd = sigma^2 * exp(-id.^2 / (2*iL^2) );
         
