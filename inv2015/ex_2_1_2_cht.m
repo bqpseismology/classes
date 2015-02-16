@@ -120,8 +120,8 @@ dx = xx(2)-xx(1);
 chitheo = chi2pdf(xx,dof);
 sum(chitheo)*dx
 plot(xx,chitheo,'r','linewidth',2);
-title(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
-%ylabel(sprintf('PDF for \\chi^2(\\nu=%i, x) PDF',dof))
+title(sprintf('PDF for \\chi^2(\\nu=%i, x)',dof))
+%ylabel(sprintf('PDF for \\chi^2(\\nu=%i, x)',dof))
 %xlabel('x')
 axis([0 xmax 0 ymax]);
 
