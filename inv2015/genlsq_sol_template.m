@@ -177,28 +177,31 @@ stlabels2 = {'none','newton','quasi','steepest','cg','cgpoly','vmmatrix','vmvect
 stmethod = stlabels2{imethod+1};
 
 for nn = 1:niter
-    %///////////////////////////////
-    disp([' iteration ' num2str(nn) ' out of ' num2str(niter) ]);
+    disp(sprintf('iteration %i out of %i',nn,niter));
     m     = mnew;
+    
+    % steepest ascent vector (Eq. 6.307 or 6.312)
     delta = d(m);
     Ga    = G(m);
-
-    % update the model: Tarantola (2005), Eq 6.319
-    % (the line-search parameter is assumed to be nu = 1)
-    Hhat  = icprior + Ga'*icobs*Ga;                           % approximate Hessian
-    ghat  = Ga'*icobs*(delta - dobs) + icprior*(m - mprior);  % gradient
-    dm    = -Hhat\ghat;     % model update
-    mnew  = m + dm;         % new model
+    g     = cprior*Ga'*icobs*(delta - dobs) + (m - mprior);
+    
+    %//////////////////////////////////////////////////
+    % curvature operator (Eq. 6.288)
+    H  = eye(nparm) + cprior*Ga'*icobs*Ga;
+    
+    % model update
+    dm = -H\g;
+    mnew  = m + dm;
+    %//////////////////////////////////////////////////
 
     % misfit function for new model
     % note: book-keeping only -- not used within the algorithm above
     Sd_vec(nn+1) = Sd(mnew,dobs,icobs);
     Sm_vec(nn+1) = Sm(mnew,mprior,icprior);
-    S_vec(nn+1)  = S(mnew,dobs,mprior,icobs,icprior);
+    S_vec(nn+1) = S(mnew,dobs,mprior,icobs,icprior);
 
     disp(sprintf('%i/%i : prior, current, target:',nn,niter));
     disp([mprior mnew mtarget]);
-    %///////////////////////////////
 end
 
 % misfit function values
