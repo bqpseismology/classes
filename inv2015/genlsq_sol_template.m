@@ -186,6 +186,8 @@ for nn = 1:niter
     g     = cprior*Ga'*icobs*(delta - dobs) + (m - mprior);
     
     %//////////////////////////////////////////////////
+    % QUASI-NEWTON ALGORITHM -- CHANGE THIS BLOCK FOR OTHER ALGORITHMS
+    
     % curvature operator (Eq. 6.288)
     H  = eye(nparm) + cprior*Ga'*icobs*Ga;
     

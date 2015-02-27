@@ -1,5 +1,5 @@
 %
-% cov2D.m
+% covrand2D.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 % 
 % Generating 2D Gaussian random fields with prescribed covariance,
@@ -267,8 +267,10 @@ for iz = izmin:izmax
             cmod(:,nxd/2+2:end) = fliplr(cmod(:,2:nxd/2));
             [kvec,lvec,CKL0] = mhfft2(xs,ys,cmod);
             CKL = real(CKL0); 
+            
             % REPLACE THE FOLLOWING LINE WITH OTHER LINES (see grf2.m)
             phi_h = grf2(kvec,lvec,2*CKL,nsamp);
+            
             [xss,yss,phi] = mhifft2(kvec,lvec,phi_h);
             ptemp = real(phi(1:ny,1:nx));
             csample = ptemp(:);  
