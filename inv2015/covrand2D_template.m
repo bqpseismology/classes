@@ -14,7 +14,8 @@
 clear, clc, close all
 
 % add path to FFT scripts for Gaussian random fields
-path(path,'/usr/local/GEOTOOLS_copy/matlab_util/util_grf/');
+%path(path,'/usr/local/GEOTOOLS_copy/matlab_util/util_grf/');
+path(path,'./util_grf/');
 
 %--------------------------------------------------------------------------
 % USER INPUT: n, L (=iL*dx), sigma

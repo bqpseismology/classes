@@ -192,8 +192,8 @@ for nn = 1:niter
     H  = eye(nparm) + cprior*Ga'*icobs*Ga;
     
     % model update
-    dm = -H\g;
-    mnew  = m + dm;
+    dm   = -H\g;
+    mnew = m + dm;
     %//////////////////////////////////////////////////
 
     % misfit function for new model
