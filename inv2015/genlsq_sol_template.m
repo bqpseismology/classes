@@ -3,9 +3,7 @@
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Demonstration of the iterative quasi-Newton method for a 4-parameter
-% inversion for epicenter, origin time, and velocity.
-%
-% This is a simplified version of optimization.m
+% inversion for epicenter (xs, ys), origin time, and velocity.
 %
 % calls forward_epicenter.m, plot_epicenters.m, plot_covsamples.m
 %
@@ -127,7 +125,15 @@ disp(stS0);
 if iforward==2
     % regular grid of epicenters
     numx = 50;
-    [xvec,yvec,numy,a,b,dx] = gridvec(xmin,xmax,numx,ymin,ymax);
+    xvec0 = linspace(xmin,xmax,numx);
+    dx = xvec0(2) - xvec0(1);
+    yvec0 = [ymin : dx : ymax];
+    [X,Y] = meshgrid(xvec0,yvec0);
+    [a,b] = size(X);
+    xvec = reshape(X,a*b,1);
+    yvec = reshape(Y,a*b,1);
+    numy = length(yvec0);
+    % compute the misfit for each epicenter
     ng = length(xvec);
     sd0 = NaN(ng,1);
     sm0 = NaN(ng,1);
@@ -148,7 +154,7 @@ if iforward==2
     caxis([cmin max(s0)]); colorbar; axis equal, axis(axepi); title('Sd(m)');
     subplot(nr,nc,3); pcolor(X,Y,reshape(sm0,a,b)); shading flat;
     caxis([cmin max(sm0)]); colorbar; axis equal, axis(axepi); title('Sm(m)');
-    % for this file: ps2eps -f misfit_f2.ps
+    % for this file: ps2eps -f genlsq_misfit_f2.ps
     if iprint==1, print(gcf,'-dpsc',sprintf('%sgenlsq_misfit_f%i',pdir,iforward)); end
 end
 
