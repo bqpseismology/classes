@@ -13,7 +13,7 @@ cmap = 'gray';
 cmax = 1;
 
 % Construct system matrix for the ray path models
-% Dummy variable to simplify matrix population
+% (t is used to avoid writing sqrt(2) everywhere)
 t = sqrt(2);
 G = [1 0 0 1 0 0 1 0 0
      0 1 0 0 1 0 0 1 0
@@ -38,14 +38,17 @@ diag(S)
 disp('System rank:')
 p = rank(G)
 
+% split V into two parts: Vp and V0
+Vp = V(:,1:p)
+
 % Display null space vectors 
 disp('Model null space vectors')
-V(:,p+1:n)
+V0 = V(:,p+1:n)
 
 % Display null space vectors reshaped to match tomography example geometry
 disp('Model null space vectors reshaped into matrices')
-m01 = reshape(V(:,p+1),3,3)'
-m02 = reshape(V(:,p+2),3,3)'
+m01 = reshape(V0(:,1),3,3)'
+m02 = reshape(V0(:,2),3,3)'
 
 % Display image of null space model V.,8
 figure(1)
@@ -69,11 +72,10 @@ display('Displaying image of null space model V.,9 (fig. 2)')
 
 % Display data space null vector
 disp('Data null space vector')
-U(:,p+1)
+U0 = U(:,p+1)
 
 % Find and display model resolution matrix
-Vp = V(:,1:p);
-Rm = Vp*Vp';
+Rm = Vp*Vp';    % note: this is NOT the identity matrix
 
 % Display full model resolution matrix and colorbar
 figure(3)

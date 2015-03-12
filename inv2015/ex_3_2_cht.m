@@ -1,5 +1,5 @@
 %
-% Example 3.1
+% Example 3.2
 % from Parameter Estimation and Inverse Problems, 2nd edition, 2011
 % by R. Aster, B. Borchers, C. Thurber
 %
@@ -20,18 +20,32 @@ M = 211;
 t = linspace(-5,100,N);
 
 % Generate instrument impulse response as a critically-damped pulse
+% note: this is for plotting purposes only (only sigi and gmax are used)
 sigi = 10;
-for i = 1:N-1
-  if (t(i)<0)
-    g(i) = 0;
-  else
-    g(i) = t(i)*exp(-t(i)/sigi);
-  end
-end
+if 1==1
+    for i = 1:N-1
+      if (t(i)<0)
+        g(i) = 0;
+      else
+        g(i) = t(i)*exp(-t(i)/sigi);
+      end
+    end
 
-% Normalize instrument response (i.e. max(g) = 1)
-gmax = max(g);
-g = g/gmax;
+    % Normalize instrument response (i.e. max(g) = 1)
+    gmax = max(g);
+    g = g/gmax;
+
+    % Plot of instrument response to unit area ground acceleration impulse.
+    figure(2)
+    plot(t(1:N-1),g,'k')
+    axis tight
+    xlabel('Time (s)')
+    ylabel('V')
+    disp('Instrument response to unit ground acceleration impulse (fig. 2)')
+    %print -deps2 c3fimp_resp.eps
+else
+    gmax = 3.6788;
+end
 
 % Populate G matrix 
 % First the numerator which varies
@@ -47,7 +61,7 @@ for i = 2:M
 end
 % now divide everything by the denominator
 deltat = t(2)-t(1);
-G = G/gmax*deltat;
+G = G/gmax * deltat;
 
 % Get SVD of G matrix
 [U,S,V] = svd(G);
@@ -72,8 +86,7 @@ mtrue = mtrue/max(mtrue);
 % Get true data without noise
 d = G*mtrue;
 % Add random normal noise to the datadata
-dn = G*mtrue+noise*randn(M-1,1);
-
+dn = G*mtrue + noise*randn(M-1,1);
 
 % Using SVD with all 210 singular values
 nkeep = N-1;
@@ -86,15 +99,6 @@ Sp = S(1:nkeep,1:nkeep);
 % and noise-free data (mperf)
 mn = Vp*inv(Sp)*Up'*dn;
 mperf = Vp*inv(Sp)*Up'*d;
-
-% Plot of instrument response to unit area ground acceleration impulse.
-figure(2)
-plot(t(1:N-1),g,'k')
-axis tight
-xlabel('Time (s)')
-ylabel('V')
-disp('Instrument response to unit ground acceleration impulse (fig. 2)')
-%print -deps2 c3fimp_resp.eps
 
 % Display semilog plot of singular values
 figure(3)
@@ -154,6 +158,8 @@ ylabel('Acceleration (m/s^2)');
 disp(['Displaying generalized inverse solution for noisy data'...
     ' (210 singular values) (fig. 8)'])
 %print -deps2 c3fpinv_solution_noise
+
+%--------------------------------------------------------------------------
 
 % Truncate SVD to 26 singular values
 nkeep = 26;

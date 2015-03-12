@@ -9,11 +9,12 @@
 clc, clear, close all
 
 % pick a matrix
-A = [1 1.5 ; 0 1]
-%A = randi([-2 2],2,2)
+%A = [1 1.5 ; 0 1]
+A = randi([-2 2],2,2)
 
 % singular value decomposition
 [U,S,V] = svd(A)
+U*S*V'
 
 s1 = S(1,1);
 s2 = S(2,2);
