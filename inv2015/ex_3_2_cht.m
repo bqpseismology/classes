@@ -74,6 +74,7 @@ H = colorbar;
 set(H,'FontSize',18);
 xlabel('j')
 ylabel('i')
+title('G matrix for convolution problem');
 disp('Displaying image of G matrix (fig. 1)')
 
 % True signal is two pulses of sig deviation
@@ -236,6 +237,7 @@ for i = 1:p
 end
 
 %Examine the trade-off curve (collected in the loop above)
+% (The L curve is introduced in Chapter 4.)
 figure(13)
 plot(r,mnorm)
 hold on

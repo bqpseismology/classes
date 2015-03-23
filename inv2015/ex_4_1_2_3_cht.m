@@ -101,6 +101,8 @@ fontsize(fsize);
 %print -deps2 c4fpicard.eps
 display('Displaying the Picard plot (fig. 4)')
 
+break
+
 % Example 4.2
 % Now, examine the resolution using a noise-free spike test for alpha_tikh
 rdspike = (G'*G+alpha_tikh^2*eye(20))\G'*dspike;
