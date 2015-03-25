@@ -63,6 +63,8 @@ end
 deltat = t(2)-t(1);
 G = G/gmax * deltat;
 
+break
+
 % Get SVD of G matrix
 [U,S,V] = svd(G);
 

@@ -114,7 +114,6 @@ spikemod10 = Vp*inv(Sp)*Up'*dspike;
 % recover the noisy model
 spikemod10n = Vp*inv(Sp)*Up'*dspiken;
 
-
 % Plot recovered model for noise-free data, p = 10 
 figure(8)
 plotconst(spikemod10,-pi/2,pi/2);
@@ -131,6 +130,8 @@ ylabel('Intensity')
 xlabel('\theta (radians)'); xlim(xlims);
 disp('Displaying recovered spike model for noisy data p = 10 (fig. 9)')
 %print -deps2 c3fpinv_spike_noise_10.eps
+
+%==========================================================================
 
 % Load the data for n = m = 100
 load shaw100.mat
