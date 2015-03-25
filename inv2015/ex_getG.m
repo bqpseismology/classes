@@ -14,6 +14,10 @@ function G = ex_getG(iex,m,n)
 % all default examples at once:
 %    for iex=1:4, G = ex_getG(iex); end
 %
+% This function is featured in lab_svd.pdf
+%
+
+bfigure = true;
 
 % for shaw.m
 %addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Lib/');
@@ -117,12 +121,14 @@ end
 [m,n] = size(G);
 disp(sprintf('G is %i x %i with cond(G) = %.3e',m,n,cond(G)));
 
-figure; imagesc(G);
-xlabel('column index k');
-ylabel('row index i');
-axis equal, axis tight;
-%set(gca,'xtick',[1:n],'ytick',[1:m]);
-colorbar;
-title(['G matrix for ' stlab]);
+if bfigure
+    figure; imagesc(G);
+    xlabel('column index k');
+    ylabel('row index i');
+    axis equal, axis tight;
+    %set(gca,'xtick',[1:n],'ytick',[1:m]);
+    colorbar;
+    title(['G matrix for ' stlab]);
+end
 
 %==========================================================================
