@@ -11,7 +11,7 @@ function G = ex_getG(iex,n,m)
 %    G = ex_getG(2,4,4);       % Exercise 1-3-e
 %    G = ex_getG(2,20,4);      % Example 4.4
 %    G = ex_getG(2,4,20);
-%    G = ex_getG(3,211,211);   % Example 3.2
+%    G = ex_getG(3,210,210);   % Example 3.2
 %    G = ex_getG(4,20,20);     % Example 1.6, 3.3
 %    G = ex_getG(4,100,100);   % Example 1.6, 3.3
 %
@@ -77,17 +77,17 @@ switch iex
         disp('Aster Example 3.2 for deconvolution of instrument response (m=n)');
         % Discretizing values for M & N (210 data points)
         if nargin==1
-            n = 211;
+            n = 210;
         end
         m = n;
 
-        t = linspace(-5,100,n);     % time vector
+        t = linspace(-5,100,n+1);     % time vector
         sigi = 10;
         gmax = 3.6788;
 
-        % G is m-1 x n-1 (is this intentional?)
-        for i = 2:m
-          for j = 1:n-1
+        G = zeros(m,n);
+        for i = 2:m+1
+          for j = 1:n
             tp = t(j)-t(i);
             if (tp > 0)
               G(i-1,j) = 0;
@@ -118,7 +118,7 @@ switch iex
 end
          
 [m,n] = size(G);
-disp(sprintf('G is %i x %i with cond(G) = %.4e',m,n,cond(G)));
+disp(sprintf('G is %i x %i with cond(G) = %.3e',m,n,cond(G)));
 
 figure; imagesc(G);
 xlabel('column index k');
