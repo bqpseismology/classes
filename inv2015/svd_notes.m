@@ -2,14 +2,15 @@
 % svd_notes.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% Illustration of the geometrical meaning of the singular value
-% decomposition, using a 2D example.
+% Misc concepts associated with the singular value decomposition
 %
 
 clc, clear, close all
 
-bsvdgeometry = true;
-bsvddiag = false;
+bsvdgeometry = true;    % geometrical meaning of SVD for 2D example
+bsvddiag = false;       % svd for a diagonal matrix
+
+%--------------------------------------------------------------------------
 
 if bsvdgeometry
 
@@ -58,6 +59,8 @@ plot([0 su1(1)],[0 su1(2)],'r',[0 su2(1)],[0 su2(2)],'r','linewidth',2);
 text(f*su1(1),f*su1(2),'\sigma_1 u_1','fontsize',fsize,'horizontalalignment','center');
 text(f*su2(1),f*su2(2),'\sigma_2 u_2','fontsize',fsize,'horizontalalignment','center');
 
+%print(gcf,'-depsc','svd_2D');
+
 end
 
 %--------------------------------------------------------------------------
@@ -66,52 +69,65 @@ if bsvddiag
 
 % consider the effects of an svd on a diagonal matrix
 % (e.g., the derivation in Aster, Eq 4.19, p. 100)
-p = 6;
+% [This is a fairly technical point, but some of the commands below may be
+% illuminating in general.]
+
+p = 6;      % fixed for all cases
 m = p+3;
 n = p+2;
 k = min(m,n);
 s = 10*rand(p,1)
-%G1 = diag(s);
-G1 = diag(sort(s,'descend'));
-G2 = [G1 ; zeros(m-p,p)];
-G3 = [G1 zeros(p,n-p)];
-G4 = [G1 zeros(p,n-p) ; zeros(m-p,n)];
-G1, G2, G3, G4
+%D1 = diag(s);
+% consider four cases from Aster, Ch. 3
+D1 = diag(sort(s,'descend'));
+D2 = [D1 ; zeros(m-p,p)];
+D3 = [D1 zeros(p,n-p)];
+D4 = [D1 zeros(p,n-p) ; zeros(m-p,n)];
+D1, D2, D3, D4
+disp(sprintf('D1 is %i (m) x %i (n) with p = %i',size(D1),p));
+disp(sprintf('D2 is %i (m) x %i (n) with p = %i',size(D2),p));
+disp(sprintf('D3 is %i (m) x %i (n) with p = %i',size(D3),p));
+disp(sprintf('D4 is %i (m) x %i (n) with p = %i',size(D4),p));
 
-% It is clear from here that G = S (as expected),
-% and all the U and V are identiy matrices.
-[U1,S1,V1] = svd(G1); whos G1 U1 S1 V1
-[U2,S2,V2] = svd(G2); whos G2 U2 S2 V2
-[U3,S3,V3] = svd(G3); whos G3 U3 S3 V3
-[U4,S4,V4] = svd(G4); whos G4 U4 S4 V4
+% It is clear from here that D = S (as expected),
+% and all the U and V are identity matrices.
+% note: why does it switch the order of the last two basis vectors in U4 and V4?
+[U1,S1,V1] = svd(D1); %whos D1 U1 S1 V1
+[U2,S2,V2] = svd(D2); %whos D2 U2 S2 V2
+[U3,S3,V3] = svd(D3); %whos D3 U3 S3 V3
+[U4,S4,V4] = svd(D4); %whos D4 U4 S4 V4
 
-[Up1,Sp1,Vp1] = svd(G1,'econ'); whos G1 Up1 Sp1 Vp1, norm(G1 - Up1*Sp1*Vp1')
-[Up2,Sp2,Vp2] = svd(G2,'econ'); whos G2 Up2 Sp2 Vp2, norm(G2 - Up2*Sp2*Vp2')
-[Up3,Sp3,Vp3] = svd(G3,'econ'); whos G3 Up3 Sp3 Vp3, norm(G3 - Up3*Sp3*Vp3')
+% economy size svd
+[Up1,Sp1,Vp1] = svd(D1,'econ'); %whos D1 Up1 Sp1 Vp1, norm(D1 - Up1*Sp1*Vp1')
+[Up2,Sp2,Vp2] = svd(D2,'econ'); %whos D2 Up2 Sp2 Vp2, norm(D2 - Up2*Sp2*Vp2')
+[Up3,Sp3,Vp3] = svd(D3,'econ'); %whos D3 Up3 Sp3 Vp3, norm(D3 - Up3*Sp3*Vp3')
 
 % I'm not sure why the econ command is not designed to work for Case 4.
 % From "help svd": If X is m-by-n with m > n, then only the first
 % n columns of U are computed and S is n-by-n.
-[Up4,Sp4,Vp4] = svd(G4,'econ'); whos G4 Up4 Sp4 Vp4, norm(G4 - Up4*Sp4*Vp4')
+[Up4,Sp4,Vp4] = svd(D4,'econ'); %whos D4 Up4 Sp4 Vp4, norm(D4 - Up4*Sp4*Vp4')
 % we can manually remove the last two columns
 Sp4 = Sp4(1:p,1:p);
 Up4(:,p+1:k) = [];
 Vp4(:,p+1:k) = [];
-whos G4 Up4 Sp4 Vp4, norm(G4 - Up4*Sp4*Vp4')
+%disp('manually corrected version:');
+%whos D4 Up4 Sp4 Vp4, norm(D4 - Up4*Sp4*Vp4')
 
 % note: you can take the inverse of these
 whos Sp1 Sp2 Sp3 Sp4
+disp('inverse of Sp:');
 inv(Sp1)
 % note: you can't take the inverse of these
 whos S1 S2 S3 S4
 
-Gdag1 = Vp1*inv(Sp1)*Up1'
-Gdag2 = Vp2*inv(Sp2)*Up2'
-Gdag3 = Vp3*inv(Sp3)*Up3'
-Gdag4 = Vp4*inv(Sp4)*Up4'
+Ddag1 = Vp1*inv(Sp1)*Up1'
+Ddag2 = Vp2*inv(Sp2)*Up2'
+Ddag3 = Vp3*inv(Sp3)*Up3'
+Ddag4 = Vp4*inv(Sp4)*Up4'
 
-whos Gdag1 Gdag2 Gdag3 Gdag4
-whos G1 G2 G3 G4
+whos Ddag1 Ddag2 Ddag3 Ddag4 D1 D2 D3 D4
+
+whos Up1 Up2 Up3 Up4 Vp1 Vp2 Vp3 Vp4
 
 end
 
