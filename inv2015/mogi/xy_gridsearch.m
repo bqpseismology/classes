@@ -2,67 +2,80 @@
 
 clear, close all, clc
 
-fsize = 12;
-msize = 18;
 ddir = './';
+fsize = 14;
+msize = 18;
 
-%----------------------
-
+% read the interferogram, then plot it
 read_data;
 whos obs_rngchg
 [xvec,yvec] = plot_model(obs_rngchg);
 
-% grid for 2D search
-x0 = [19:0.2:22];
-y0 = [21:0.2:23];
-z0 = 2.58;
-v0 = 0.0034;
 iokay = find(isnan(obs_rngchg)==0);
 
-misfit = NaN(length(x0),length(y0));
-for k = 1:length(x0)
-    x0(k)
-    for l = 1:length(y0)
-        syn_rngchg = mogi2insar(x0(k),y0(l),z0,v0,0,0);  
+%==========================================================================
+% FIX Z AND dV, SEARCH OVER X AND Y
+
+% grid for 2D search
+xs = [19:0.2:22];
+ys = [21:0.2:23];
+zs = 2.58;
+V = 0.0034;
+
+nx = length(xs);
+ny = length(ys);
+ng = nx*ny;
+
+disp(sprintf('fixed z = %.2f km, dV = %.4f, searching over (x,y)',zs,V));
+misfit = NaN(nx,ny);
+kk = 0;
+for k = 1:nx
+    for l = 1:ny
+        kk = kk+1;
+        syn_rngchg = mogi2insar(xs(k),ys(l),zs,V,0,0);  
         misfit(k,l) = sum((obs_rngchg(iokay) - syn_rngchg(iokay)).^2);
     end
+    disp(sprintf('source %i/%i is (x = %.2f km, y = %.2f km)',kk,ng,xs(k),ys(l)));
 end
 
-[indx indy] = find(misfit == min(misfit(:)));
-
-disp(['Source X coordinate: ' num2str(x0(indx))]);
-disp(['Source Y coordinate: ' num2str(y0(indy))]);
+% get the minimum
+[indx,indy] = find(misfit == min(misfit(:)));
+disp(sprintf('Source X coordinate: %.2f km',xs(indx)));
+disp(sprintf('Source Y coordinate: %.2f km',ys(indy)));
 
 % plot cross section of misfit function
 figure;
-imagesc(x0,y0,misfit');
+imagesc(xs,ys,misfit');
 set(gca,'ydir','normal'); hold on;
-plot(x0(indx),y0(indy),'kp','markersize',msize,'markerfacecolor','w');
+plot(xs(indx),ys(indy),'kp','markersize',msize,'markerfacecolor','w');
 colorbar
-set(gca,'FontSize',12);
-xlabel('Easting [km]','FontSize',14);
-ylabel('Northing [km]','FontSize',14);
-title('Misfit Function','FontSize',14);
+set(gca,'fontsize',fsize-2);
+xlabel('Easting [km]','fontsize',fsize);
+ylabel('Northing [km]','fontsize',fsize);
+title('Misfit Function','fontsize',fsize);
 axis equal;     % WARNING: only for comparing x vs y
 axis tight;
 
 % plot solution - no mask
-mogi2insar(x0(indx),y0(indy),z0,v0,1,0);  
-subplot(2,1,1); hold on; plot(x0(indx),y0(indy),'kp','markersize',msize,'markerfacecolor','w');
-subplot(2,1,2); hold on; plot(x0(indx),y0(indy),'kp','markersize',msize,'markerfacecolor','w');
+mogi2insar(xs(indx),ys(indy),zs,V,1,0);  
+% MIGHT only show if imagesc is used in plot_model.m
+subplot(2,1,1); hold on; plot(xs(indx),ys(indy),'kp','markersize',msize,'markerfacecolor','w');
+subplot(2,1,2); hold on; plot(xs(indx),ys(indy),'kp','markersize',msize,'markerfacecolor','w');
 
 % plot solution - with mask
-syn_rngchg = mogi2insar(x0(indx),y0(indy),z0,v0,1,1);  
-subplot(2,1,1); hold on; plot(x0(indx),y0(indy),'kp','markersize',msize,'markerfacecolor','w');
-subplot(2,1,2); hold on; plot(x0(indx),y0(indy),'kp','markersize',msize,'markerfacecolor','w');
+syn_rngchg = mogi2insar(xs(indx),ys(indy),zs,V,1,1);  
+% MIGHT only show if imagesc is used in plot_model.m
+subplot(2,1,1); hold on; plot(xs(indx),ys(indy),'kp','markersize',msize,'markerfacecolor','w');
+subplot(2,1,2); hold on; plot(xs(indx),ys(indy),'kp','markersize',msize,'markerfacecolor','w');
 
 % plot residual field
 residuals = obs_rngchg - syn_rngchg;
 plot_model(residuals);
 
-%==========================================
+%==========================================================================
+% FIX X AND Y, SEARCH OVER Z AND dV
+
 % implement V-zs search here
 
 
-
-%==========================================
+%==========================================================================
