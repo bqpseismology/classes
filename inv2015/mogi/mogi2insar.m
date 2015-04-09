@@ -4,6 +4,15 @@ function rad_calc_rot2 = mogi2insar(x,y,z,v,iplot,imask)
 % Mogi source is located at [x, y, z] with a volume change of v;
 % the calculated LOS range changes (in mm) are stored in rad_calc_rot2
 % if plot_ind==1, then plot the simulated interferogram 
+% RUN as syn_rngchg = mogi2insar(x,y,z,dv,iplot,imask) with 
+%    x = x location of source [km]
+%    y = y location of source [km]
+%    z = depth of source in [km] (positive is down)
+%    dv = volume change in source [km^3]
+%    iplot: 0 = no plotting; 1 = plotting
+%    imask: 0 = no masked applied; 1 = masked applied
+% EXAMPLE:    syn_rngchg = mogi2insar(20,20,6,0.004,1,1);
+
 %
 
 %global eing_vec ning_vec obs_phavec plook

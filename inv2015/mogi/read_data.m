@@ -2,7 +2,8 @@
 % pixel values represent line-of-sight (LOS) range change in radians
 % zeros in this interferogram represent data voids
 
-filename = [ddir 'E451_20000818_20020719']; 
+% file must be in the local directory
+filename = 'E451_20000818_20020719'; 
 
 %file width (sample), length (line)
 SAMPLE = 1100;
@@ -21,3 +22,4 @@ data_mask = (data_mask==0);
 
 % save mask (local run directory)
 save data_mask
+plot_model(obs_rngchg)
