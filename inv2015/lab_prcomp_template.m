@@ -1,5 +1,5 @@
 %
-% hwprcomp.m
+% lab_prcomp.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Principal Component Analysis of diets in Europe.
@@ -12,7 +12,7 @@ dir0 = './';
 ddir = [dir0 'data/'];
 % directory for output figures
 pdir = './';
-iprint = 1;   % =0 to print figures to file
+bprint = false;   % =true to print figures to file
 fsize = 11;
 
 % load the data, compute correlations, and make scatterplots
