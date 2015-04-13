@@ -60,6 +60,13 @@ xvec = xmin + ix0*dx;
 yvec = ymin + iy0*dx; 
 [X,Y] = meshgrid(xvec,yvec);
 
+% max distance between two gridpoints
+% (hypotenuse of the rectangular grid)
+xran = xmax-xmin;
+yran = ymax-ymin;
+dmax = sqrt( xran^2 + yran^2 )
+%dmax = dx*sqrt((nx-1)^2 + (ny-1)^2)
+
 % correlation length of 2D Gaussian fields
 L = iL*dx;
 
@@ -87,10 +94,10 @@ if n <= NMAX
     C = covC(iD,{icov,iL,sigma});
 
     % plot covariance function C(d) using a finer discretization
-    dmax = 5*L;     % for plotting
-    dcont = linspace(0,dmax,1000);
+    dmaxt = 5*L;     % for plotting
+    dcont = linspace(0,dmaxt,1000);
     ccont = covC(dcont,{icov,L,sigma});
-    figure; axtemp = [0 dmax sigma^2*[-0.1 1.1] ];
+    figure; axtemp = [0 dmaxt sigma^2*[-0.1 1.1] ];
     hold on;
     plot(axtemp(1:2),[0 0],'k');
     plot([L L],axtemp(3:4),'r');
@@ -144,6 +151,13 @@ if n <= NMAX
     caxis([0 sigma^2]); colorbar
 
     orient tall, wysiwyg, fontsize(11)
+    
+    % plot distance matrix that the covariance matrix is based on
+    figure;
+    imagesc(dx*iD); shading flat;
+    title({sprintf('dx*iD: distance matrix with %i^2 = (%i*%i)^2 entries',n,nx,ny),stit2});
+    axis equal, axis(axcex)
+    caxis([0 dmax]); colorbar
     
 else
     if ichol==1, error('decrease n for ichol=1, or set ichol=0'); end 
