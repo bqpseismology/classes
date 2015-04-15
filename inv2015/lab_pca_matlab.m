@@ -118,19 +118,25 @@ norm(Z - zscore(X))
 %norm(C*Vc - Vc*Dc)
 
 % if needed: sort eigenvalues and rearrange V
-eigval = diag(Dc);
-[~,isort] = sort(eigval,'descend');
+eigvalC = diag(Dc);
+[~,isort] = sort(eigvalC,'descend');
 Vc = Vc(:,isort);
-Dc = diag(eigval(isort));
+Dc = diag(eigvalC(isort));
 %norm(C*Vc - Vc*Dc)
-eigval = diag(Dc);
+eigvalC = diag(Dc);
 
 [Vr,Dr] = eig(R);
+eigvalR = diag(Dr);
+[~,isort] = sort(eigvalR,'descend');
+Vr = Vr(:,isort);
+Dr = diag(eigvalR(isort));
+%norm(R*Vr - Vr*Dr)
+eigvalR = diag(Dr);
 % Vr * Dr * Vr'
 % inv(hCdiag)*Vc * Dc * (inv(hCdiag)*Vc)'
 
 if 0==1
-    %%
+    % experiment with multiplying each column of A by a factor
     A = rand(8,3)
     s = sqrt(var(A))
     h = ones(8,1);
@@ -152,12 +158,11 @@ std(X), std(B), std(Z)
 
 % SINGULAR VALUE DECOMPOSITION of B
 % the scores matrix is nothing more than U*S from the SVD
-% Vb = Vc (allowing sign changes)
 [Ub,Sb,Vb] = svd(B);
 svalb = diag(Sb);
 USb = Ub*Sb;
 % check singular values with eigenvalues of covariance matrix
-norm( svalb.^2/(n-1) - eigval )
+norm( svalb.^2/(n-1) - eigvalC )
 
 % SINGULAR VALUE DECOMPOSITION of Z
 % Vz = Vr (allowing sign changes)
@@ -165,12 +170,11 @@ norm( svalb.^2/(n-1) - eigval )
 svalz = diag(Sz);
 USz = Uz*Sz;
 
-break
-
 % Test 1: use centered matrix
 % VB = Vb = Vc (allowing for some sign flips on columns of V)
 % USB = Ub*Sb
-[VB,USB] = pca(B)
+% pcvarB = eigvalC
+[VB,USB,pcvarB] = pca(B);
 % this is equivalent, since pca will center the matrix (i.e., remove mean)
 %[V,US] = pca(X)
 Bcheck = USB * VB';
@@ -200,9 +204,9 @@ USw_check = Z*Vworth;
 norm(USw - USw_check)
 
 % Test 3: use centered+standardized matrix as input
-% USZ = USw (allowing for sign flips)
 % VZ = Vz = Vr = inv(hCdiag)*Vw  (allowing for sign flips)
-[VZ,USZ] = pca(Z);
+% USZ = USw (allowing for sign flips)
+[VZ,USZ,pcvarZ] = pca(Z);
 Zcheck = USZ * VZ';
 norm(Z - Zcheck)
 Bcheck = USZ * VZ' * hCdiag;
@@ -210,5 +214,19 @@ norm(B - Bcheck)
 % orthonormal:
 norm(VZ'*VZ - eye(p))
 %VZ_check = inv(hCdiag)*Vw
+
+% cumulative variance
+pcvar = pcvarB;
+%pcvar = pcvarZ;
+propvar = pcvar/sum(pcvar);
+cpropvar = cumsum(propvar);
+disp('  ');
+disp('Importance of principal components:'); 
+disp('  Std-Dev  : sqrt( eigenvalues of the covariance matrix of X )');
+disp('  Prop-Var : proportion of variance');
+disp('  Std-Dev  : cumulative proportion of variance');
+disp('  ');
+disp('      PC#    Std-Dev      Var   Prop-Var  Cum-Prop');
+disp([[1:p]' sqrt(pcvar) pcvar propvar cpropvar]);
 
 %==========================================================================
