@@ -155,17 +155,17 @@ std(X), std(B), std(Z)
 % Vb = Vc (allowing sign changes)
 [Ub,Sb,Vb] = svd(B);
 svalb = diag(Sb);
-USb = Ub*Sb
-Vb
-% check
+USb = Ub*Sb;
+% check singular values with eigenvalues of covariance matrix
 norm( svalb.^2/(n-1) - eigval )
 
 % SINGULAR VALUE DECOMPOSITION of Z
 % Vz = Vr (allowing sign changes)
-[Uz,Sz,Vz] = svd(Z)
+[Uz,Sz,Vz] = svd(Z);
 svalz = diag(Sz);
-USz = Uz*Sz
-Vz
+USz = Uz*Sz;
+
+break
 
 % Test 1: use centered matrix
 % VB = Vb = Vc (allowing for some sign flips on columns of V)
