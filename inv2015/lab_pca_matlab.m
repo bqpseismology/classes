@@ -6,7 +6,7 @@
 %
 % TWO KEY OPERATIONS TO THE COLUMNS OF THE DATA MATRIX
 % (1) centered: subtract mean
-% (2) scaled (or standardizted): divide by the standard deviation
+% (2) standardized (or scaled): divide by the standard deviation
 %
 % use the function pca; princomp is depricated and should not be used
 %
@@ -74,6 +74,7 @@ end
 %-------------------------------------------------
 % from wiki: http://en.wikipedia.org/wiki/Principal_component_analysis
 
+% REMOVE THE MEAN FOR EACH COLUMN
 u = mean(X);
 h = ones(n,1);
 % centered matrix
@@ -88,7 +89,7 @@ C = (1/(n-1)) * (B') * B;
 % standard deviations of each column of X
 % note: column vector diag(C) is equivalent to row vector var(X)
 s = sqrt(diag(C))'
-s = sqrt(var(X))
+%s = sqrt(var(X))
 
 Cdiag = diag(diag(C));
 hCdiag = sqrtm(Cdiag);
@@ -166,11 +167,14 @@ svalz = diag(Sz);
 USz = Uz*Sz
 Vz
 
-% Test 1
-% NOTE: here VB = Vb = Vc (allowing for some sign flips on columns of V)
+% Test 1: use centered matrix
+% VB = Vb = Vc (allowing for some sign flips on columns of V)
+% USB = Ub*Sb
 [VB,USB] = pca(B)
 % this is equivalent, since pca will center the matrix (i.e., remove mean)
 %[V,US] = pca(X)
+Bcheck = USB * VB';
+norm(B - Bcheck)
 % orthonormal:
 norm(VB'*VB - eye(p))
 Bcheck = USB * VB';
@@ -181,30 +185,30 @@ norm(USB - US1_check)
 % Test 2 (example used in matlab)
 % note: this gives different US and V from Test 1
 w = 1./(s.^2);
-[V2,US2] = pca(B,'VariableWeights',w);
+[Vw,USw] = pca(B,'VariableWeights',w);
 % this is equivalent
-%[V,US] = pca(B,'VariableWeights','variance')
-% NOT orthonormal:
-norm(V2'*V2 - eye(p))
-V2orth = inv(hCdiag)*V2;        % note: inv(hCdiag) = diag(1./s)
-% orthonormal:
-norm(V2orth'*V2orth - eye(p))
-% this shows how US can be computed
-US2_check = Z*V2orth;
-norm(US2 - US2_check)
-Bcheck = US2 * V2'
+%[Vw,USw] = pca(B,'VariableWeights','variance')
+Bcheck = USw * Vw';
 norm(B - Bcheck)
-
-% Test 3: use scaled matrix as input
-% US is the same as in Test 2 (allowing for sign flips)
-% V is different from Test 2 (by the scaling matrix hCdiag)
-[VZ,USZ] = pca(Z);
+disp('Vw is NOT orthornomal:');
+norm(Vw'*Vw - eye(p))
+Vworth = inv(hCdiag)*Vw;   % note: inv(hCdiag) = diag(1./s)
 % orthonormal:
-norm(VZ'*VZ - eye(p))
+norm(Vworth'*Vworth - eye(p))
+% this shows how USw can be computed
+USw_check = Z*Vworth;
+norm(USw - USw_check)
+
+% Test 3: use centered+standardized matrix as input
+% USZ = USw (allowing for sign flips)
+% VZ = Vz = Vr = inv(hCdiag)*Vw  (allowing for sign flips)
+[VZ,USZ] = pca(Z);
 Zcheck = USZ * VZ';
 norm(Z - Zcheck)
 Bcheck = USZ * VZ' * hCdiag;
 norm(B - Bcheck)
-V3_check = inv(hCdiag)*V2
+% orthonormal:
+norm(VZ'*VZ - eye(p))
+%VZ_check = inv(hCdiag)*Vw
 
 %==========================================================================
