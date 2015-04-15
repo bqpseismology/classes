@@ -17,7 +17,6 @@ close all
 format compact
 
 idata = 2;
-bmatlabfigs = false;
 
 %-------------------------------------------------
 % from matlab
@@ -35,7 +34,7 @@ end
 % from matlab
 % http://www.mathworks.com/help/stats/feature-transformation.html#f75476
 
-if and(bmatlabfigs,idata==1)
+if idata==1
 
 categories
 figure()
@@ -215,6 +214,11 @@ norm(B - Bcheck)
 norm(VZ'*VZ - eye(p))
 %VZ_check = inv(hCdiag)*Vw
 
+%==============================
+% tips for the homework
+
+break
+
 % cumulative variance
 pcvar = pcvarB;
 %pcvar = pcvarZ;
@@ -228,5 +232,17 @@ disp('  Std-Dev  : cumulative proportion of variance');
 disp('  ');
 disp('      PC#    Std-Dev      Var   Prop-Var  Cum-Prop');
 disp([[1:p]' sqrt(pcvar) pcvar propvar cpropvar]);
+
+break
+
+% plot components
+figure; nr=5; nc=2;
+for ii=1:p
+    subplot(nr,nc,ii); hold on;
+    plot(VB(:,ii),'b.-');
+    plot(VZ(:,ii),'r.-');
+    ylim([-1 1]);
+    title(sprintf('PC-%i',ii));
+end
 
 %==========================================================================
