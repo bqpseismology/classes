@@ -1,5 +1,5 @@
 %
-% lab_prcomp.m
+% lab_pca.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Principal Component Analysis of diets in Europe.
@@ -7,20 +7,13 @@
 
 clc, clear, close all
 
-% directory for input data
-dir0 = './';
-ddir = [dir0 'data/'];
-% directory for output figures
-pdir = './';
-bprint = false;   % =true to print figures to file
-fsize = 11;
-
 % load the data, compute correlations, and make scatterplots
 
 % get data (modified datafile from from protein.dat)
 % X is the n x p predictor (or data) matrix
 % n = number of observations (countries)
 % p = number of variables (protein sources)
+ddir = './data/';
 X0 = load([ddir 'protein_matlab.dat']);      
 [n,p] = size(X0);
 xinds = [1:p];
@@ -40,7 +33,10 @@ clabs =  {'ALB','AUS','BEL','BUL','CZK',...
            'ROM','SPA','SWE','STZ','UK','USSR','WGR','YUG'};
 
 whos      
-       
+    
+% scatterplot matrix: uncentered, unstandardized
+figure, gplotmatrix(X0,[],[],[],[],[],[],[],vars,vars), 
+
 % START YOUR ANALYSIS HERE
 
 
