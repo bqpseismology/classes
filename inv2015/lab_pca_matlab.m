@@ -16,7 +16,7 @@ clear
 close all
 format compact
 
-idata = 2;
+idata = 1;
 
 %-------------------------------------------------
 % from matlab
@@ -51,6 +51,7 @@ plot(score(:,1),score(:,2),'+')
 xlabel('1st Principal Component')
 ylabel('2nd Principal Component')
 
+% note that this truncates when 95% is explained
 figure()
 pareto(explained)
 xlabel('Principal Component')
@@ -60,6 +61,7 @@ ylabel('Variance Explained (%)')
 extreme = index(1);
 names(extreme,:)
 
+figure()
 biplot(coefforth(:,1:2),'scores',score(:,1:2),'varlabels',categories);
 axis([-.26 0.6 -.51 .51]);
 
@@ -188,7 +190,7 @@ norm(USB - US1_check)
 % Test 2 (example used in matlab)
 % note: this gives different US and V from Test 1
 w = 1./(s.^2);
-[Vw,USw] = pca(B,'VariableWeights',w);
+[Vw,USw,pcvarBw] = pca(B,'VariableWeights',w);
 % this is equivalent
 %[Vw,USw] = pca(B,'VariableWeights','variance')
 Bcheck = USw * Vw';
@@ -215,14 +217,15 @@ norm(VZ'*VZ - eye(p))
 %VZ_check = inv(hCdiag)*Vw
 
 %==============================
-% tips for the homework
+% tips for the lab exercise (lab_pca.m)
 
-break
+%break
 
 % cumulative variance
 pcvar = pcvarB;
-%pcvar = pcvarZ;
+if idata==1, pcvar = pcvarZ; end
 propvar = pcvar/sum(pcvar);
+% from the matlab tutorial: explained = 100*cpropvar (idata=1)
 cpropvar = cumsum(propvar);
 disp('  ');
 disp('Importance of principal components:'); 
@@ -232,8 +235,6 @@ disp('  Std-Dev  : cumulative proportion of variance');
 disp('  ');
 disp('      PC#    Std-Dev      Var   Prop-Var  Cum-Prop');
 disp([[1:p]' sqrt(pcvar) pcvar propvar cpropvar]);
-
-break
 
 % plot components
 figure; nr=5; nc=2;
