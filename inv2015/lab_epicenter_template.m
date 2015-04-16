@@ -37,7 +37,8 @@ xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
 % sample the function
 A = max([A1 A2]);           % note: only true for our choice of p(x)
-ptry = p(xtry) / A;         % SET A: values between 0 and 1
+pmax = A;
+ptry = p(xtry) / pmax;      % SET A: values between 0 and 1
 chance = rand(NTRY,1);      % SET B: values between 0 and 1
 
 % plot
