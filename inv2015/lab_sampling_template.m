@@ -1,14 +1,14 @@
 %
-% lab_epicenter.m
+% lab_sampling.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
 % Example script for generating samples of a function using the rejection
 % method (Tarantola 2005, Section 2.3.2).
 %
-% See notes for lab exercise lab_epicenter.pdf
+% See notes for lab exercise lab_sampling.pdf
 %
-% This script is a guide to the epicenter homework problem presented as
-% Problem 7-1 in Tarantola (2005).
+% This script is relevant to the epicenter homework problem that is based
+% on Problem 7-1 in Tarantola (2005).
 %
 % calls plot_histo.m
 %
@@ -31,12 +31,13 @@ switch ifun
         p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
 end
 
-p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
-%p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
-
 % KEY TECHNICAL POINT: f is a function, not a numerical array
 % (note that x is not a stored array)
 whos
+
+% analytical curve
+xcurve = linspace(xmin,xmax,1000);
+pcurve = p(xcurve);
 
 % generate samples
 % KEY: what does rand do?
@@ -45,22 +46,20 @@ xtry = xmin + (xmax-xmin)*rand(NTRY,1);
 
 % sample the function
 A = max([A1 A2]);           % note: only true for our choice of p(x)
-pmax = A;
-ptry = p(xtry) / pmax;      % SET A: values between 0 and 1
+%A = max(pcurve);            % (will work for any densely discretized p(x))
+ptry = p(xtry) / A;         % SET A: values between 0 and 1
 chance = rand(NTRY,1);      % SET B: values between 0 and 1
 
 % plot
-xcurve = linspace(xmin,xmax,1000);
-pcurve = p(xcurve);
 figure; nr=3; nc=2;
 edges1 = [xmin:0.2:xmax]; ne1 = length(edges1);
 edges2 = [0:0.05:1];      ne2 = length(edges2);
 subplot(nr,nc,1); plot(xcurve,pcurve/A);
-xlabel('x'); ylabel('p(x)'); title('(a)'); axis([xmin xmax 0 1.2]);
+xlabel('x'); ylabel('p(x) / A'); title('(a)'); axis([xmin xmax 0 1.2]);
 subplot(nr,nc,2); plot_histo(xtry,edges1); xlim([xmin xmax]);
 xlabel('xtry'); title('(b)'); 
 subplot(nr,nc,3); plot_histo(ptry,edges2);
-xlabel('p(xtry)'); title('(c)'); 
+xlabel('p(xtry) / A'); title('(c)'); 
 subplot(nr,nc,4); plot_histo(chance,edges2);
 xlabel('chance'); title('(d)'); 
 
@@ -79,32 +78,32 @@ subplot(nr,nc,6); plot(xcurve,-log(pcurve));
 axis([xmin xmax -1 1.1*max(-log(pcurve))]);
 xlabel('x'); ylabel('F(x) = -ln(p(x))'); title('(f)');
 
+break  % first break
+
 %==========================================================================
 % ADDITIONAL PLOTTING TO UNDERSTAND THE PATTERN IN (c)
-
-break  % first break
 
 subplot(nr,nc,1); hold on;
 
 ileftbin = ne2 - 1;
 Pcut1 = edges2(ileftbin);
 Pcut2 = edges2(ileftbin+1);
-isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
-plot(xcurve(isub),pcurve(isub)/pmax,'r.');
+isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/A,'r.');
 plot([xmin xmax],Pcut1*[1 1],'r--',[xmin xmax],Pcut2*[1 1],'r--');
 
 ileftbin = round(ne2/2);
 Pcut1 = edges2(ileftbin);
 Pcut2 = edges2(ileftbin+1);
-isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
-plot(xcurve(isub),pcurve(isub)/pmax,'k.');
+isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/A,'k.');
 plot([xmin xmax],Pcut1*[1 1],'k--',[xmin xmax],Pcut2*[1 1],'k--');
 
 ileftbin = 1;
 Pcut1 = edges2(ileftbin);
 Pcut2 = edges2(ileftbin+1);
-isub = find(and(pcurve/pmax >= Pcut1, pcurve/pmax < Pcut2 ));
-plot(xcurve(isub),pcurve(isub)/pmax,'c.');
+isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
+plot(xcurve(isub),pcurve(isub)/A,'c.');
 plot([xmin xmax],Pcut1*[1 1],'c--',[xmin xmax],Pcut2*[1 1],'c--');
 
 %==========================================================================
@@ -114,9 +113,9 @@ break  % second break
 % summary plot
 figure; nr=2; nc=2; 
 subplot(nr,nc,1); plot_histo(xtry,edges1); xlim([xmin xmax]); xlabel('xtry');
-subplot(nr,nc,2); plot_histo(ptry,edges2); xlabel('p(xtry)');
+subplot(nr,nc,2); plot_histo(ptry,edges2); xlabel('p(xtry) / A');
 subplot(nr,nc,3); plot_histo(xkeep,edges1); xlim([xmin xmax]); xlabel('xkeep');
-subplot(nr,nc,4); plot_histo(ptry(ikeep),edges2); xlabel('p(xkeep)');
+subplot(nr,nc,4); plot_histo(ptry(ikeep),edges2); xlabel('p(xkeep) / A');
 
 %==========================================================================
 % PRACTICE WITH IN-LINE FUNCTIONS AND PLOTTING
