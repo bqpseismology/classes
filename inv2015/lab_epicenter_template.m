@@ -20,9 +20,17 @@ clear, close all, clc
 xmin = -15; xmax = 12;
 
 % define in-line function p(x)
+% note that parameters like A1, A2, x1, x2 must be assigned before p()
 x1 = -2; A1 = 2; sig1 = 2;
 x2 =  4; A2 = 1; sig2 = 0.5;
-% note that parameters x0 and A must be previously defined
+ifun = 1;
+switch ifun
+    case 1
+        p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
+    case 2
+        p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
+end
+
 p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) );
 %p = @(x) ( A1*exp(-(x-x1).^2/(2*sig1^2)) + A2*exp(-(x-x2).^2/(2*sig2^2)) );
 
