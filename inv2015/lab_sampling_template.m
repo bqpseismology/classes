@@ -36,7 +36,8 @@ end
 whos
 
 % analytical curve
-xcurve = linspace(xmin,xmax,1000);
+ncurve = 1000;
+xcurve = linspace(xmin,xmax,ncurve);
 pcurve = p(xcurve);
 
 % generate samples
@@ -52,31 +53,37 @@ chance = rand(NTRY,1);      % SET B: values between 0 and 1
 
 % plot
 figure; nr=3; nc=2;
-edges1 = [xmin:0.2:xmax]; ne1 = length(edges1);
-edges2 = [0:0.05:1];      ne2 = length(edges2);
+dxbin = 0.2;
+dpbin = 0.05;    % 0.05, 0.1, 0.2
+edgesx = [xmin:dxbin:xmax]; nex = length(edgesx);
+edgesp = [0:dpbin:1];       nep = length(edgesp);
+
 subplot(nr,nc,1); plot(xcurve,pcurve/A);
-xlabel('x'); ylabel('p(x) / A'); title('(a)'); axis([xmin xmax 0 1.2]);
-subplot(nr,nc,2); plot_histo(xtry,edges1); xlim([xmin xmax]);
-xlabel('xtry'); title('(b)'); 
-subplot(nr,nc,3); plot_histo(ptry,edges2);
-xlabel('p(xtry) / A'); title('(c)'); 
-subplot(nr,nc,4); plot_histo(chance,edges2);
-xlabel('chance'); title('(d)'); 
+xlabel('x'); ylabel('p(x) / A'); title('(a)  p(x) / A'); axis([xmin xmax 0 1.2]);
+
+subplot(nr,nc,2); plot_histo(xtry,edgesx); xlim([xmin xmax]);
+xlabel('xtry'); title('(b)  xtry'); 
+
+subplot(nr,nc,3); plot_histo(ptry,edgesp);
+xlabel('p(xtry) / A'); title('(c)  p(xtry) / A'); 
+
+subplot(nr,nc,4); plot_histo(chance,edgesp);
+xlabel('ztry'); title('(d)  ztry'); 
 
 % KEY COMMAND: compare pairs of test samples in sets A and B,
 %              then accept or reject the test sample
 ikeep = find(ptry > chance);
 xkeep = xtry(ikeep);
 
-subplot(nr,nc,5); plot_histo(xkeep,edges1); xlim([xmin xmax]);
-xlabel('xkeep'); title('(e)');
+subplot(nr,nc,5); plot_histo(xkeep,edgesx); xlim([xmin xmax]);
+xlabel('xkeep'); title('(e)  xkeep');
 
 % if p is a probability density and F is the misfit function, then
 %    p(x) = exp(-F(x))
 %    F(x) = -ln(p(x))
 subplot(nr,nc,6); plot(xcurve,-log(pcurve));
 axis([xmin xmax -1 1.1*max(-log(pcurve))]);
-xlabel('x'); ylabel('F(x) = -ln(p(x))'); title('(f)');
+xlabel('x'); ylabel('F(x) = -ln(p(x))'); title('(f)  F(x)');
 
 break  % first break
 
@@ -85,23 +92,23 @@ break  % first break
 
 subplot(nr,nc,1); hold on;
 
-ileftbin = ne2 - 1;
-Pcut1 = edges2(ileftbin);
-Pcut2 = edges2(ileftbin+1);
+ileftbin = nep - 1;
+Pcut1 = edgesp(ileftbin);
+Pcut2 = edgesp(ileftbin+1);
 isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
 plot(xcurve(isub),pcurve(isub)/A,'r.');
 plot([xmin xmax],Pcut1*[1 1],'r--',[xmin xmax],Pcut2*[1 1],'r--');
 
-ileftbin = round(ne2/2);
-Pcut1 = edges2(ileftbin);
-Pcut2 = edges2(ileftbin+1);
+ileftbin = round(nep*0.50);
+Pcut1 = edgesp(ileftbin);
+Pcut2 = edgesp(ileftbin+1);
 isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
 plot(xcurve(isub),pcurve(isub)/A,'k.');
 plot([xmin xmax],Pcut1*[1 1],'k--',[xmin xmax],Pcut2*[1 1],'k--');
 
 ileftbin = 1;
-Pcut1 = edges2(ileftbin);
-Pcut2 = edges2(ileftbin+1);
+Pcut1 = edgesp(ileftbin);
+Pcut2 = edgesp(ileftbin+1);
 isub = find(and(pcurve/A >= Pcut1, pcurve/A < Pcut2 ));
 plot(xcurve(isub),pcurve(isub)/A,'c.');
 plot([xmin xmax],Pcut1*[1 1],'c--',[xmin xmax],Pcut2*[1 1],'c--');
@@ -112,10 +119,14 @@ break  % second break
 
 % summary plot
 figure; nr=2; nc=2; 
-subplot(nr,nc,1); plot_histo(xtry,edges1); xlim([xmin xmax]); xlabel('xtry');
-subplot(nr,nc,2); plot_histo(ptry,edges2); xlabel('p(xtry) / A');
-subplot(nr,nc,3); plot_histo(xkeep,edges1); xlim([xmin xmax]); xlabel('xkeep');
-subplot(nr,nc,4); plot_histo(ptry(ikeep),edges2); xlabel('p(xkeep) / A');
+subplot(nr,nc,1); plot_histo(xtry,edgesx); xlim([xmin xmax]); xlabel('xtry');
+subplot(nr,nc,2); plot_histo(ptry,edgesp); xlabel('p(xtry) / A');
+subplot(nr,nc,3); plot_histo(xkeep,edgesx); xlim([xmin xmax]); xlabel('xkeep');
+subplot(nr,nc,4); plot_histo(ptry(ikeep),edgesp); xlabel('p(xkeep) / A');
+
+if bprint, fontsize(12);
+    print(gcf,'-depsc',sprintf('%slab_sampling_hists3_ifun%i',pdir,ifun));
+end
 
 %==========================================================================
 % PRACTICE WITH IN-LINE FUNCTIONS AND PLOTTING
