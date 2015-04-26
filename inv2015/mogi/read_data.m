@@ -22,4 +22,4 @@ data_mask = (data_mask==0);
 
 % save mask (local run directory)
 save data_mask
-plot_model(obs_rngchg)
+plot_model(obs_rngchg);
