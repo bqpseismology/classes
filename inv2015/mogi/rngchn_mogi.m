@@ -27,7 +27,10 @@ function [del_rng] = rngchn_mogi(n1,e1,depth,del_v,ning,eing,plook)
 %dsp_coef = (1000000*del_v*15)/(pi*16);
 
 %----coef for McTigue's pressure <--> volume relation is below
-dsp_coef = (1000000*del_v*3)/(pi*4);
+% CARL: presumably this is Eq 1: (1/pi)*(1-nu)*del_v,
+%       where nu = 0.25 is for a Poisson medium and
+%       1e6 converts from km to mm
+dsp_coef = (1e6*del_v*3)/(pi*4);
 
 if(mm==1 && n==1)
     %disp('Calculating a matrix of rngchg values')

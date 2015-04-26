@@ -13,17 +13,18 @@ yvec = fliplr(yvec);
 F1 = D;
 F2 = wrap(D/10)/5.66*4*pi;
 
-iimagesc = 0;           % plot with imagesc (=1) or pcolor (=0)
+bimagesc = false;       % plot with imagesc (=true) or pcolor (=false)
 nanclr = 0.6*[1 1 1];   % NaN color (imagesc=0 only)
-itwofig = 0;            % =1 for two figures
+bonefig = true;         % =true for one figure; =false for two figures
 
-if itwofig==0, figure; end
+if bonefig, figure; end
 
 for kk=1:2
 
     if kk==1
         F = D;
-        tlab = 'Line of Sight Motion [mm]';
+        %tlab = 'Line of Sight Motion [mm]';
+        tlab = 'Displacement in look direction [mm]';
         clims = [-30 30];
     else
         F = wrap(D/10)/5.66*4*pi;
@@ -31,8 +32,8 @@ for kk=1:2
         clims = [-1 1]*max(abs(F(:)));
     end
     
-    if itwofig==0, subplot(2,1,kk); else figure; end
-    if iimagesc==1
+    if bonefig, subplot(2,1,kk); else figure; end
+    if bimagesc
         imagesc(xvec,yvec,F,clims);
         set(gca,'ydir','normal');
     else

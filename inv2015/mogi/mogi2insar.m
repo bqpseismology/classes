@@ -3,7 +3,7 @@ function rad_calc_rot2 = mogi2insar(x,y,z,v,iplot,imask)
 %
 % Mogi source is located at [x, y, z] with a volume change of v;
 % the calculated LOS range changes (in mm) are stored in rad_calc_rot2
-% if plot_ind==1, then plot the simulated interferogram 
+% 
 % RUN as syn_rngchg = mogi2insar(x,y,z,dv,iplot,imask) with 
 %    x = x location of source [km]
 %    y = y location of source [km]
@@ -11,8 +11,9 @@ function rad_calc_rot2 = mogi2insar(x,y,z,v,iplot,imask)
 %    dv = volume change in source [km^3]
 %    iplot: 0 = no plotting; 1 = plotting
 %    imask: 0 = no masked applied; 1 = masked applied
-% EXAMPLE:    syn_rngchg = mogi2insar(20,20,6,0.004,1,1);
-
+% EXAMPLES:
+%    syn_rngchg = mogi2insar(20,20,6,0.004,1,0);
+%    syn_rngchg = mogi2insar(20,20,6,0.016,1,0);
 %
 
 %global eing_vec ning_vec obs_phavec plook
@@ -35,7 +36,8 @@ POSTING = 40;
 track = track*pi/180.0;
 look = look*pi/180.0;
 % radar line-of-sight (LOS) vector in [E, N, U]
-% note: there is a sign flip in rngchn_mogi.m that could instead be applied here
+% note 1: there is a sign flip in rngchn_mogi.m that could instead be applied here
+% note 2: plook is MINUS the look vector (see Simons and Rosen, 2007, Fig. 10)
 plook = [-sin(look)*cos(track) sin(look)*sin(track) cos(look)];
 
 num_rows = LINE;
@@ -44,7 +46,7 @@ num_cols = SAMPLE;
 m = num_rows;
 n = num_cols;
 
-%---Below is temp. for something Zhong wants
+%---Below is temporary for something Zhong wants
 TMP = ones(m,n);
 
 %---posting is POSTING
