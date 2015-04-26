@@ -2,13 +2,13 @@
 % lab_pca_matlab.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% Principal Component Analysis of diets in Europe.
+% The goal of this tutorial is to establish/review the connections among
+% eigendecomposition, singular value decomposition, principal component
+% analysis, covariance matrix, correlation matrix, etc.
 %
 % TWO KEY OPERATIONS TO THE COLUMNS OF THE DATA MATRIX
 % (1) centered: subtract mean
 % (2) standardized (or scaled): divide by the standard deviation
-%
-% use the function pca; princomp is depricated and should not be used
 %
 
 clc
@@ -16,6 +16,7 @@ clear
 close all
 format compact
 
+% KEY COMMAND: CHOOSE BETWEEN MATLAB DATA (=1) AND CLASS DATA (=2)
 idata = 1;
 
 %-------------------------------------------------
@@ -26,7 +27,8 @@ switch idata
     case 1
         load cities, whos, X = ratings;
     case 2
-        X = load('~/GEOTOOLS/classes/inv2015/data/protein_matlab.dat');
+        ddir = './data/';
+        X = load([ddir 'protein_matlab.dat']);
 end
 [n,p] = size(X);
 
