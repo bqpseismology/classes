@@ -172,6 +172,8 @@ norm( svalb.^2/(n-1) - eigvalC )
 [Uz,Sz,Vz] = svd(Z);
 svalz = diag(Sz);
 USz = Uz*Sz;
+% check singular values with eigenvalues of correlation matrix
+norm( svalz.^2/(n-1) - eigvalR )
 
 % Test 1: use centered matrix
 % VB = Vb = Vc (allowing for some sign flips on columns of V)
