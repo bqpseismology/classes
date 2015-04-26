@@ -211,6 +211,7 @@ norm(USw - USw_check)
 % Test 3: use centered+standardized matrix as input
 % VZ = Vz = Vr = inv(hCdiag)*Vw  (allowing for sign flips)
 % USZ = USw (allowing for sign flips)
+% pcvarZ = eigvalR
 [VZ,USZ,pcvarZ] = pca(Z);
 Zcheck = USZ * VZ';
 norm(Z - Zcheck)
@@ -233,7 +234,7 @@ propvar = pcvar/sum(pcvar);
 cpropvar = cumsum(propvar);
 disp('  ');
 disp('Importance of principal components:'); 
-disp('  Std-Dev  : sqrt( eigenvalues of the covariance matrix of X )');
+disp('  Std-Dev  : sqrt( eigenvalues of the covariance (or correlation) matrix of X )');
 disp('  Prop-Var : proportion of variance');
 disp('  Std-Dev  : cumulative proportion of variance');
 disp('  ');
