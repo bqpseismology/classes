@@ -62,13 +62,13 @@ xran = [ti(1) ti(end)];
 
 subplot(nr,nc,1); hold on;
 plot(ti,ypas,'b');
-%plot(ti,ypasen,'k--',ti,-ypasen,'k--');    % envelope
+plot(ti,ypasen,'k--',ti,-ypasen,'k--');    % envelope
 xlabel('Time (s)'); ylabel('Amplitude'); title('Pasadena, LHZ');
 xlim(xran);
 
 subplot(nr,nc,2); hold on;
 plot(ti,ynee,'r');
-%plot(ti,yneeen,'k--',ti,-yneeen,'k--');    % envelope
+plot(ti,yneeen,'k--',ti,-yneeen,'k--');    % envelope
 xlim(xran);
 xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
 %print(gcf,'-depsc',[pdir 'PAS_NEE_seis']);
