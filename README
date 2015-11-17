@@ -1,0 +1,21 @@
+classes
+a private github repository within the organization uafseismo
+Repository for two classes at University of Alaska Fairbanks by Carl Tape:
+   GEOS 626 Applied Seismology
+   GEOS 627 Inverse Problems and Parameter Estimation
+contact: Carl Tape (ctape@alaska.edu)
+
+Example check-out command:
+git clone https://GITHUBUSERNAME@github.com/uafseismo/classes.git classes
+You need to have (1) a github account and (2) permission to read the repository.
+
+Related private repos:
+https://github.com/uafseismo/GEOTOOLS  
+
+Related public repos (required by some scripts in GEOTOOLS):
+https://github.com/carltape/compearth  
+https://github.com/geoscience-community-codes/GISMO  
+
+Course webpages:
+GEOS 626: http://www.giseis.alaska.edu/input/carl/teaching/seis/aseis.html  
+GEOS 627: http://www.giseis.alaska.edu/input/carl/teaching/inverse/inv.html  
