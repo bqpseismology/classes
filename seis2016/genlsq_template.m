@@ -1,6 +1,7 @@
 %
-% genlsq_template.m
+% genlsq.m
 %
+% genlsq = Generalized Least Squares
 % Template script for the iterative quasi-Newton method for a 4-parameter
 % inversion for epicenter (xs, ys), origin time (ts), and velocity (V).
 % The algorithm employs generalized least squares, where by both data
@@ -20,6 +21,7 @@ format compact
 format short
 
 % add path to Aster library (chi2inv)
+%(if you need this and if it is not already in your path)
 %addpath('/usr/local/matlab_toolboxes/aster/cd_5.2/Lib/');
 
 %=========================================

@@ -58,7 +58,7 @@ aran = 10.^[-20 1.5];
 % default option: get instrument response from antelope database
 % FIGURE 1
 res0 = response_get_from_db(station,channel,startTime,f,dbname);
-response_plot(res0); xlim([fmin fmax]); ylim(aran);
+response_plot(res0,[fmin fmax]); ylim(aran);
 title('response_get_from_db.m','interpreter','none');
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig1',pdir)); end
 
@@ -90,8 +90,8 @@ for kk=1:2
     respObject = dbresponse(rfile);
     response.values = eval_response(respObject,omega);
     response.frequencies = f;
-    response_plot(response);
-    xlim([fmin fmax]); ylim(aran);
+    response_plot(response,[fmin fmax]);
+    ylim(aran);
     title(rfile0,'interpreter','none');
     if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,kk+1)); end
 end
@@ -105,7 +105,7 @@ polezero.poles = p;
 polezero.zeros = z;
 polezero.normalization = A0;    % A0 (not c) needed to match normalization
 res = response_get_from_polezero(f,polezero);
-response_plot(res); xlim([fmin fmax]); ylim(aran);
+response_plot(res,[fmin fmax]); ylim(aran);
 title(['sac pole-zero file: ' dlabs{ideriv+1}]);
 if iprint==1, print(gcf,'-depsc',sprintf('%sCAN_response_fig4',pdir)); end
 
@@ -163,3 +163,24 @@ figure(xf); subplot(nr,nc,6); hold on; plot(f,abs(Ia),'r--'); axis(10.^[-4 2 -5 
 if iprint==1, orient tall; print(gcf,'-depsc',sprintf('%sCAN_response_fig%i',pdir,xf)); end
 
 %==========================================================================
+% EXAMPLES from Alaska
+
+if 0==1
+    fmin = 1e-4;
+    fmax = 1e3;
+    numf = 100;
+    f = logspace(log10(fmin),log10(fmax),numf)';
+
+    dbname = '/aerun/sum/params/Stations/master_stations';
+    sta = 'F3TN'; chan = 'HHZ';
+    res0 = response_get_from_db(sta,chan,datenum(2015,1,1),f,dbname);
+    response_plot(res0,[fmin fmax]);
+    subplot(2,1,1); title(sprintf('%s : %s %s',dbname,sta,chan),'interpreter','none');
+    sta = 'CRP'; chan = 'EHZ';
+    res0 = response_get_from_db(sta,chan,datenum(2015,1,1),f,dbname);
+    response_plot(res0,[fmin fmax]);
+    subplot(2,1,1); title(sprintf('%s : %s %s',dbname,sta,chan),'interpreter','none');
+end
+
+%==========================================================================
+
