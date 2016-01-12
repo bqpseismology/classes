@@ -244,7 +244,7 @@ if and(irs==1,~isempty(w))
     keid = get(w(1),'KEVNM');
 
     % plot record section
-    % note: these can be printed to file by setting iprint=1 in plotw_rs.m
+    % note: these can be printed to file by setting bprint_record_section=true in plotw_rs.m
     plotw_rs(w,rssort,iabs,tshift,tmark,T1,T2,pmax,iintp,inorm,tlims,nfac,azstart,iunit,imap);
 end
 
