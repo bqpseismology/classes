@@ -51,17 +51,16 @@
 
 \begin{spacing}{1.2}
 \centering
-%{\large \bf Problem Set 10: Earthquake location with generalized least squares} \\
-{\large \bf Lab Exercise: Earthquake location with generalized least squares} \\
+{\large \bf Problem Set 10: Earthquake location with generalized least squares} \\
+%{\large \bf Lab Exercise: Earthquake location with generalized least squares} \\
 GEOS 626: Applied Seismology, Carl Tape \\
 %GEOS 627: Inverse Problems and Parameter Estimation, Carl Tape \\
-Assigned: April 15, 2014 --- Due: April 24, 2014 \\
+%Assigned: April 15, 2014 --- Due: April 24, 2014 \\
 Last compiled: \today
 \end{spacing}
 
 %------------------------
 
-% 627 figure to end
 \vspace{1cm}
 \begin{figure}[h]
 \centering
@@ -112,8 +111,8 @@ posterior model vector              & $\widetilde{\bem}$               & $\mpost
 
 A Matlab solution to a least squares problem may be as simple as \verb+m = G\d+, but what is the meaning (and computation) behind this expression? The objective of this assignment is to ``demystify'' some of the black-box elements of least-squares inverse problems. This will involve a combination of reading \citet{Tarantola2005}, solving some equations, and implementing the equations within Matlab. We approach these topics with the classic example of earthquake location.
 
-% comment for 627
-See \citet[][Chapter 7]{SteinWysession} for an introduction to the earthquake location problem. However, note that they do not approach the problem from a generalized least squares perspective, as we do in this assignment. In particular, they do not consider the model misfit term, $(\bem-\mprior)^T \cpriori (\bem-\mprior)$. But they do introduce the concept of the data covariance matrix and posterior model covariance matrix on p. 421.
+% comment out for 627:
+%See \citet[][Chapter 7]{SteinWysession} for an introduction to the earthquake location problem. However, note that they do not approach the problem from a generalized least squares perspective, as we do in this assignment. In particular, they do not consider the model misfit term, $(\bem-\mprior)^T \cpriori (\bem-\mprior)$. But they do introduce the concept of the data covariance matrix and posterior model covariance matrix on p. 421.
 
 Throughout the assignment, and in the code, keep in mind the interchangability of these terms:
 %
@@ -125,13 +124,13 @@ Throughout the assignment, and in the code, keep in mind the interchangability o
 %
 The posterior model is the same as the final model of an iterative problem. And the ``target model'' is the same as the ``true model'': this is the model used to generate the ``target data'' or ``true data''. We will use the notation $\mpost$ and $\mtarget$.
 
-% 627
+% 627: list inv or seis directory
 \bigskip\noindent
-{\bf To get the necessary scripts for this assignment, go into your {\tt seis2014} directory and type {\tt svn update}.}
+{\bf To get the necessary scripts for this assignment, go into your {\tt seis2016} directory and type {\tt git pull}.}
 
 %------------------------
 
-% 627 (delete)
+% delete this problem for 627 lab
 \pagebreak
 \subsection*{Problem 0 (2.0). Generalized least squares solutions}
 
@@ -189,7 +188,6 @@ Use $\cdots$ to indicate an element within a sequence.
 
 %------------------------
 
-% 627: uncomment page break
 \pagebreak
 \subsection*{Problem 2 (0.8). Earthquake location: understanding the code}
 
@@ -294,17 +292,21 @@ What dots remain fixed? What dots change?
 %
 \begin{enumerate}
 \item (0.5) In the space provided in \verb+genlsq.m+, implement the quasi-Newton algorithm.
-% comment for 627
+
+% comment for 627:
 Show your lines of code.
-% comment for 627
+
+% comment for 627:
 \item (0.5) Include the automatically-generated plot of convergence curves.
+
 \item (0.0) Make sure you understand the output that is written to the command window.
 \end{enumerate}
 
 %------------------
 
 \item (1.0) In the space provided in \verb+genlsq.m+, compute the posterior model, posterior covariance matrix, and arrival time predictions.
-% comment for 627
+
+% comment for 627:
 Show your lines of code.
 
 List $\mpost$ and $\cpost$ after four iterations. Note that the posterior model is simply the final model of your iterative algorithm.
@@ -358,14 +360,14 @@ List $\mpost$ and $\cpost$ after four iterations. Note that the posterior model 
 \item (0.3)
 %
 \begin{enumerate}
-\item How many iterations are needed for convergence in this example?
-\item What indications do we have that convergence has occurred?
+\item How many iterations are needed for convergence in this example? \\
+      What indications do we have that convergence has occurred?
 \item Explain the relationships among the convergence curves for the data misfit, model misfit, and total misfit.
 \end{enumerate}
 
 %------------------
 
-% comment for 627
+% comment out for 627:
 \item (0.5) Set \verb+irandom_initial_model = 1+, \verb+irandom_target_model = 1+, and \verb+idata_errors = 2+. Then re-run.
 %
 \begin{enumerate}
@@ -391,7 +393,8 @@ Approximately how many hours did you spend on this problem set? Feel free to sug
 %-------------------------------------------------------------
 %\pagebreak
 \bibliographystyle{agu08}
-\bibliography{preamble,refs_carl,REFERENCES}
+\bibliography{carl_abbrev,carl_main,carl_source,carl_him,carl_alaska}
+
 %-------------------------------------------------------------
 
 %-------------------------------------------------------------

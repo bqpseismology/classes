@@ -42,13 +42,12 @@
 %-------------------------------------------------------------
 
 \begin{spacing}{1.2}
-\begin{center}
+\centering
 {\large \bf Problem Set 1: \\
 Introduction to Matlab, featuring the frequency-magnitude relation} \\
 GEOS 626: Applied Seismology, Carl Tape \\
-Assigned: January 16, 2014 --- Due: January 23, 2014 \\
+Assigned: January 15, 2016 --- Due: January 25, 2016 \\
 Last compiled: \today
-\end{center}
 \end{spacing}
 
 %------------------------
@@ -61,14 +60,18 @@ Last compiled: \today
 
 \item Suggested reading: \citet[][Section 4.7.1]{SteinWysession}, \citet{GutenbergRichter1944}
 
-\item See the handout \verb+doc_startup.pdf+ to get set up on the Linux network. This includes copying the template file to make \verb+hw_gr.m+.
+\item See the handout \verb+doc_startup.pdf+ to get set up on the Linux network. This includes copying the template file: \\
+\verb+cp hw_gr_template.m hw_gr.m+
 %to access \verb+GEOTOOLS+.
 
-\item {\bf Possible source of confusion:} Following standard mathematical notation, I will use `$\log$' to represent the base-10 logarithm ($\log_{10}$) and `$\ln$' to represent the natural logarithm. Note that in Matlab \verb+log10+ is $\log_{10}$ and \verb+log+ is $\ln$.
+\item {\bf Possible source of confusion:} Following standard mathematical notation, I will use `$\log_{10}$' to represent the base-10 logarithm and `$\ln$' to represent the natural logarithm. Note that in Matlab \verb+log10+ is $\log_{10}$ and \verb+log+ is $\ln$. (Note that \citet{SteinWysession} use `$\log$' for the base-10 logarithm.)
 
 \item {\bf Matlab tips:}
 %Use \verb+linspace+ to generate a sequency of numbers, $x_i$; then $10^{x_i}$ will be uniformly spaced in $\log$ space.
 \verb+hw_gr_template.m+ shows an example of how to plot multiple items on a log-scaled plot. It also shows how to produce a postscript (PS) or pdf file from a Matlab file. Make sure you follow the template script before proceeding.
+
+\item {\bf Latex option:}
+If you want to use Latex for your homeworks, see the templates in the folder \verb+latex+ (and see the \verb+README+).
 
 \end{itemize}
 
@@ -80,7 +83,7 @@ Last compiled: \today
 This problem addresses the famous Gutenberg-Richter frequency-magnitude relation \citep{GutenbergRichter1944}, which is one of the cornerstone empirical relationships in seismology. It is given by
 %
 \begin{equation}
-\log N = a - b\,M,
+\log_{10} N = a - b\,M,
 \label{GR}
 \end{equation}
 %
@@ -96,7 +99,7 @@ where
 A subtle point is that in practice the magnitudes are {\em binned}, then a line is fit to the histogram. It is helpful to consider the discrete form of \refEq{GR}:
 %
 \begin{equation}
-\log N_i = a - b\,M_i,
+\log_{10} N_i = a - b\,M_i,
 \label{GRd}
 \end{equation}
 %
@@ -153,9 +156,9 @@ What is its magnitude interval?
 
 %----------------
 
-\item (3.0) Now it's time to write some lines of code. Using the output from \verb+seis2GR.m+ (as shown in \verb+hw_gr_template.m+), plot the cumulative and incremental distributions on the same plot, similar to the plot in \citet[][Figure~4.7-2]{SteinWysession}, but note that your $x$-axis is $\mw$, not $\log M_0$, and your $y$-axis is number of earthquakes, not number of earthquakes per year.
+\item (3.0) Now it's time to write some lines of code. Using the output from \verb+seis2GR.m+ (as shown in \verb+hw_gr_template.m+), plot the cumulative and incremental distributions on the same plot, similar to the plot in \citet[][Figure~4.7-2]{SteinWysession}, but note that your $x$-axis is $\mw$, not $\log_{10} M_0$, and your $y$-axis is number of earthquakes, not number of earthquakes per year.
 
-{\em Matlab tip}: \verb+hw_gr_template.m+ shows an example of how to plot multiple items with \verb+semilogy+ axes. Another alternative is to transform $N$ into $n = \log N$, then work with~$n$.
+{\em Matlab tip}: \verb+hw_gr_template.m+ shows an example of how to plot multiple items with \verb+semilogy+ axes. Another alternative is to transform $N$ into $n = \log_{10} N$, then work with~$n$.
 
 \begin{enumerate}
 \item (0.0) Which distribution has more scatter?
@@ -163,7 +166,7 @@ What is its magnitude interval?
 \item (2.2)
 
 \begin{enumerate}
-\item (0.6) Find a best-fitting line, $\log N = a - b M$, for the `most linear' section of the $\log$-scaled cumulative distribution. You can simply pick two points and compute the line, or use a command such as \verb+polyfit+ (and \verb+polyval+) to apply a least-squares fit to a set of points. (Do not fit a line to the entire distribution!) What are your values for $a$ and $b$? (Show your work.)
+\item (0.6) Find a best-fitting line, $\log_{10} N = a - b M$, for the `most linear' section of the $\log_{10}$-scaled cumulative distribution. You can simply pick two points and compute the line, or use a command such as \verb+polyfit+ (and \verb+polyval+) to apply a least-squares fit to a set of points. (Do not fit a line to the entire distribution!) What are your values for $a$ and $b$? (Show your work.)
 
 \item (1.0) Plot your best-fitting line over the full range of magnitudes and include this plot in your write-up. 
 
@@ -189,10 +192,10 @@ Note: The expected value does not have to agree with what actually occurred with
 
 %--------------------------------------
 
-\item (1.0) Instead of analyzing seismicity, let us know analyze seismicity rate by dividing all binned values by the duration of the catalog ($T$, in years).
+\item (1.0) Instead of analyzing seismicity, let us now analyze seismicity rate by dividing all binned values by the duration of the catalog ($T$, in years).
 %
 \begin{enumerate}
-\item (0.1) How many earthquakes per year are in the GCMT catalog
+\item (0.1) Takeing an average over the entire time interval of the GCMT catalog, how many earthquakes per year are there?
 
 \item (0.1) Why is seismicity rate more useful than seismicity?
 
@@ -209,7 +212,12 @@ You can determine this graphically or analytically, from your previous results.
 
 %----------------
 
-\item (1.0) Plot the cumulative and incremental distributions for seismicity rate for bin widths of $\Delta M = 0.05, 0.10, 0.5$, and 1.0. What is the apparent relationship between bin width and the separation between the cumulative and incremental distributions?
+\item (1.0)
+%
+\begin{enumerate}
+\item (0.8) Plot the cumulative and incremental distributions for seismicity rate for bin widths of $\Delta M = 0.05, 0.10, 0.5$, and 1.0.
+\item (0.2) What is the apparent relationship between bin width and the separation between the cumulative and incremental distributions?
+\end{enumerate}
 
 %----------------
 
@@ -232,14 +240,14 @@ The incremental distribution is given by
 \item (1.7) Using the discrete frequency-magnitude relation (\refeq{GRd}), show that the incremental distribution can be written as
 %
 \begin{equation}
-\log(-\Delta N_i) = a + \Delta a - b M_i
+\log_{10}(-\Delta N_i) = a + \Delta a - b M_i
 \label{inc}
 \end{equation}
 %
-%where $a'$ is a function in terms of other variables. List the expression for $a'$.
-where $\Delta a$ is a function in terms of other variables. List the expression for $\Delta a$.
+where $\Delta a$ is a function in terms of other variables (but not $i$). \\
+List the expression for $\Delta a$.
 
-%Hint: Start with $\log(-\Delta N_i)$ and show that it can be written in the form of \refEq{inc}.
+%Hint: Start with $\log_{10}(-\Delta N_i)$ and show that it can be written in the form of \refEq{inc}.
 
 \item (0.1) What is the relationship between bin width and the shift in the $y$-intercept?
 
@@ -252,9 +260,11 @@ where $\Delta a$ is a function in terms of other variables. List the expression 
 %As suggested in \citet[][p.~274]{SteinWysession}, the incremental distribution is related to the derivative of the cumulative distribution. 
 %
 \begin{enumerate}
-\item (0.3) Starting from \refEq{GRd}, derive the analytical formula for $d N/ d M$.
+\item (0.3) Differentiate \refEq{GR} to obtain $d N/ d M$.
 
-\item (1.0) Using this, as well as the mathematical definition of a derivative, derive an expression analagous to \refEq{inc} that is valid for small bin widths, $\Delta M \ll 1$. List the expression for $\Delta a$
+%Starting from \refEq{GR}, derive the analytical formula for $d N/ d M$.
+
+\item (1.0) Using your expression from (a), as well as the mathematical definition of a derivative, derive an expression analagous to \refEq{inc} that is valid for small bin widths, $\Delta M \ll 1$. List the expression for $\Delta a$
 
 \item (0.2) If $b = 1$ and $\Delta M = 0.1$, what is $\Delta a$?
 
@@ -281,9 +291,9 @@ where $\Delta a$ is a function in terms of other variables. List the expression 
 Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
 
 %-------------------------------------------------------------
-%\pagebreak
+\pagebreak
 \bibliographystyle{agu08}
-\bibliography{preamble,refs_carl,REFERENCES,refs_alaska,refs_source}
+\bibliography{carl_abbrev,carl_main,carl_source,carl_calif,carl_him,carl_imaging,carl_alaska}
 %-------------------------------------------------------------
 
 %-------------------------------------------------------------

@@ -44,21 +44,14 @@
 \begin{document}
 %-------------------------------------------------------------
 
-\begin{center}
-
-{\large \bf Problem Set 6: Analysis of the 2004 Sumatra-Andaman earthquake
-
-Part 2: Analyzing the effects of rupture complexity and Earth heterogeneity
-
-}
-
-GEOS 626: Applied Seismology, Carl Tape
-
-Assigned: March 4, 2014 --- Due: March 13, 2014
-
+\begin{spacing}{1.2} 
+\centering
+{\large \bf Problem Set 6: Analysis of the 2004 Sumatra-Andaman earthquake \\
+Part 2: Analyzing the effects of rupture complexity and Earth heterogeneity } \\
+GEOS 626: Applied Seismology, Carl Tape \\
+%Assigned: March 4, 2014 --- Due: March 13, 2014 \\
 Last compiled: \today
-
-\end{center}
+\end{spacing}
 
 %------------------------
 
@@ -87,15 +80,21 @@ The purpose of this problem set is to handle a large data set of seismograms and
 
 %---------
 
-\item Make sure you have done the examples in \verb+doc_startupB.pdf+ and are familiar with what \verb+getwaveform.m+ and \verb+plotw_rs.m+ are doing. Be sure you understand what a bandpass filter is.
+\item Make sure you have completed:
+%
+\begin{enumerate}
+\item \verb+lab_seismo_rs.pdf+, the lab for getting waveforms and plotting record sections.
+Be familiar with what \verb+getwaveform.m+ and \verb+plotw_rs.m+ are doing.
+Be sure you understand what a bandpass filter is.
+
+\item \verb+lab_response.pdf+, the lab on instrument response
+
+\item \verb+lab_sumatra.pdf+, the lab on sumatra waveforms
+\end{enumerate}
 
 %---------
 
-\item Make sure you have completed the lab on instrument response (\verb+lab_response.pdf+).
-
-%---------
-
-\item The main scripts you will use are in your \verb+seis2014+ directory:
+\item The main scripts you will use are in your \verb+seis2016+ directory:
 %
 \begin{itemize}
 \item \verb+sumatra_modes_template.m+
@@ -198,14 +197,7 @@ List them in increasing frequency.
 
 %---------
 
-\item (0.0) Browse \verb+all_sumatra_modes.pdf+ to pick a subset of at least 20 stations for this analysis. The stations should be selected based on high signal-to-noise within the frequency range 0.2 to 1.0~mHz, and, notably, the \snl{0}{2} peak. Be sure to include Canberra and the station from Figure~1 of \citet{Park2005}.
-{\bf See ``Tips on picking stations'' in the instructions above.}
-
-No need to list the stations here; you'll be plotting them later.
-
-%---------
-
-\item (0.5) Set \verb+iload = 0+ in \verb+sumatra_modes_template.m+, then modify \verb+ipick+ (or use \verb+wkeep.m+) and plot your selected stations.
+\item (0.5) Set \verb+iload = 0+ in \verb+sumatra_modes_template.m+, then modify \verb+ipick+ (or use \verb+wkeep.m+) and plot the stations you selected in \verb+lab_sumatra.pdf+.
 
 Compute the amplitude of the \snl{0}{0} peak for all your stations. List the median value.
 

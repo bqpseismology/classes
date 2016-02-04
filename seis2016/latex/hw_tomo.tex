@@ -44,12 +44,11 @@
 %-------------------------------------------------------------
 
 \begin{spacing}{1.2}
-\begin{center}
+\centering
 {\large \bf Problem Set 9: Seismic tomography using ray theory} \\
 GEOS 626: Applied Seismology, Carl Tape \\
-Assigned: April 10, 2014 --- Due: April 17, 2014 \\
+%Assigned: April 10, 2014 --- Due: April 17, 2014 \\
 Last compiled: \today
-\end{center}
 \end{spacing}
 
 %------------------------
@@ -71,7 +70,7 @@ Last compiled: \today
 
 \item The reading and notes on inverse problems from Homework 8 is relevant.
 At the end I have listed some additional references.
-\nocite{Tape2007,Menke,Aster,Tarantola2005}
+\nocite{Tape2007,Menke,AsterE2,Tarantola2005}
 
 \item 
 %The practical aspects of the assignment are entirely based on Matlab (plus its Mapping Toolbox), and I have provided several scripts that you will need.
@@ -86,7 +85,7 @@ The data files and Matlab scripts that you need are in the directory \verb+tomo/
 
 \begin{enumerate}
 \item (0.0) {\em Model parameterization}. A tomographic model is typically described in terms of a perturbation in wave speed structure from some reference model, \ie $\delta\ln c = \delta c/c$.
-(Note \footnote{See the section in the math review homework solutions, ``ASIDE: the natural log function used to express tomographic models.''})
+(Note~\footnote{See the section entitled ``ASIDE: the natural log function used to express tomographic models'' in the math review homework solutions.})
 This function may be expanded in terms of a set of $M$ basis functions:
 %
 \begin{equation}
@@ -103,7 +102,7 @@ Do the lab exercise in \verb+lab_tomo.pdf+.
 
 \item (1.0) {\em Formulate an entry of the partial derivatives matrix}.
 %
-From the class notes (\verb+taylor.pdf+), the ray theory traveltime perturbation for the $i$th source-receiver combination is given by
+From the class notes (\verb+notes_taylor.pdf+), the ray theory traveltime perturbation for the $i$th source-receiver combination is given by
 %
 \begin{equation}
 \delta T_i = -\int_{\mathrm{ray}_i} c^{-1}\,\delta\ln c\;\rmd s,
@@ -285,7 +284,7 @@ Hint: How can we construct a matrix $\bG^T\bG$ with fewer zeros?
 
 % %------------------------
 
-%\pagebreak
+\pagebreak
 \subsection*{Problem 3 (0.0). Connections with real tomography problems.}
 
 \begin{enumerate}
@@ -310,15 +309,16 @@ Hint: Think about the modes homework.
 Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
 
 %-------------------------------------------------------------
-\pagebreak
+%\pagebreak
 \bibliographystyle{agu08}
-\bibliography{preamble,refs_carl,REFERENCES}
+\bibliography{carl_abbrev,carl_main,carl_him}
 %-------------------------------------------------------------
 
+\clearpage\pagebreak
+
 %\vspace{1cm}
-\begin{figure}[h]
-%\begin{center}
-\centering
+\begin{figure}
+\hspace{-0.5cm}
 \includegraphics[width=17cm]{socal_03b.eps}
 \caption[Source--receiver geometry for southern California]
 {{
@@ -326,7 +326,6 @@ Approximately how many hours did you spend on this problem set? Feel free to sug
 {\em Right}: Source--receiver geometry for the problem in this homework. The \ding{73} symbols denote the locations of 25 earthquakes; the $\circ$ symbols denote the locations of 132 broadband receivers in the Southern California Seismic Network.
 \label{fig:geometry}
 }}
-%\end{center}
 \end{figure}
 
 \begin{figure}[p]
