@@ -53,9 +53,10 @@
 %-------------------------------------------------------------
 
 \begin{spacing}{1.2}
+\centering
 {\large \bf Problem Set 5: Toroidal modes of a spherically symmetric earth\footnote{This problem set was designed and written by Charles Ammon, Penn State University. I have made some modifications.}} \\
 GEOS 626: Applied Seismology, Carl Tape \\
-%Assigned: February 25, 2014 --- Due: March 4, 2014 \\
+Assigned: February 22, 2016 --- Due: February 29, 2016 \\
 Last compiled: \today \\
 \end{spacing}
 
@@ -66,7 +67,7 @@ Last compiled: \today \\
 \begin{itemize}
 \item This problem set provides a hands-on introduction to how normal modes of a particular earth model can be computed. The goal is to gain a better understanding for the concepts of normal modes, eigenfrequencies, eigenfunctions, and dispersion.
 
-\item The necessary starting Matlab scripts and data are available from \verb+seis2014+ directory on the linux network; type \verb+svn update+ to obtain the latest version of files. The relevant files are:
+\item The necessary starting Matlab scripts and data are available from \verb+seis2016+ directory on the linux network; type \verb+svn update+ to obtain the latest version of files. The relevant files are:
 %
 \begin{itemize}
 \item \verb+spshell_template.m+ (\refSec{sec:shell})
@@ -814,7 +815,7 @@ This cubic function is a fit to the PREM profiles, so check that the numbers are
 
 %------------------------
 
-%\pagebreak
+\pagebreak
 \section*{Problem 3 (3.0). Phase speed and group speed}
 
 For this problem we use the {\bf cubic model} and we consider the fundamental mode ($n=0$) only. In other words, $\fnl$ for $n > 0$ will not be needed.
@@ -870,6 +871,7 @@ The phase speed, $c$, and the group speed, $U$, have units of rad/s. Multiplicat
 
 Hint: For an adequate, crude numerical integration, use the command \verb+diff(rvec)+ to get a discretized vector of $dr$ that can be multiplied with the discretized version of $W(r)$. (Integration is summation.)
 
+\pagebreak
 \item (1.0) Check that each of the equations in \refeq{ODEs} is satisfied for \tnl{0}{40}: $_0W_{40}(r)$, $_0T_{40}(r)$, $_0\omega_{40}$.
 
 Notes:

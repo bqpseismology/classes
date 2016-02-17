@@ -129,8 +129,8 @@ Angle $\phi$ is measured from $\bxh$, and angle $\theta$ is measured from $\bzh$
 \begin{enumerate}
 \item Write down the $3 \times 3$ rotation matrix $\bR_z = \bR_z(\rotangA)$ that rotates $\br = (x,y,z)$ by angle $\rotangA$ in the positive (counter-clockwise) direction about the $z$-axis, $\bzh = (0,0,1)$.
 \item Check that $\bR_z(90^\circ)(1,0,0) = (0,1,0)$, as shown in the 2D case.
-\item Repeat for $\bR_x(\rotangA)$.
-\item Repeat for $\bR_y(\rotangA)$. Check that $\bR_y(90^\circ)(1,0,0) = (0,0,-1)$.
+\item Write down the matrix entries for $\bR_x(\rotangA)$, and perform the analagous check.
+\item Write down the matrix entries for $\bR_y(\rotangA)$. Check that $\bR_y(90^\circ)(1,0,0) = (0,0,-1)$.
 \end{enumerate}
 
 \item (0.5) Write a function \verb+myrotmat.m+ in Matlab that inputs a rotation angle $\rotangA$ and an index for the axis ($k = 1,2,3$ for $x,y,z$), and then outputs the rotation matrix $\bR_k(\rotangA)$. 
@@ -142,17 +142,18 @@ List the Matlab output for $\bR_x(60^\circ)$, $\bR_y(60^\circ)$, and $\bR_z(60^\
 \begin{enumerate}
 \item (0.5) With \refFig{fig:rot} as a guide, describe (in words) the five operations that comprise $\bU(\rotvec(\phi,\theta),\rotangB)$.
 
-\item (1.0) Derive an expression for the matrix, $\bU(\rotvec(\phi,\theta),\rotangB)$, that rotates a vector $\br$ about the (Cartesian) input vector $\rotvec$ by angle $\rotangB$; this expression will be in terms of the matrix functions $\bR_x(\rotangA)$, $\bR_y(\rotangA)$, $\bR_z(\rotangA)$, where $\rotangA$ is the rotation angle about the $x$-, $y$-, or $z$-axis. Note: No numbers are needed for the answer.
+\item (1.0) Derive an expression for the matrix, $\bU(\rotvec(\phi,\theta),\rotangB)$, that rotates a vector $\br$ about the (Cartesian) input vector $\rotvec$ by angle $\rotangB$; this expression will be in terms of the matrix functions $\bR_x(\rotangA)$, $\bR_y(\rotangA)$, $\bR_z(\rotangA)$, where $\rotangA$ is the rotation angle about the $x$-, $y$-, or $z$-axis. (No numbers or terms like $\cos\rotangA$ should appear in your answer.)
 
 %Hint: What operations should be applied to $\rotvec$?
 \end{enumerate}
 
-\item (0.8) Write a new function \verb+myrotmat_gen.m+ that represents $\bU(\rotvec,\rotangB)$; note that this function will call your \verb+myrotmat.m+ function. WARNING: If you need the arctangent function, be sure to use \verb+atan2(y,x)+, not \verb+atan(y/x)+.
+\item (0.8) Write a new function \verb+myrotmat_gen.m+ that represents $\bU(\rotvec,\rotangB)$; note that this function will call your \verb+myrotmat.m+ function. WARNING: If you use the arctangent function, be sure to use \verb+atan2(y,x)+, not \verb+atan(y/x)+.
 %
 \begin{enumerate}
 \item (0.3) Using \verb+myrotmat_gen.m+, compute $\bU(\rotvec,\rotangB)$ for input values of $\rotvec = (2,1,2)$ and $\rotangB = 30^\circ$. List $\bU$ in decimal form.
-\item (0.2) Check that $\bU(-\rotvec,-\rotangB)$ gives the same result, and explain why this is the case.
-\item (0.1) Check that $\bU$ is orthogonal and also a (right-handed) rotation matrix.
+\item (0.1) Numerically check that $\bU(-\rotvec,-\rotangB)$ gives the same result, and explain why this is the case.
+\item (0.1) Numerically check that $\bU(\rotvec,\rotangB)\rotvec = \rotvec$, and explain why this is the case.
+\item (0.1) Numerically check that $\bU$ is orthogonal and also a (right-handed) rotation matrix.
 \item (0.2) Apply the rotation to the point $\br_0 = (2,2,1)$.
 %
 \begin{itemize}
@@ -240,7 +241,8 @@ What are the coordinates of the following vectors in your basis:
 
 %-----------
 
-\item (2.4) See \refFig{fig:cmt}. In Problem 1, you used the expression $\br = \bU(\rotvec,\rotangB)\br_0$. Here you want to write similar abstract expressions for $\bK$, $\bN$, $\bS$. Please also describe each expression in words.
+\item (2.4) See \refFig{fig:cmt}. In Problem 1, you used the expression $\br = \bU(\rotvec,\rotangB)\br_0$. Here you want to write similar abstract expressions for $\bK$, $\bN$, $\bS$. (What are $\rotvec$, $\rotangB$, and $\br_0$ for each case?)
+Please also describe each expression in words.
 %
 \begin{enumerate}
 \item the strike vector, $\bK$
@@ -255,6 +257,7 @@ Please note the following:
 \item There should be no numbers in your expressions.
 \item Write all expressions {\em without} using negative signs with angles (like $-\kappa$, $-\theta$, or $-\sigma$).
 %\item These expressions should be as succinct as possible (no messy, long equations).
+\item See \refFig{fig:cmt} for an explanation of the conventions for $\sigma$ and $\kappa$.
 \end{itemize}
 
 %-----------

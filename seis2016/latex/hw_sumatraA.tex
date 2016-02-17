@@ -32,6 +32,7 @@
 \hoffset       0pt
 
 \include{carlcommands}
+
 %\newcommand{\fft}{h}
 %\newcommand{\ffw}{\widetilde{h}}
 \newcommand{\fft}{h}
@@ -53,7 +54,7 @@
 {\large \bf Problem Set 4: Analysis of the 2004 Sumatra-Andaman earthquake \\
 Part 1: Instrument response and spectral analysis \\ }
 GEOS 626: Applied Seismology, Carl Tape \\
-Assigned: February 8, 2016 --- Due: February 15, 2016 \\
+Assigned: February 8, 2016 --- Due: February 22, 2016 \\
 Last compiled: \today
 \end{spacing}
 
@@ -96,11 +97,11 @@ Make a copy of each of these files. The label ``CAN'' is for a station at Canber
 \item Background reading:
 
 \begin{itemize}
-\item Instrument response and Fourier analysis: \citet[][Ch.~6]{SteinWysession}
-\item Sumatra earthquake: \citep{Lay2005,Ammon2005,Park2005}
-\item Normal Modes: \citet[][Section 2.9]{SteinWysession} and \citet[][Ch.~8]{DT}. See also ``Computational details'' in Section 10.5.1 of DT.
+\item instrument response and Fourier analysis: \citet[][Ch.~6]{SteinWysession}
+\item Sumatra earthquake: \citep{Lay2005,Ammon2005,Park2005,Ni2005}
+%\item normal modes: \citet[][Section 2.9]{SteinWysession} and \citet[][Ch.~8]{DT}. See also ``Computational details'' in Section 10.5.1 of DT.
 \item PDFs of all referenced Sumatra papers can be found in one of two directories:
-
+%
 \begin{verbatim}
 /home/admin/databases/SUMATRA/papers/
 /home/admin/databases/SUMATRA/papers/SCIENCE_2005/
@@ -110,11 +111,11 @@ Make a copy of each of these files. The label ``CAN'' is for a station at Canber
 
 %---------
 
-\item There is no need to hand in any lines of your computer code unless:
+\item In your answers, please include lines of your computer code if:
 %
 \begin{itemize}
-\item you are unable to get the code ``to work''; or
-\item you think that the code lines are useful for conveying your solution.
+\item you are unable to get the code ``to work''
+\item you think that the code lines are useful for conveying your solution
 \end{itemize}
 
 \end{itemize}
@@ -155,7 +156,7 @@ z &=& a + bi
 
 \begin{enumerate}
 
-\item (0.0) Let $z$ be a complex number and $z^*$ its complex conjugate. Derive the following expressions in two different ways: (1)~$z = r e^{i\theta}$, (2)~$z = a+bi$.
+\item (0.1) Let $z$ be a complex number and $z^*$ its complex conjugate. Derive the following expressions in two different ways: (1)~$z = r e^{i\theta}$, (2)~$z = a+bi$.
 %
 \begin{enumerate}
 \item $z_1 z_2$ (derive new $r$ and $\theta$)
@@ -166,7 +167,7 @@ z &=& a + bi
 
 %-----------
 
-\item (0.5) Using integration by parts ($\int u\,dv = [u\,v] - \int v\,du$), show that 
+\item (0.1) Using integration by parts ($\int u\,dv = [u\,v] - \int v\,du$), show that 
 %
 \begin{eqnarray}
 \cF \left[ \dot{\fft}(t) \right] = i\omega \, \cF \left[ \fft(t) \right]
@@ -182,7 +183,7 @@ Hint: You can assume that $h(t)$ is zero at $\pm\infty$.
 
 %-----------
 
-\item (0.0) \refEq{fftder1} holds for the first derivative of $\fft(t)$, which we denote as either $\dot{\fft}(t)$ or $\fft^{(1)}(t)$. The expression can be generalized for the $n$th derivative, which is (using two different notations)
+\item (0.2) \refEq{fftder1} holds for the first derivative of $\fft(t)$, which we denote as either $\dot{\fft}(t)$ or $\fft^{(1)}(t)$. The expression can be generalized for the $n$th derivative, which is (using two different notations)
 %
 \begin{eqnarray}
 \cF \left[ \fft^{(n)}(t) \right] &=& (i\omega)^n \, \cF \left[ \fft(t) \right]
@@ -207,7 +208,12 @@ A_n(\omega) = \omega^n A(\omega)
 
 %-----------
 
-\item (0.0) Amplitude spectra are almost always plotted in $\log_{10}$-$\log_{10}$ space, with $\log_{10}\omega$ on the $x$-axis and $\log_{10}A$ on the $y$-axis. We will use the natural log and ignore the unnecessary complication of using log-base-10. We will derive the relationship between (1) the slope in log-log space of an amplitude spectrum, $A(\omega)$, for an input function $\fft(t)$ and (2)  the slope in log-log space of an amplitude spectrum, $A_n(\omega)$, for an input function $h^{(n)}(t)$.
+\item (0.1) Amplitude spectra are almost always plotted in $\log_{10}$-$\log_{10}$ space, with $\log_{10}\omega$ on the $x$-axis and $\log_{10}A$ on the $y$-axis. We will use the natural log and ignore the unnecessary complication of using log-base-10. We will derive the relationship between
+%
+\begin{enumerate}
+\item the slope in log-log space of an amplitude spectrum, $A(\omega)$, for an input function $\fft(t)$
+\item the slope in log-log space of an amplitude spectrum, $A_n(\omega)$, for an input function $h^{(n)}(t)$, where $h(t) = h^{(0)}(t)$ and $h^{(n)}(t)$ is the $n$th derivative of $h(t)$
+\end{enumerate}
 
 The key step is to make the coordinate substitution
 %
@@ -218,6 +224,8 @@ u = \ln\omega,
 then consider the function $g_n(u)$ that represents $\ln A_n(\omega)$. Recognizing that $\omega = e^u$ (and $\omega^n = e^{nu}$), the function we are interested in is obtained from taking the log of \mbox{$A_n(\omega) = \omega^n A(\omega)$}:
 %
 \begin{eqnarray}
+g_n(u(\omega)) &=& \ln A_n(\omega) = \ln[ \omega^n A(\omega)]
+\\
 g_n(u) &=& \ln[ e^{nu} A(e^u) ]
 \\
 &=& \ln(e^{nu}) + \ln(A(e^u))
@@ -258,14 +266,14 @@ What is the slope of the acceleration spectrum, $A_2(\omega)$, in log-log space?
 
 %------------------------
 
-%\pagebreak
+\pagebreak
 \section*{Problem 2 (3.5). Deconvolving the instrument response}
 
 \begin{enumerate}
 
-\item (0.0) Run \verb+CAN_response_template.m+. The first time you run this, it will compute and save the Fourier transform of a seismogram. This will take about 5 minutes.
+\item (0.0) Run \verb+CAN_response.m+. The first time you run this, it will compute and save the Fourier transform of a seismogram. This will take about 5 minutes.
 
-Note: make sure that you run this from your \verb+seis2014+ directory, since the file will be saved there.
+Note: make sure that you run this from your \verb+seis2016+ directory, since the file will be saved there.
 
 %-------------------
 
@@ -311,7 +319,7 @@ Label the frequency window $[0.2,1.0]$~mHz (note mHz, not Hz).
 
 %-------------------
 
-\item (0.4) Using the same frequencies used to define $C(\omega)$, evaluate the instrument response to acceleration, $I_a(\omega)$. Hint: see lab exercise on instrument response.
+\item (0.4) Using the same frequencies that you used to define $C(\omega)$ in hte previous problem, evaluate the instrument response to acceleration, $I_a(\omega)$. Hint: see lab on instrument response.
 
 Plot $I_a(\omega)$ as an amplitude spectrum over the full range of frequencies. Use log-log scaling.
 
@@ -338,10 +346,10 @@ X_a(\omega) I_a(\omega) &=& C(\omega)
 
 %------------------------
 
-\pagebreak
+%\pagebreak
 \section*{Problem 3 (2.0). Spectral analysis of noise}
 
-Run \verb+CAN_noise_template.m+. This will generate a time series at CAN for 10 days prior to the Sumatra earthquake.
+Run \verb+CAN_noise.m+. This will generate a time series at CAN for 10 days prior to the Sumatra earthquake.
 
 \begin{enumerate}
 \item (0.2) Using the GCMT catalog, list the magnitude, location, and origin time of the conspicuous event. 
@@ -377,6 +385,7 @@ where \verb+Habs+ is the amplitude spectrum $|H(\omega)|$.
 
 %------------------------
 
+\pagebreak
 \section*{Problem 4 (4.0). Spectral analysis of the Sumatra earthquake recorded at Canberra}
 
 \begin{itemize}
@@ -387,7 +396,7 @@ where \verb+Habs+ is the amplitude spectrum $|H(\omega)|$.
 
 \begin{enumerate}
 \item (1.5) {\bf Direct arrival}. 
-Return to \verb+CAN_response_template.m+ in Problem 2.
+Return to \verb+CAN_response.m+ in Problem 2.
 Analyze the direct arrival by extracting (use \verb+extract+) 1 hour before the centroid origin time to 3 hours after, where the centroid origin time is \\ \verb+otime_cmt = 7.323070424652778e5+ (serial days in Matlab).
 
 \begin{enumerate}
@@ -400,8 +409,8 @@ Can you identify any of the normal modes in the range $[0.2,1.0]$~mHz?
 
 %--------------------
 
-\pagebreak
-\item (1.5) {\bf P wave}. Rename \verb+CAN_P_template.m+, then adapt the script to answer the following questions.
+%\pagebreak
+\item (1.5) {\bf P wave}. Rename \verb+CAN_P.m+, then adapt the script to answer the following questions.
 %
 \begin{enumerate}
 \item (0.5) Using Supplemental Figure S11 of \citet{Ammon2005} as a guide, extract ``the'' P-wave and include a plot. About how long is the P wave signal?
@@ -412,7 +421,7 @@ Can you identify any of the normal modes in the range $[0.2,1.0]$~mHz?
 
 %--------------------
 
-\item (1.0) {\bf High-frequency bandpass}. Rename \verb+CAN_bp_template.m+, then adapt the script to answer the following questions.
+\item (1.0) {\bf High-frequency bandpass}. Rename \verb+CAN_bp.m+, then adapt the script to answer the following questions.
 %
 \begin{enumerate}
 \item (0.8) Estimate the rupture duration by analyzing the high-pass filtered seismogram at CAN, after \citet{Ni2005}. Include your plot and explain your interpretation.
@@ -432,6 +441,7 @@ If you want to prepare for a future homework problem, then follow the filtering 
 Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
 
 %-------------------------------------------------------------
+\pagebreak
 \bibliographystyle{agu08}
 \bibliography{carl_abbrev,carl_main,carl_him}
 %-------------------------------------------------------------
