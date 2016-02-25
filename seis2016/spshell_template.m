@@ -46,7 +46,10 @@ nmax = 8;               % maximum n (default = 8)
                         % nmax=0 will return the first root (n=0)
 % plotting options                        
 iplot_eig_freqs = 1;    % plot eigenfunctions (=1) or not (=0)
-iplot_all_freqs = 1;
+                        % =0 will speed up the calculations
+iplot_all_freqs = 1;    % plot eigenfunctions for all input frequencies,
+                        % including those that do not satisfy the boundary conditions
+                        % =1 for initial problem only
 
 % path to the directory containing the data file prem_Tmodes.txt
 ddir = './data/';
@@ -107,9 +110,13 @@ end
 
 % initial freqeuncy and corresponding surface stress
 % NOTE: surf_stress.m calls stress_disp_tor.m, which depends on degree l
-f = fvec(1);
+ii = 1;
+f = fvec(ii);
 Tsurf = surf_stress(f);
 n = 0;             % counter for n (n=0 is the first root)
+
+disp(sprintf('freq %3i/%3i %10.3e %10.3e %.2f mHz %.1f s %.2f min', ...
+        ii, numf, NaN, Tsurf, f*1e3, 1/f, 1/f/60));
 
 % leave gap for T(n=0,l=1), which do not exist
 % note: these are useful when looping over degree l
