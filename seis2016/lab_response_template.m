@@ -52,6 +52,10 @@ fmax = 1e2;
 numf = 100;
 f = logspace(log10(fmin),log10(fmax),numf)';
 omega = 2*pi*f;
+% note: Although f=0 is an allowable frequency for FFT, you will crash the
+%       functions below if you have f=0 included. In our homework problems,
+%       the frequency vector will be provided when the fft operation is
+%       applied.
 
 aran = 10.^[-20 1.5];
 
