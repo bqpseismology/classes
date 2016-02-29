@@ -140,31 +140,6 @@ imatch = find(strcmp('SBA',sta)==1)
 %
 Or try out the commands \verb+wkeep+ and \verb+wcut+.
 
-
-%---------
-
-\item Tips on picking stations for analysis:
-\begin{itemize}
-\item Pick time series that have the highest signal-to-noise ratios.
-\item In several cases there are multiple seismograms for the same station (and component), \eg at the South Pole:
-%
-\begin{spacing}{1.0}
-\begin{verbatim}
-120  BHZ_00  IU   QSPA   nm / sec
-121  BHZ_10  IU   QSPA   nm / sec
-122  BHZ_20  IU   QSPA   nm / sec
-123  BHZ_30  IU   QSPA   nm / sec
-\end{verbatim}
-\end{spacing}
-%
-(You can see these lines in \verb+sumatra_hf_template.m+.)
-You do not need more than one seismogram for each site. In general the multiple listings represent different seismometers being used or different vertical locations, like at the surface or down a deep borehole.
-
-\item For such a big event as Sumatra, there are many seismograms that are ``clipped'' or distorted due to an erroneous response of the seismometer.
-
-\item Having a uniform distribution (by distance, azimuth, latitude, etc) is often needed for analyses. So if you are picking a subset, be sure you have enough stations to cover the particular variation of interest.
-\end{itemize}
-
 \end{itemize}
 
 %------------------------
