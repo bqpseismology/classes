@@ -152,6 +152,26 @@ z &=& a + bi
 \;.
 \end{eqnarray}
 
+%------------
+
+\item A complex-valued function, such as the instrument response, is written as
+%
+\begin{eqnarray}
+I(\omega) &=& A(\omega)\,e^{i\phi(\omega)}
+\\
+&=& A(\omega)\cos\phi(\omega) + i\,A(\omega)\sin\phi(\omega)
+\end{eqnarray}
+%
+The first version is conceptrually more useful, since $I(\omega)$ is represented as two real-valued functions for amplitude $A(\omega)$ and phase $\phi(\omega)$.
+
+$A(\omega)$ is clearly the amplitude in the sense that
+%
+\begin{equation}
+|I(\omega)| = \left( I(\omega) I(\omega)^* \right)^{1/2}
+= \left( A(\omega)\,e^{i\phi(\omega)} A(\omega)^*\,e^{-i\phi(\omega)} \right)^{1/2}
+= A(\omega)
+\end{equation}
+
 \end{itemize}
 
 \begin{enumerate}
@@ -300,7 +320,7 @@ Hint: the magnitude is $\mw > 6$.
 \begin{enumerate}
 \item Plot the full amplitude spectrum, $|C(\omega)|$; use \verb+axis tight+ to see the full limits.
 \item Plot $|C(\omega)|$ using log-log scaling (\verb+loglog+). \\
-Label the frequency window $[0.2,1.0]$~mHz (note mHz, not Hz).
+Label the frequency window $[0.2,1.0]$~mHz (note mHz, not Hz). \\
 \item Interpret the largest-amplitude spikes in the spectrum.
 \item What is the maximum allowable frequency and why?
 \item What is the minimum (non-zero) allowable frequency and why?
@@ -319,7 +339,7 @@ Label the frequency window $[0.2,1.0]$~mHz (note mHz, not Hz).
 
 %-------------------
 
-\item (0.4) Using the same frequencies that you used to define $C(\omega)$ in hte previous problem, evaluate the instrument response to acceleration, $I_a(\omega)$. Hint: see lab on instrument response.
+\item (0.4) Using the same frequencies that you used to define the full $C(\omega)$, evaluate the instrument response to acceleration, $I_a(\omega)$. Hint: see lab on instrument response.
 
 Plot $I_a(\omega)$ as an amplitude spectrum over the full range of frequencies. Use log-log scaling.
 
@@ -362,8 +382,8 @@ Tip: use the command \verb+plot(w,'xunit','h')+ to plot in hours.
 
 \begin{enumerate}
 \item (1.0) Now use your earthquake-free time series.
-Following the procedure in Problem 2, deconvolve the instrument response.
-Plot the amplitude spectrum of acceleration using log-log scaling and the frequency limits $10^{-4}$ to $10^1$~Hz.
+Following the procedure in Problem~2, deconvolve the instrument response.
+Plot the amplitude spectrum of acceleration using log-log scaling and the frequency limits $10^{-4}$~Hz to $10^1$~Hz.
 
 Tip: If you want a smoother spectral curve, try something like
 
@@ -402,26 +422,26 @@ Analyze the direct arrival by extracting (use \verb+extract+) 1 hour before the 
 \begin{enumerate}
 \item (0.7) Plot the amplitude spectrum (log-log) and mark the two ocean microseism frequency intervals.
 \item (0.2) What is the frequency and period associated with the maximal amplitude?
-\item (0.3) Compare your plot with the noise spectrum from Problem~3.
-\item (0.3) Compare your plot with the spectrum from Problem~2. \\
+\item (0.3) Discuss how your plot compares with the noise spectrum from Problem~3.
+\item (0.3) Discuss how your plot compares with the spectrum from Problem~2. \\
 Can you identify any of the normal modes in the range $[0.2,1.0]$~mHz?
 \end{enumerate}
 
 %--------------------
 
 %\pagebreak
-\item (1.5) {\bf P wave}. Rename \verb+CAN_P.m+, then adapt the script to answer the following questions.
+\item (1.5) {\bf P wave}. Adapt \verb+CAN_P.m+ to answer the following questions.
 %
 \begin{enumerate}
 \item (0.5) Using Supplemental Figure S11 of \citet{Ammon2005} as a guide, extract ``the'' P-wave and include a plot. About how long is the P wave signal?
-\item (0.5) Plot the amplitude spectrum of the P wave on a log-log plot with frequency ranging from $10^{-3}$ to $10^1$~Hz. (Make sure you are working with the BHZ data.)
+\item (0.5) Plot the amplitude spectrum of the P wave on a log-log plot with frequency ranging from $10^{-3}$~Hz to $10^1$~Hz. (Make sure you are working with the BHZ data.)
 
 \item (0.5) If you had to estimate a corner frequency \citep[][p.~267]{SteinWysession}, what would it be?
 \end{enumerate}
 
 %--------------------
 
-\item (1.0) {\bf High-frequency bandpass}. Rename \verb+CAN_bp.m+, then adapt the script to answer the following questions.
+\item (1.0) {\bf High-frequency bandpass}. Adapt \verb+CAN_bp.m+ to answer the following questions.
 %
 \begin{enumerate}
 \item (0.8) Estimate the rupture duration by analyzing the high-pass filtered seismogram at CAN, after \citet{Ni2005}. Include your plot and explain your interpretation.
