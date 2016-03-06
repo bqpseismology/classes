@@ -1,44 +1,10 @@
 % dvips -t letter hw_sumatraB.dvi -o hw_sumatraB.ps ; ps2pdf hw_sumatraB.ps
 \documentclass[11pt,titlepage,fleqn]{article}
 
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{latexsym}
-\usepackage[round]{natbib}
-\usepackage{xspace}
-\usepackage{epsfig}
-\usepackage{bm}
-
-%--------------------------------------------------------------
-%       SPACING COMMANDS (Latex Companion, p. 52)
-%--------------------------------------------------------------
-
-\usepackage{setspace}    % double-space or single-space
-
-\renewcommand{\baselinestretch}{1.2}
-
-\textwidth 460pt
-\textheight 690pt
-\oddsidemargin 0pt
-\evensidemargin 0pt
-
-% see Latex Companion, p. 85
-\voffset     -50pt
-\topmargin     0pt
-\headsep      20pt
-\headheight   15pt
-\headheight    0pt
-\footskip     30pt
-\hoffset       0pt
-
-\include{carlcommands}
+\input{hw626_header}
 
 \newcommand{\snl}[2]{\mbox{$_{#1}\ssS_{#2}$}}
 \newcommand{\snlm}[3]{\mbox{$_{#1}\ssS_{#2}^{#3}$}}
-
-\graphicspath{
-  {./figures/}
-}
 
 %--------------------------------------------------------------
 \begin{document}
@@ -153,7 +119,7 @@ The template script is \verb+sumatra_modes_template.m+. See note \footnote{In th
 \item (0.5) Recall the modes spectrum that we computed for station CAN that emulated Figure~1 of \citet{Park2005}. Having done the homework on toroidal modes, you should now have a better understanding of what the modes peaks are.
 
 Run \verb+modes_PREMobs.m+ to see the observed modes that were used in constructing PREM back in 1980 \citep{PREM}. Keep in mind that these observations were identified from dozens of different earthquakes and hundreds of different stations.
-The dispersion plot identifies the frequency range 0.2--1.0~mHz that is used in Figure~1 of \citet{Park2005}, which is a spectrum of the {\bf vertical component} of ground motion for one station for one earthquake.
+The dispersion plot (\refFig{fig:premmodes}) identifies the frequency range 0.2--1.0~mHz that is used in Figure~1 of \citet{Park2005}, which is a spectrum of the {\bf vertical component} of ground motion for one station for one earthquake.
 %
 \begin{enumerate}
 \item List the toroidal modes, 0.2--1.0~mHz, that were observed in 1980. \\
@@ -172,9 +138,14 @@ List them in increasing frequency.
 
 %---------
 
-\item (0.5) Set \verb+iload = 0+ in \verb+sumatra_modes_template.m+, then modify \verb+ipick+ (or use \verb+wkeep.m+) and plot the stations you selected in \verb+lab_sumatra.pdf+.
+\item (0.5)
+%
+\begin{enumerate}
+\item (0.4) Set \verb+iload = 0+ in \verb+sumatra_modes_template.m+, then modify \verb+ipick+ (or use \verb+wkeep.m+) and plot the stations you selected in \verb+lab_sumatra.pdf+. To save paper, use something like a $5 \times 4$ subplot.
 
-Compute the amplitude of the \snl{0}{0} peak for all your stations. List the median value.
+\item (0.1) Compute the amplitude of the \snl{0}{0} peak for all your stations. \\
+List the median value.
+\end{enumerate}
 
 %---------
 
@@ -182,7 +153,7 @@ Compute the amplitude of the \snl{0}{0} peak for all your stations. List the med
 %
 \begin{enumerate}
 \item Include a plot of the stacked spectrum over two ranges: 0.2--10~mHz and 0.2--1.0~mHz.
-\item Qualitatively, describe the meaning of this spectrum, \eg what is the physical explanation for the spikes?
+\item Qualitatively, describe the meaning of this spectrum, \eg what is the physical explanation for the spikes? It may be helpful to recall the modes homework.
 \end{enumerate}
 %
 % PROBABLY NO NEED TO REMIND EVERYONE ABOUT TIDES HERE, THOUGH IT IS THE LARGEST PEAK IN THE ENTIRE SPECTRUM
@@ -201,10 +172,10 @@ Assuming a linear model, write an expression for the singlet frequency $_0f_2^m(
 
 %---------
 
-\item (0.5) Analyze \snl{0}{2} as a function of latitude. You may find it helpful to use 
+\item (0.5) Analyze \snl{0}{2} as a function of latitude.
 
 Qualitatively, how does the relative sizes of the singlet peaks vary as a function of latitude?
-%How does the amplitude of the degenerate peak vary with latitude.
+%How does the amplitude of the degenerate peak vary with latitude?
 
 See \citet[][Figure 3]{SSteinOkal2007} for additional background.
 
@@ -364,9 +335,7 @@ Notes:
 %------------------------
 
 %\pagebreak
-\section*{Problem}
-
-Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+\section*{Problem} \howmuchtime\
 
 %-------------------------------------------------------------
 %\pagebreak
@@ -377,6 +346,24 @@ Approximately how many hours did you spend on this problem set? Feel free to sug
 %\clearpage
 
 %\input{/home/carltape/latex/misc/wave_params_insert}
+
+\pagestyle{empty}
+
+\clearpage\pagebreak
+\begin{figure}
+\centering
+\begin{tabular}{cc}
+(a) & \includegraphics[width=11cm]{modes_toroidal} \\
+(b) & \includegraphics[width=11cm]{modes_spheroidal}
+\end{tabular}
+\caption[]
+{{
+Observations of (a) toroidal and (b) spheroidal modes used in making PREM \citep{PREM}.
+The horizontal dashed lines mark the frequency range 0.2--1.0~mHz.
+These figures are generated from {\tt modes\_PREMobs.m}.
+}}
+\label{fig:premmodes}
+\end{figure}
 
 %\begin{figure}
 %\begin{center}

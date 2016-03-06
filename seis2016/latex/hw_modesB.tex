@@ -1,41 +1,7 @@
 % dvips -t letter hw_modesB.dvi -o hw_modesB.ps ; ps2pdf hw_modesB.ps
 \documentclass[11pt,titlepage,fleqn]{article}
 
-\usepackage{amsmath}
-\usepackage{amssymb}
-\usepackage{latexsym}
-\usepackage[round]{natbib}
-\usepackage{xspace}
-\usepackage{epsfig}
-\usepackage{bm}
-
-%--------------------------------------------------------------
-%       SPACING COMMANDS (Latex Companion, p. 52)
-%--------------------------------------------------------------
-
-\usepackage{setspace}    % double-space or single-space
-
-\renewcommand{\baselinestretch}{1.2}
-
-\textwidth 460pt
-\textheight 690pt
-\oddsidemargin 0pt
-\evensidemargin 0pt
-
-% see Latex Companion, p. 85
-\voffset     -50pt
-\topmargin     0pt
-\headsep      20pt
-\headheight   15pt
-\headheight    0pt
-\footskip     30pt
-\hoffset       0pt
-
-\include{carlcommands}
-
-\graphicspath{
-  {./figures/}
-}
+\input{hw626_header}
 
 %--------------------------------------------------------------
 \begin{document}
@@ -108,15 +74,15 @@ Here the layer represents the crust, and the halfspace represents the upper mant
 
 %------------------------
 
-\subsection*{Problem 1 (1.5). Setup}
+\subsection*{Problem 1 (2.0). Setup}
 
 \begin{enumerate}
 
-\item (0.0) Write down the two equations represented by \refEq{rODEs} and the boundary conditions; show explicit $r$ dependence and $n$ dependence (\eg $\omega_n$). 
+\item (0.3) Write down the two equations represented by \refEq{rODEs} and the boundary conditions; show explicit $r$ dependence and $n$ dependence (\eg $\omega_n$). 
 
 %----------------
 
-\item (1.0) The appearance of overtone branches for \refEq{rODEs} depends on the {\em cut-off frequency of the nth higher mode} \citep[][Eq. 7.8]{AkiRichardsE2}\footnote{This is also listed in a different form in \citet[][p. 92]{SteinWysession}.}
+\item (1.2) The appearance of overtone branches for \refEq{rODEs} depends on the {\em cut-off frequency of the nth higher mode} \citep[][Eq. 7.8]{AkiRichardsE2}\footnote{This is also listed in a different form in \citet[][p. 92]{SteinWysession}.}
 %
 \begin{equation}
 \omega_{{\rm c}n} = \frac{n\pi \beta_c}{H} \left( 1 - \frac{\beta_c^2}{\beta_m^2}\right)^{-1/2}
@@ -167,7 +133,7 @@ Make sure that the values in each range are ordered such that the mode branches 
 
 %----------------
 
-\item (0.5) Sketch/draw the setup for this problem and include the following features and labels: the layer, $r$-axis, $r$-origin, $h$, $\lambda_m$, $\rho_c$, $\mu_c$, $\rho_m$, $\mu_m$.
+\item (0.5) Sketch/draw the setup for this problem and include the following features and labels: the layer, $r$-axis, $r$-origin, $H$, $\lambda_m$, $\rho_c$, $\mu_c$, $\rho_m$, $\mu_m$.
 
 In order to avoid numerical overflow during integration, we will use a coordinate system with an origin ($r = 0$) that is within the halfspace, three times a mantle shear-wavelength below the base of the layer. The convention is such that $r$ points upward.
 
@@ -207,7 +173,7 @@ shear wavespeed in mantle & $\beta_m$ & \verb+mbeta+  & m/s      & 4600 & & \\
 
 %------------------------
 
-\subsection*{Problem 2 (8.5). Implementation}
+\subsection*{Problem 2 (8.0). Implementation}
 
 The boundary conditions for this problem are similar to those used in the toroidal modes problem. The shear stess is zero at the surface and zero at some depth in the mantle, far below the main sensitivity depths of the waves of interest. This is implemented in \verb+surf_stress_love.m+ with the initial conditions
 %
@@ -231,7 +197,7 @@ where $r_b = 0$ because of our choice of origin. Note that the ``bottom stress''
 
 \begin{enumerate}
 
-\item (3.5) Adapt the four scripts from the modes homework to solve \refEq{rODEs}.
+\item (4.0) Adapt the four scripts from the modes homework to solve \refEq{rODEs}.
 
 Notes:
 %
@@ -260,7 +226,7 @@ Note: \verb+imod+ is not needed as before.
 
 \item You will need to adapt \verb+stress_disp_tor.m+ (\refeq{ODEs}) to be \verb+stress_disp_love.m+ (\refeq{rODEs}).
 
-Hint: You will want to define the global variables \verb+omega+ and \verb+k+ (only).
+Hint: You will want to define two global variables, \verb+omega+ and \verb+k+.
 
 \end{itemize}
 
@@ -290,12 +256,12 @@ After you do the check, you can go back to using the default tolerance.
 
 %----------------
 
-\item (1.0) Compute the displacement and stress eigenfunctions (show plots) and values (list in table) of wavenumber for the fundamental mode, $k_0$ ($n=0$), for periods of 120, 80, 50, 25, 10, and 6 seconds.
+\item (0.5) Compute the displacement and stress eigenfunctions (show plots) and values (list in table) of wavenumber for the fundamental mode, $k_0$ ($n=0$), for periods of 120, 80, 50, 25, 10, and 6 seconds.
 
 \begin{spacing}{1.5}
 \begin{tabular}{r|r|r}
 \hline\hline
-period, s & frequency, mHz & wavenumber, 1/m  \\ \hline\hline
+period, s & $f_0$, frequency, mHz & $k_0$, wavenumber, 1/m  \\ \hline\hline
 120 & & \\ \hline
 80 & & \\ \hline
 50 & &  \\ \hline
@@ -308,7 +274,7 @@ period, s & frequency, mHz & wavenumber, 1/m  \\ \hline\hline
 
 %----------------
 
-\item (1.0) Compute all possible solutions for the target period of $T = 3.0$ s.
+\item (0.5) Compute all possible solutions for the target period of $T = 3.0$ s.
 %
 \begin{enumerate}
 \item Turn in a plot showing the two eigenfunctions, and list your results in the format of the table below. \\
@@ -384,9 +350,7 @@ Notes:
 %------------------------
 
 %\pagebreak
-\subsection*{Problem}
-
-Approximately how many hours did you spend on this problem set? Feel free to suggest improvements here.
+\subsection*{Problem} \howmuchtime\
 
 %-------------------------------------------------------------
 \bibliographystyle{agu08}
@@ -422,7 +386,7 @@ Dispersion plots for a toroidal modes in a homogeneous shell and Love waces in a
 (a) Dispersion plot for toroidal modes in a homogeneous shell. The dotes shows the only allowable solutions; the curves are drawn to show the difference branches ($n=0$, $n=1$, etc). 
 Note the $10^{-3}$ scaling for wavenumber. These wavenumbers (and frequencies) are much smaller than those in (b).
 (b) Dispersion plot for Love waves in a layer-over-halfspace. The dots are not discrete modes; one should think of the solution space as a set of curves (\ie connect the colored dots).
-The model is described listed in Problem~1-\ref{prob:model1}.
+The model is described in Problem~1-\ref{prob:model1}.
 \label{fig:dots}
 }}
 \end{figure}
