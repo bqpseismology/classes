@@ -16,8 +16,8 @@ clc
 iload = 1;      % USER: CHANGE THIS
 
 % add path in order to access additional files and scripts
-ddir = '/home/admin/databases/SUMATRA/data/wfobject/';
-addpath(ddir);
+datadir = '/home/admin/databases/SUMATRA/data/wfobject/';
+addpath(datadir);
 
 % first load all the data
 if iload==1
@@ -44,7 +44,7 @@ end
 % note: column 1 is the index into the full set of FFT waveforms [1:169]
 %       column 2 is the index into the reduced set of FFT waveforms;
 %                this also represents the page number of all_sumatra_modes.pdf
-[ind,ind_pdf,sta,chan,net,tag,ikeep] = textread([ddir 'sumatra_modes.txt'],'%f%f%s%s%s%s%f');
+[ind,ind_pdf,sta,chan,net,tag,ikeep] = textread([datadir 'sumatra_modes.txt'],'%f%f%s%s%s%s%f');
 disp('ALL AVAILABLE WAVEFORMS');
 for ii=1:length(ind)
    disp(sprintf('%3i %3i %7s %7s %4s %4i',ind(ii),ind_pdf(ii),sta{ii},chan{ii},net{ii},ikeep(ii)));
@@ -77,7 +77,7 @@ for ii=1:length(ipick)
     % note: time series had calibration applied,
     %       but the full instrument response was NOT removed
     fname = strcat('w',tag{jj},'.mat');
-    ifile = [ddir 'full_length/' fname];
+    ifile = [datadir 'full_length/' fname];
     load(ifile);
     w(ii) = v;
 
