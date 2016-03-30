@@ -67,8 +67,8 @@ xlabel('Time (s)'); ylabel('Amplitude'); title('Pasadena, LHZ');
 xlim(xran);
 
 subplot(nr,nc,2); hold on;
-% plot(ti,ynee,'r');
-plot(ti,yneeen,'k--',ti,-yneeen,'k--');    % envelope
+plot(ti,ynee,'r');
+% plot(ti,yneeen,'k--',ti,-yneeen,'k--');    % envelope
 xlim(xran);
 xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
 %print(gcf,'-depsc',[pdir 'PAS_NEE_seis']);
