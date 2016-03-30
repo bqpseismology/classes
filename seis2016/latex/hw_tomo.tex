@@ -13,7 +13,7 @@
 \centering
 {\large \bf Problem Set 9: Seismic tomography using ray theory} \\
 GEOS 626: Applied Seismology, Carl Tape \\
-%Assigned: April 10, 2014 --- Due: April 17, 2014 \\
+Assigned: April 4, 2016 --- Due: April 11, 2016 \\
 Last compiled: \today
 \end{spacing}
 
@@ -47,7 +47,7 @@ The data files and Matlab scripts that you need are in the directory \verb+tomo/
 
 %------------------------
 
-\subsection*{Problem 1 (5.0). Constructing the matrix of partial derivatives.}
+\subsection*{Problem 1 (4.0). Constructing the matrix of partial derivatives.}
 
 \begin{enumerate}
 \item (0.0) {\em Model parameterization}. A tomographic model is typically described in terms of a perturbation in wave speed structure from some reference model, \ie $\delta\ln c = \delta c/c$.
@@ -103,7 +103,7 @@ and the model vector is given by
 
 %-----------------
 
-\item (4.0) {\em Compute an entry of the partial derivatives matrix}. \\
+\item (3.0) {\em Compute an entry of the partial derivatives matrix}. \\
 Now adapt \verb+compute_Gik_ray_template.m+ to compute the $N \times M$ partial derivatives matrix~$\bG$.
 Take into account the following details:
 %
@@ -158,12 +158,12 @@ load Gik             % will load the file Gik.mat with the one variable Gik
 %------------------------
 
 %\pagebreak
-\subsection*{Problem 2 (5.0). Solving for the unknown wavespeed structure.}
+\subsection*{Problem 2 (4.2). Solving for the unknown wavespeed structure.}
 
 Instructions:
 %
 \begin{itemize}
-\item At this point, you should have saved your partial derivatives matrix, $\bG$. Now open the template file \verb+tomo_template.m+.
+\item At this point, you should have saved your partial derivatives matrix, $\bG$. Now modify \verb+tomo_template.m+.
 
 \item In order to do the inverse problem, you will need the data vector of traveltime measurements (\refeq{d}). Load the column vector \verb+measure_vec.dat+ into Matlab, and check that it has dimension $3300 \times 1$.
 
@@ -171,15 +171,15 @@ Instructions:
 \end{itemize}
 
 \begin{enumerate}
-\item (0.5) Write the symbolic expression for the solution $\bem$ to the least squares problem $\bG\bem=\bd$ in the case where $\bG^T\bG$ is full rank.  List the dimensions of $\bem$, $\bd$, $\bG$, $\bG^T\bG$, and $\bG^T\bd$.
+\item (0.4) Write the symbolic expression for the solution $\bem$ to the least squares problem $\bG\bem=\bd$ in the case where $\bG^T\bG$ is full rank.  List the dimensions of $\bem$, $\bd$, $\bG$, $\bG^T\bG$, and $\bG^T\bd$.
 
 %------------
 
-\item (0.5) Compute $\bem$ using your formula.  What do you get, and why is this the case?
+\item (0.4) Compute $\bem$ using your formula.  What do you get, and why is this the case?
 
 %------------
 
-\item (1.5) If $\bG^T\bG$ is not full rank, then a damping parameter $\lambda$ may be introduced to stabilize (or ``regularize'') the inversion.  One possible solution to the problem is:
+\item (1.0) If $\bG^T\bG$ is not full rank, then a damping parameter $\lambda$ may be introduced to stabilize (or ``regularize'') the inversion.  One possible solution to the problem is:
 %
 \begin{equation}
 \bem_{\lambda} = \left(\bG^T\bG+\lambda^2\bI\right)^{-1}\bG^T\bd.
@@ -187,13 +187,13 @@ Instructions:
 %
 \begin{enumerate}
 
-\item Compute $\bem_{\lambda}$ for $\lambda = 10$. \\
+\item (0.5) Compute $\bem_{\lambda}$ for $\lambda = 10$. \\
 List the sum of the squares of the entries of the residual vector $\br_\lambda = \bG\bem_\lambda-\bd$; this is the {\em misfit norm} (squared).
 List the sum of the squares of the entries of the model vector $\bem_{\lambda}$; this is the {\em model norm} (squared).
 
 %------------
 
-\item Compute $\bem_{\lambda}$ for a range of $\lambda$ values: for example, try
+\item (0.0) Compute $\bem_{\lambda}$ for a range of $\lambda$ values: for example, try
 
 \verb+lamvec = 10.^linspace(log10(minlam), log10(maxlam), numlam);+
 
@@ -201,7 +201,7 @@ with $\lambda_{\rm min} = 0.1$ and $\lambda_{\rm max} = 100$.
 
 %------------
 
-\item Using a \verb+loglog+ plot (or transform your values from $x$ to $\log x$), plot the misfit norm ($y$-axis) versus model norm ($x$-axis).
+\item (0.5) Using a \verb+loglog+ plot (or transform your values from $x$ to $\log x$), plot the misfit norm ($y$-axis) versus model norm ($x$-axis).
 %The misfit norm is the sum of the squares of the residuals, where the $i$the residual is $(\bG\bem-\bd)_i$. The model norm is the sum of the squares of the model parameters $m_k$.
 
 \end{enumerate}
@@ -243,7 +243,7 @@ Note: Plot only the five sources that were used in the inversion.
 \item (0.3) Repeat using only the first source.
 \end{enumerate}
 
-\item (0.5) What are two ways to stabilize the inverse problem, given total control over the experimental design?  \\
+\item (0.4) What are two ways to stabilize the inverse problem, given total control over the experimental design?  \\
 Hint: How can we construct a matrix $\bG^T\bG$ with fewer zeros?
 
 \end{enumerate}
@@ -251,18 +251,18 @@ Hint: How can we construct a matrix $\bG^T\bG$ with fewer zeros?
 % %------------------------
 
 \pagebreak
-\subsection*{Problem 3 (0.0). Connections with real tomography problems.}
+\subsection*{Problem 3 (1.8). Connections with real tomography problems.}
 
 \begin{enumerate}
-\item Our data vector contains a set of traveltime differences between a wave in our model and a wave in the target model (\ie the unknown Earth model). In practice, how is this measurement made?
+\item (0.6) Our data vector contains a set of traveltime differences between a wave in our model and a wave in the target model (\ie the unknown Earth model). In practice, how is this measurement made?
 
-\item After the first iteration, we no longer have a uniform ``reference'' model for phase speed. How will we need to adapt our algorithm to accommodate iterations of the phase speed model?
+\item (0.6) After the first iteration, we no longer have a uniform ``reference'' model for phase speed. How will we need to adapt our algorithm to accommodate iterations of the phase speed model?
 
 % curved ray paths
 % new data vector
 % perturbations from a nonuniform reference model
 
-\item In a real problem we might make measurements at several different periods. How can the phase speed for different periods be used to obtain a 3D model of shear wave structure?
+\item (0.6) In a real problem we might make measurements at several different periods. How can the phase speed for different periods be used to obtain a 3D model of shear wave structure?
 
 Hint: Think about the modes homework.
 

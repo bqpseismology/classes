@@ -51,13 +51,15 @@ Note the differences in nomenclature listed in \refTab{tab:names}.
 
 \item See \refTab{tab:waveparm} for a summary table of wave parameters.
 
+\item The Preliminary Reference Earth Model is from \citet{PREM}. It descibes the Earth's structure as a set of 1D radial functions (\eg $\rho(r)$).
+
 \end{itemize}
 
 %-----------------------------
 
 \begin{figure}[h]
 \begin{center}
-\includegraphics[width=6cm]{modes_shells.eps}
+\includegraphics[width=5.5cm]{modes_shells.eps}
 \caption[]
 {{
 Cross section of the spherical shell model assumed in this problem. Since the outer core is fluid, a shell is representative of earth for toroidal vibrations. We assume this shell can have radial variations in density, $\rho(r)$, and rigidity, $\mu(r)$.
@@ -526,7 +528,7 @@ end
 \section*{Problem 1 (4.0). Eigenfunctions, eigenfrequencies, and dispersion}
 
 \begin{itemize}
-\item A key point is to recognize that ``the mode'' \tnl{n}{l} comprises three parts:
+\item A key point is to recognize that ``the mode'' \tnl{n}{l} has three parts:
 %
 \begin{equation}
 \tnl{n}{l} \hspace{10pt} \left\{
@@ -538,7 +540,7 @@ $\Ynl(\phi,\theta)$ & surface spherical harmonic function
 \end{equation}
 %
 Our problem is not concerned with the surface displacement field\footnote{The surface displacent field is a vector field that is a function of $\Ynl(\phi,\theta)$; see \citet[][Section 8.6.1]{DT}.}.
-So ``the mode'' or ``the solution'' \tnl{n}{l} (to \refeq{ODEs}) comprises three parts: an eigenfrequency, $\omnl$, and two eigenfunctions, $W$ and $T$, with the boundary condition $T(a) = T(b) = 0$:
+So ``the mode'' or ``the solution'' \tnl{n}{l} (to \refeq{ODEs}) has three parts: an eigenfrequency $\omnl$ and two eigenfunctions, $W$ and $T$, with the boundary condition $T(a) = T(b) = 0$:
 %
 \begin{equation}
 \tnl{n}{l} \hspace{10pt} \left\{
@@ -558,7 +560,7 @@ $\Tnl(r)$
 %
 \begin{enumerate}
 \item Write down the two equations represented by \refEq{ODEs} and the equations for the boundary conditions; show explicit $r$ dependence, $l$ dependence, and $n$ dependence (\eg $\omnl$).
-\item What are the variables that describe the Earth structure?
+\item List and name the variables that describe the Earth structure?
 %How many material variables are present?
 
 \item What is the physical meaning of $W(r)$ and $T(r)$?
@@ -569,7 +571,7 @@ $\Tnl(r)$
 \item (0.0) Execute the script \verb+spshell_template.m+ and analyze the output. Two figures are generated, one for a set of $W(r)$, the other for a set of $T(r)$ (\refFig{fig:Tr}).
 %
 \begin{enumerate}
-\item What is the range of frequencies that you are evaluating? List $f_{\rm min}$ and $f_{\rm max}$ in mHz.
+\item What is the range of frequencies that you are evaluating? List $f_{\rm min}$ and $f_{\rm max}$ in mHz. Draw two lines for $f = f_{\rm min}$ and $f = f_{\rm max}$ in \refFig{fig:dots}a.
 
 \item A key part of the problem is to identify the frequency intervals, $[f_i, f_{i+1}]$ where the surface stress, $T(a)$, changes sign. On \refFig{fig:Tr}, highlight the pair(s) ($i$ and $i+1$) that have $T(a)$ on opposite sides of $T(a) = 0$.
 
@@ -613,13 +615,13 @@ What is the qualitative relationship between $l$ and $\fnl$ ($n$ fixed)?
 \item (0.5) Modify your code to compute eigenfrequencies for $n=0$, $l=2$-9.
 %
 \begin{enumerate}
-\item (0.2) In \refFig{fig:dots}b, plot (by hand) the function evaluations that you performed.
+\item (0.3) In \refFig{fig:dots}b, plot (by hand) {\em all} the function evaluations $(l, f)$ that you performed.
 
 Hint: what is $f_{\rm min}$?
 
 \item (0.1) List the predicted eigenperiods in \refTab{tab:mode_pred}.
 
-\item (0.2) Among the toroidal modes in \refTab{tab:mode_pred}, the gravest mode is \tnl{0}{2} ($n=0$, $l=2$).
+\item (0.1) Among the toroidal modes in \refTab{tab:mode_pred}, the gravest mode is \tnl{0}{2} ($n=0$, $l=2$).
 %
 \begin{itemize}
 \item List the eigenfrequency $_0f_2$ in mHz and eigenperiod $_0T_2$ in seconds and minutes. (Note \footnote{Notation might be confusing: $T$ is period, $T(r)$ is the stress eigenfunction (for toroidal modes), and \tnl{n}{l} is the label for a toroidal mode. Usually it should be clear from the context.})
@@ -674,9 +676,14 @@ where $i$ is the measurement index that represents some particular $n$-$l$ pair,
 \begin{enumerate}
 \item (0.1) Write the expression for $F(\bem)$ in the case of $N=1$.
 
-\item (0.4) Compute $F(\bem)$ for all available observations (\refTab{tab:modes_obs}), and list the value in mHz in \refTab{tab:homo}. These observations will be loaded within \verb+spshell_template.m+ if you comment out the last \verb+break+ statement.
+\item (0.4) Compute $F(\bem)$ for all available observations (\refTab{tab:modes_obs}). These observations will be loaded within \verb+spshell_template.m+ if you comment out the last \verb+break+ statement.
 
 Tip: Initialize an $a \times b$ matrix as \verb+Fobs = NaN(a,b)+, then fill certain entries according to $n$ and $l$ listed in the observations. This ``observations matrix'' can be differenced with a corresponding ``predictions matrix''; the residual matrix can be turned into a vector as \verb+Fres(:)+. See example code at the bottom of \verb+spshell_template.m+.
+
+\begin{itemize}
+\item Show your code for the calculation.
+\item List the value in mHz in \refTab{tab:homo}.
+\end{itemize}
 
 \end{enumerate}
 
@@ -732,13 +739,13 @@ What is the percent difference from the observed value, $100\,\ln(f/f_{\rm obs})
 %
 where $r=a$ is the surface and $r=b$ is the core-mantle boundary. (The values are an approximation to PREM's $\rho(r)$ and $\mu(r)$.) Thus, our Earth model $\bem$ can be thought of as having four parameters, the intercept and slope of $\rho(r)$ and $\mu(r)$: $\bem = (\rho_0,\rho_1,\mu_0,\mu_1)$.
 
-Test your \verb+earthfun.m+ for a few values of $r$ to make sure that the output values of $rho$ and $\mu$ are sensible (no work needed).
+Test your \verb+earthfun.m+ for a few values of $r$ to make sure that the output values of $\rho$ and $\mu$ are sensible (no work needed).
 
 Note: As suggested in \verb+earthfun.m+, it may be helpful to use \verb+rspan+ as a global variable.
 
 \begin{enumerate}
 \item (0.4) Show your code for \verb+earthfun.m+.
-\item (0.3) Uncomment the line in \verb+stress_disp_tor.m+ to use your linear model. Then generate a new dispersion plot with both predictions and observations, as in Problem 1-\ref{prob:disp}.
+\item (0.3) Generate a new dispersion plot with both predictions and observations, as in Problem 1-\ref{prob:disp}.
 \item (0.1) List the misfit in \refTab{tab:homo}.
 \item (0.2) What parameters would you search over if you wanted to obtain an optimal linear earth model?
 \end{enumerate}
@@ -792,11 +799,12 @@ For this problem we use the {\bf cubic model} and we consider the fundamental mo
 \item (0.5) Consider the set of $l$, \verb+lvec = [10:30:400]+. Using the expressions in \refTab{tab:waveparm}, make two dispersion plots for the fundamental mode:
 %
 \begin{enumerate}
-\item frequency (mHz) vs degree
-\item phase speed (km/s) vs period; use the $x$ (period) limits \verb+[0 300]+
-\end{enumerate}
-%
+\item (0.2) frequency (mHz) vs degree
+
+\item (0.3) phase speed (km/s) vs period; use the $x$ (period) limits \verb+[0 300]+
+
 Qualitatively, how do these compare with the predictions for PREM, shown in \refFig{fig:dispersionApp}c?
+\end{enumerate}
 
 \item (0.3)
 %
@@ -834,13 +842,21 @@ I_2 &=& \int_0^a \mu(r) \left[W(r)\right]^2 \rmd r
 \end{eqnarray}
 %
 where $c$ is phase speed (\refTab{tab:waveparm}). % and expressions for $I_2$ and $I_1$ are in DT.
-The phase speed, $c$, and the group speed, $U$, have units of rad/s. Multiplication by $a$ (earth radius) will give the group speed in km/s ($U' = Ua$). List both $U$ and $U'$ in \refTab{tab:eigfun}.
-%Also, repeat the calculation for the original homogeneous model, and list your two values in  \refTab{tab:eigfun}.
+The phase speed, $c$, and the group speed, $U$, have units of rad/s. Multiplication by $a$ (earth radius) will give the group speed in km/s ($U' = Ua$).
+%
+\begin{enumerate}
+\item Show you lines of code.
 
 Hint: For an adequate, crude numerical integration, use the command \verb+diff(rvec)+ to get a discretized vector of $dr$ that can be multiplied with the discretized version of $W(r)$. (Integration is summation.)
 
+\item List both $U$ and $U'$ in \refTab{tab:eigfun}.
+\end{enumerate}
+%Also, repeat the calculation for the original homogeneous model, and list your two values in  \refTab{tab:eigfun}.
+
+\label{prob:0T40_cubic_group}
+
 \pagebreak
-\item (1.0) Check that each of the equations in \refeq{ODEs} is satisfied for \tnl{0}{40}: $_0W_{40}(r)$, $_0T_{40}(r)$, $_0\omega_{40}$.
+\item (1.0) Show numerically that each of the equations in \refeq{ODEs} is satisfied for \tnl{0}{40}: $_0W_{40}(r)$, $_0T_{40}(r)$, $_0\omega_{40}$.
 
 Notes:
 %
@@ -922,7 +938,9 @@ $n=3$ & \blank & \blank & \blank & \blank & \blank & \blank & \blank & \blank & 
 \begin{table}
 \caption[]
 {{
-Wave parameters (\refTab{tab:waveparm}) for \tnl{0}{40} ($n=0$, $l=40$) addressed in Problems 1-\ref{prob:0T40_homo} and 3-\ref{prob:0T40_cubic}. List your values with three significant figures.
+Wave parameters (\refTab{tab:waveparm}) for \tnl{0}{40} ($n=0$, $l=40$) addressed in Problems 1-\ref{prob:0T40_homo} and 3-\ref{prob:0T40_cubic}.
+The group speed calculation is from Problem 3-\ref{prob:0T40_cubic_group}.
+List your values with three significant figures.
 \label{tab:eigfun}
 }}
 \begin{spacing}{1.5}
@@ -989,7 +1007,7 @@ See Problem 1-\ref{prob:Tr}.
 \begin{tabular}{cc}
 \includegraphics[width=8.5cm]{SW_F2.9-10.eps} &
 \includegraphics[width=8.5cm]{SW_F2.9-10.eps} \\
-(a) Problem 1-\ref{prob:Tr} & (b) Problem 1-\ref{prob:l29} 
+(a) Problem 1-\ref{prob:Tr} & (b) Problem 1-\ref{prob:l29}a 
 \end{tabular}
 \caption[]
 {{

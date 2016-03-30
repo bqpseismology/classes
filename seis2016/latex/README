@@ -4,7 +4,10 @@ then you can use these files as templates.
 
 The template files require carlcommands.tex for user-defined variables.
 The figure files are not available (but could be if you want them).
-The bib files for references are not available (but could be if you want them).
+
+If GEOTOOLS is installed, then the path to all bib files and carlcommands.tex should be visible.
+At the start of GEOS 626, carlcommands.tex should be in seis2016/latex.
+After GEOTOOLS is installed, the seis2016 copy of carlcommands.tex can be deleted.
 
 ------
 TO COMPILE
