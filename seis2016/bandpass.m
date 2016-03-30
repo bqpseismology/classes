@@ -16,19 +16,27 @@ function y2 = bandpass(t,y,fa,fb)
 
 f1 = min([fa fb]);
 f2 = max([fa fb]);
+
+% demean and then take fft
+y = y - mean(y);
+Hf = fft(y);
+
+% define frequency vector
 n = length(t);
 dt = t(2) - t(1);
 fNyq = 1/(2*dt);
-y = y - mean(y);
-ft = fft(y);
-fre = linspace(0, 2*fNyq, n)';
-[~, k1] = min(abs(fre - f1));
-[~, k2] = min(abs(fre - f2));
+fvec = linspace(0, 2*fNyq, n)';
+
+% find indices that delimit fa,fb,-fa,-fb
+[~, k1] = min(abs(fvec - f1));
+[~, k2] = min(abs(fvec - f2));
 k3 = n - k2 + 2;
 k4 = n - k1 + 2;
 
-ft(1:k1)  = zeros(k1, 1);
-ft(k2:k3) = zeros(k3-k2+1, 1);
-ft(k4:n)  = zeros(k1-1, 1);
+% zero out entries outside the frequency range [fa,fb]
+Hf(1:k1)  = zeros(k1, 1);
+Hf(k2:k3) = zeros(k3-k2+1, 1);
+Hf(k4:n)  = zeros(k1-1, 1);
 
-y2 = real(ifft(ft));
+% real part of inverse fourier transform
+y2 = real(ifft(Hf));
