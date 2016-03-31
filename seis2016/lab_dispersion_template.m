@@ -78,8 +78,7 @@ xlabel('Time (s)'); ylabel('Amplitude'); title('Needles, LHZ');
 
 % frequency vector
 npt = nt;
-forig = fftvec(ti);
-f = abs(forig);  % we do not have negative frequencies here
+f = fftvec(ti);     % note: negative frequencies
 
 Hp = fft(ypas);  %
 Ap = abs(Hp);    % =sqrt(H.*conj(H)), where P=H.*conj(H) is the power spectral density
@@ -114,14 +113,15 @@ end
 
 % positive and negative frequencies
 figure; hold on; 
-plot(forig,Ap,'b'); plot(forig,An,'r');
+plot(f,Ap,'b'); plot(f,An,'r');
 legend('PAS','NEE');
 xlabel('frequency (Hz)'); ylabel('spectral amplitude');
 %print(gcf,'-depsc',[pdir 'PAS_NEE_spec_fneg']);
 
 % positive frequencies only
+ipos = find(f > 0);
 figure; hold on; 
-plot(f,Ap,'b'); plot(f,An,'r');
+plot(f(ipos),Ap(ipos),'b'); plot(f(ipos),An(ipos),'r');
 legend('PAS','NEE');
 xlabel('frequency (Hz)'); ylabel('spectral amplitude');
 %print(gcf,'-depsc',[pdir 'PAS_NEE_spec']);
@@ -134,6 +134,7 @@ xlabel('frequency (Hz)'); ylabel('spectral amplitude');
 %==========================================================================
 % CODE HERE FOR HARMONICS (do not use bandpass.m)
 
+% fourier transform of Pasadena and Needles seismograms
 Hp = fft(ypas);
 Hn = fft(ynee);
 
@@ -145,19 +146,20 @@ for ii=1:numtar
     % target frequency for harmonic
     ftar = ftarvec(ii);
     
-    % initialize fourier transforms
+    % initialize harmonics
     Hp2 = complex(zeros(npt,1),0);
     Hn2 = complex(zeros(npt,1),0);
     
-    % get BOTH target f values in the frequency vector
+    % get ftar and -ftar from the frequency vector
     % (this will avoid having matlab tell you that it will ignore the
     % complex conjugate parts when using ifft)
-    [~,itemp] = sort(abs(f-ftar),'ascend');
+    [~,itemp] = sort(abs(abs(f)-ftar),'ascend');
     itemp = itemp(1:2)
     f(itemp)
     
     % CODE HERE FOR HARMONICS
-    
+    %Hp2 
+    %Hn2 
 
 end
 
