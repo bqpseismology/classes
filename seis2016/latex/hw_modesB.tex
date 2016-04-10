@@ -76,7 +76,7 @@ Here the layer represents the crust, and the halfspace represents the upper mant
 
 \begin{enumerate}
 
-\item (0.3) Write down the two equations represented by \refEq{rODEs} and the boundary conditions; show explicit $r$ dependence and $n$ dependence (\eg $\omega_n$). 
+\item (0.3) Write down the two equations represented by \refEq{rODEs} and the boundary conditions; show explicit $r$ dependence and $n$ dependence (\eg $\omega_n$). For the boundary conditions, do not consider the technicalities in \verb+surf_stress_love.m+; just write down the analagous BCs to those from the toroidal shell problem.
 
 %----------------
 
@@ -103,24 +103,24 @@ H &=& 40\;{\rm km}
 \end{eqnarray*}
 
 \begin{enumerate}
-\item What are the shear modulus (or rigidity) values of $\mu_m$ and $\mu_c$ ($\mu = \rho\beta^2$)? \\
+\item (0.1) What are the shear modulus (or rigidity) values of $\mu_m$ and $\mu_c$ ($\mu = \rho\beta^2$)? \\
 What are the simplest units for shear modulus?
 
-\item List the $f_{{\rm c}n} = \omega_{{\rm c}n}/(2\pi)$ for $n$=1--10.
+\item (0.2) List the $f_{{\rm c}n} = \omega_{{\rm c}n}/(2\pi)$ for $n$=1--10.
 
-\item Using Figure 7.3 of \citet{AkiRichardsE2} as a guide (but with $f$ instead of $\omega$ for the $x$-axis), make a {\em schematic} (\ie drawn by hand) dispersion diagram with the horizontal axis (frequency $f$) ranging from 0 to 0.33 Hz and the vertical axis (phase speed $c$) ranging from $\beta_c$ to $\beta_m$.
+\item (0.3) Using Figure 7.3 of \citet{AkiRichardsE2} as a guide (but with $f$ instead of $\omega$ for the $x$-axis), make a {\em schematic} (\ie drawn by hand) dispersion diagram with the horizontal axis (frequency $f$) ranging from 0 to 0.33 Hz and the vertical axis (phase speed $c$) ranging from $\beta_c$ to $\beta_m$.
 
-\item What is the phase speed of the longest-period Love waves? \\
+\item (0.1) What is the phase speed of the longest-period Love waves? \\
 Plot a dot on your sketch to represent this case.
 
-\item For any given branch ($n$), what is the phase speed of the shortest-period Love waves?
+\item (0.1) For any given branch ($n$), what is the phase speed of the shortest-period Love waves?
 
-\item Given a fixed period of $T = 20$ s, how many solutions do you expect? \\
+\item (0.1) Given a fixed period of $T = 20$ s, how many solutions do you expect? \\
 What about for $T = 6$ s? 
 
-\item What is the wavelength of shear waves in the mantle, $\lambda_m$, for period $T = 20$~s?
+\item (0.1) What is the wavelength of shear waves in the mantle, $\lambda_m$, for period $T = 20$~s?
 
-\item Given a fixed period $T$, what is the range of phase speeds ($c$) that must be searched? \\
+\item (0.2) Given a fixed period $T$, what is the range of phase speeds ($c$) that must be searched? \\
 What is the corresponding range of wavenumbers ($k$)?
 
 Make sure that the values in each range are ordered such that the mode branches are encountered in increasing order ($n = 0,1,\ldots$).
@@ -168,8 +168,6 @@ shear wavespeed in mantle & $\beta_m$ & \verb+mbeta+  & m/s      & 4600 & & \\
 \end{enumerate}
 
 %----------------
-
-%------------------------
 
 \subsection*{Problem 2 (8.0). Implementation}
 

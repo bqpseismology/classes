@@ -78,7 +78,7 @@ where $u_i$ denotes one of $M_{\rm g}$ geometrical parameters and $v_k$ denotes 
 
 Hint: Use the command \verb+polyval+ to save some time.
 
-\item Compute $\vs$ for depths of 1.5~km, 10~km, 20~km, and 50~km; lst the values with $>$5 significant figures, so that I can numerically check them. \\
+\item Compute $\vs$ for depths of 1.5~km, 10~km, 20~km, and 50~km; lst the values with $>$5 significant digits, so that I can numerically check them. \\
 Do the values seem reasonable, given the materials you expect at these depths?
 \end{enumerate}
 
@@ -114,12 +114,12 @@ We have replaced the normalized radial integration limits, $[0,1]$, with actual 
 \item (1.0) Show that \refEq{dT1} above can be written as
 %
 \begin{equation}
-\frac{\delta T}{T} = \sum_{i=1}^N \sum_{k=1}^4 a_{ik} \int_{r_{i-1}}^{r_i} r^{k-1} \tilde{S}(r) \rmd r
-\;+\; \sum_{i=1}^N \sum_{k=1}^4 b_{ik} \int_{r_{i-1}}^{r_i} r^{k-1} \tilde{R}(r) \rmd r
+\frac{\delta T}{T} = \sum_{i=1}^N \sum_{k=0}^3 a_{ik} \int_{r_{i-1}}^{r_i} r^{k} \tilde{S}(r) \rmd r
+\;+\; \sum_{i=1}^N \sum_{k=0}^3 b_{ik} \int_{r_{i-1}}^{r_i} r^{k} \tilde{R}(r) \rmd r
 \label{dT2}
 \end{equation}
 %
-where $N$ is the number of layers in PREM, $r_0 = 0$, $r_N = D$, $a_{ik}$ represents the $\delta\vs(r)$ coefficient associated with the $i$th layer and the $k$-1-order polynomial term, and $b_{ik}$ are the corresponding coefficients for $\delta\rho(r)$.
+where $N$ is the number of layers in PREM, $r_0 = 0$, $r_N = D$, $a_{ik}$ represents the $\delta\vs(r)$ coefficient associated with the $i$th layer and the $k$th-order polynomial term, and $b_{ik}$ are the corresponding coefficients for $\delta\rho(r)$.
 
 \item (0.2) How many observations and unknown parameters and represented in \refEq{dT2}? (Assume that each layer is parameterized by a cubic polynomial.)
 
