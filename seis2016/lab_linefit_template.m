@@ -114,7 +114,7 @@ for kk=1:ng
     res = d - dtry;             % residuals between data and predictions
     RSSm(kk) = sum(res.*res);    % residual sum of squares
     
-    % COMPUTE GRADIENT HERE
+    % COMPUTE GRADIENT HERE [DO NOT USE MATLAB'S gradient FUNCTION]
 
 end
 
