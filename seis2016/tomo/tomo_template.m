@@ -43,11 +43,13 @@ for ii=1:nspline
     B(:,ii) = ff(:);
 end
 
-% EXAMPLE of plotting a function on the 'plotting grid' above (Problem 2-4)
-bfun = B(:,96);    % spline index 96, dimension nplot x 1
-%figure; scatter(lonplot,latplot,4^2,bfun,'filled');
-figure; pcolor(reshape(lonplot,numy,numx),reshape(latplot,numy,numx),reshape(bfun,numy,numx));
-shading interp;
+% EXAMPLE of plotting a function on the 'plotting grid' above
+% example model vector is is a 1 with all other entries 0
+mex = zeros(nspline,1);
+mex(96) = 1;
+cex = B*mex;       % dimension nplot x 1
+%figure; scatter(lonplot,latplot,4^2,cex,'filled');
+figure; pcolor(reshape(lonplot,numy,numx),reshape(latplot,numy,numx),reshape(cex,numy,numx)); shading interp;
 
 %==========================================================================
 % INVERSE PROBLEM
