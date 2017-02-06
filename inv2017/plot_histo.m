@@ -1,6 +1,12 @@
 function [N,Nplot,centers] = plot_histo(hdat,edges,itype,make_plot)
 %PLOT_HISTO plot a histogram with cyan bars and black boundaries
 %
+% INPUT
+%   hdat        input data to bin
+%   edges       vector defining the edges of the bins (for hdat)
+%   itype       optional: type of histogram (=1,2,3) [default = 2]
+%   make_plot   optional: plot histogram [default = true]
+%
 % This uses Matlab's functions histc and bar.
 % Carl Tape, 1/1/2008
 
@@ -21,6 +27,12 @@ switch itype
     case 1, Nplot = N; xlab = 'Count';
     case 2, Nplot = N/Ntotal; xlab = 'Fraction';
     case 3, Nplot = N/Ntotal/dbin; xlab = 'PDF';
+        %if length(unique(edges)) > 1
+        if std(diff(edges))/mean(diff(edges)) > 1e-4       % ad hoc criterion
+            unique(diff(edges))
+            warning('PDF is not implemented to allow bins with varying widths');
+        end
+    otherwise, error('itype = %i -- it must be 1,2, or 3',itype); 
 end
 
 if make_plot
