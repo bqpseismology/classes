@@ -1,7 +1,7 @@
 %
 % hw_ch2p1.m
 %
-% from Parameter Estimation and Inverse Problems, 2nd edition, 2011
+% from Parameter Estimation and Inverse Problems, 2nd edition, 2013
 % by R. Aster, B. Borchers, C. Thurber
 %
 
