@@ -8,6 +8,9 @@ clear
 close all
 clc
 
+% USER CHOICE
+PCONF = 0.95;
+
 % Load precomputed data
 ddir = '/usr/local/matlab_toolboxes/aster/cd_5.2/Examples/chap2/ex_2_1_2/';
 load([ddir 'data1.mat']);
@@ -40,7 +43,8 @@ covm = ginv*ginv'
 
 % get the 1.96-sigma (95%) conf intervals
 disp('95% parameter confidence intervals (m-, mest, m+)')
-DELTA = 1.96;   % Eq. 2.30
+%DELTA = 1.96;   % Eq. 2.30
+DELTA = erfinv(PCONF)*sqrt(2);
 dm = DELTA*sqrt(diag(covm));
 [m-dm  m  m+dm]
 
@@ -77,7 +81,7 @@ covm
 disp('Eigenvalues/eigenvectors of the inverse covariance matrix:');
 [u,lam] = eig(inv(covm))
 disp('95% confidence ellipsoid semiaxis lengths:');
-semi_axes = [sqrt(chi2inv(0.95,3)*(1./diag(lam)))]'
+semi_axes = [sqrt(chi2inv(PCONF,3)*(1./diag(lam)))]'
 
 disp('95% confidence ellipsoid semiaxes:')
 [semi_axes(1)*u(:,1), semi_axes(2)*u(:,2), semi_axes(3)*u(:,3)]
@@ -157,7 +161,7 @@ axis(ax3);
 
 %generate a vector of angles from 0 to 2*pi
 theta = (0:.01:2*pi)';
-DELTA = sqrt(chi2inv(0.95,2));  % 2 is the subspace dimension (p. 34)
+DELTA = sqrt(chi2inv(PCONF,2));  % 2 is the subspace dimension (p. 34)
 %the radii in each direction from the center
 r = zeros(length(theta),2);
 
@@ -181,7 +185,7 @@ xlabel('m_1 (m)'); ylabel('m_2 (m/s)');
 % compute the data for the m1, m3 ellipsoid
 C = covm([1,3],[1,3]);
 [u,lam] = eig(inv(C));
-deltachisq = chi2inv(0.95,2);
+deltachisq = chi2inv(PCONF,2);
 DELTA = sqrt(deltachisq);
 % calculate the x component of the ellipsoid for all angles
 r(:,1) = (DELTA/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(1,2)*sin(theta);
@@ -198,7 +202,7 @@ xlabel('m_1 (m)'); ylabel('m_3 (m/s^2)');
 % compute the data for the m2, m3 ellipsoid
 C = covm([2,3],[2,3]);
 [u,lam] = eig(inv(C));
-deltachisq = chi2inv(0.95,2);
+deltachisq = chi2inv(PCONF,2);
 DELTA = sqrt(deltachisq);
 % calculate the x component of the ellipsoid for all angles
 r(:,1) = (DELTA/sqrt(lam(1,1)))*u(1,1)*cos(theta)+(DELTA/sqrt(lam(2,2)))*u(1,2)*sin(theta);
@@ -212,3 +216,5 @@ fill(m(2)+r(:,1),m(3)+r(:,2),'r');
 axis(ax3);
 xlabel('m_2 (m/s)'); ylabel('m_3 (m/s^2)');
 %print -deps2 c2fellipseproj.eps
+
+%==========================================================================
