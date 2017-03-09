@@ -2,17 +2,13 @@
 % lab_svdgeom.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% Misc concepts associated with the singular value decomposition
+% Geometry of the singular value decomposition
 %
 
 clc, clear, close all
  
 % pick a matrix
-kk = 1; G = [2 1 ; -1 1]
-%kk = 2; G = [0 -2 ;  2  0]
-%kk = 3; G = [2 -2 ;  2 -1]
-%kk = 4; G = [2  0 ;  2  0]
-%G = randi([-2 2],2,2)
+G = randi([-2 2],2,2)
 
 % singular value decomposition
 [U,S,V] = svd(G)
@@ -71,8 +67,8 @@ text(v2p(1),v2p(2),'v_2','fontsize',fsize,'horizontalalignment','center');
 subplot(nr,nc,2); 
 [th,r] = cart2pol(su1(1),su1(2)); [su1p(1),su1p(2)] = pol2cart(th,r+f);
 [th,r] = cart2pol(su2(1),su2(2)); [su2p(1),su2p(2)] = pol2cart(th,r+f);
-text(su1p(1),su1p(2),'\sigma_1 u_1','fontsize',fsize,'horizontalalignment','center');
-text(su2p(1),su2p(2),'\sigma_2 u_2','fontsize',fsize,'horizontalalignment','center');
+text(su1p(1),su1p(2),'s_1 u_1','fontsize',fsize,'horizontalalignment','center');
+text(su2p(1),su2p(2),'s_2 u_2','fontsize',fsize,'horizontalalignment','center');
 
 % START CODE HERE FOR U --> GDAGGER --> V
 
