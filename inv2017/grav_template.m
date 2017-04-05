@@ -27,20 +27,20 @@ d = [
    1.333121959786504
    0.949130251286033 ];
 
-n = length(d);  % number of data
-m = n;          % number of model parameters
+m = length(d);  % number of data
+n = m;          % number of model parameters
 
-% construct discretization vector for model
+% construct discretization vector for model (density)
+ximin = 0;
+ximax = 1;
+xivec = collocate(ximin,ximax,n);
+
+% construct discretization vector for data (gravity)
 xmin = 0;
 xmax = 1;
-xvec = collocate(xmin,xmax,n);
+xvec = collocate(xmin,xmax,m);
 
-% construct discretization vector for data
-ymin = 0;
-ymax = 1;
-yvec = collocate(ymin,ymax,m);
-
-whos xvec yvec d
+whos xvec xivec d
 
 % construct design matrix G
 
