@@ -19,14 +19,14 @@ iokay = find(isnan(obs_rngchg)==0);
 % grid for 2D search
 xs = [19:0.2:22];
 ys = [21:0.2:23];
-zs = 2.58;
+zs = -2.58;
 V = 0.0034;
 
 nx = length(xs);
 ny = length(ys);
 ng = nx*ny;
 
-disp(sprintf('fixed z = %.2f km, dV = %.4f, searching over (x,y)',zs,V));
+disp(sprintf('fixed zs = %.2f km, V = %.4f, searching over (xs,ys)',zs,V));
 misfit = NaN(nx,ny);
 kk = 0;
 for k = 1:nx
@@ -35,7 +35,7 @@ for k = 1:nx
         syn_rngchg = mogi2insar(xs(k),ys(l),zs,V,0,0);  
         misfit(k,l) = sum((obs_rngchg(iokay) - syn_rngchg(iokay)).^2);
     end
-    disp(sprintf('source %i/%i is (x = %.2f km, y = %.2f km)',kk,ng,xs(k),ys(l)));
+    disp(sprintf('source %i/%i is (xs = %.2f km, ys = %.2f km)',kk,ng,xs(k),ys(l)));
 end
 
 % get the minimum
@@ -73,7 +73,7 @@ residuals = obs_rngchg - syn_rngchg;
 plot_model(residuals);
 
 %==========================================================================
-% FIX X AND Y, SEARCH OVER Z AND dV
+% fix xs and ys, search over zs and V
 
 % implement V-zs search here
 
