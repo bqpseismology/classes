@@ -21,6 +21,7 @@ path(path,'./util_grf/');
 % USER INPUT: n, L (=iL*dx), sigma
 
 % discretize the grid
+% (assume that x and y are in units of km)
 nx = 2^5; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;
 %nx = 2^7; ny = nx/2; xmin = -10; xmax = 108; ymin = -20;   % Problem 1-7,1-8
 
