@@ -29,27 +29,29 @@ switch idata
         % health, crime, transportation, education, arts, recreation, and
         % economics. For each category, a higher rating is better.
         % For example, a higher rating for crime means a lower crime rate."
-        load cities
+        load cities     % loads categories, names, ratings
         whos
         X = ratings;
-        vars = cellstr(categories);
+        dlabslong = names;
+        vlabslong = cellstr(categories);
         vlabs = {'CLI','HOU','HTH','CRM','TRN','EDU','ART','REC','ECN'};
     case 2
         % GEOS 627 example
+        % loads: dlabs, dlabslong, vlabs, vlabslong
         load_pca_data;
 end
 [n,p] = size(X);
 
 disp(sprintf('%i observations, %i variables',n,p));
 
-break
+%break
 
 %-------------------------------------------------
 % Part I: figures from Matlab tutorial
 % https://www.mathworks.com/help/stats/quality-of-life-in-u-s-cities.html
 
 figure;
-boxplot(X,'orientation','horizontal','labels',vars)
+boxplot(X,'orientation','horizontal','labels',vlabslong)
 C = corr(X,X);
 % UNDERSTAND PART II (BELOW) BEFORE YOU TRY TO UNDERSTAND THESE COMMANDS
 w = 1./var(X);
@@ -71,13 +73,13 @@ ylabel('Variance Explained (%)')
 
 [st2,index] = sort(tsquared,'descend'); % sort in descending order
 extreme = index(1);
-names(extreme,:)
+dlabslong(extreme,:)
 
-figure; biplot(coefforth(:,1:2),'scores',score(:,1:2),'varlabels',vars);
+figure; biplot(coefforth(:,1:2),'scores',score(:,1:2),'varlabels',vlabslong);
 
 % note: plotting the obslabels does not seem to work
 %figure()
-%biplot(coefforth(:,1:3),'scores',score(:,1:3),'obslabels',names);
+%biplot(coefforth(:,1:3),'scores',score(:,1:3),'obslabels',dlabeslong);
 %axis([-.26 0.8 -.51 .51 -.61 .81]);
 %view([30 40]);
 
@@ -233,31 +235,34 @@ norm(VZ'*VZ - eye(p))
 % tips for the lab exercise (lab_pca.m)
 
 % cumulative variance
-pcvar = pcvarB;
-if idata==1, pcvar = pcvarZ; end
-propvar = pcvar/sum(pcvar);
-% from the matlab tutorial: explained = 100*cpropvar (idata=1)
-cpropvar = cumsum(propvar);
-disp('  ');
-disp('Importance of principal components:'); 
-disp('  Std-Dev  : sqrt( eigenvalues of the covariance (or correlation) matrix of X )');
-disp('  Prop-Var : proportion of variance');
-disp('  Std-Dev  : cumulative proportion of variance');
-disp('  ');
-disp('      PC#    Std-Dev      Var   Prop-Var  Cum-Prop');
-disp([[1:p]' sqrt(pcvar) pcvar propvar cpropvar]);
+for kk=1:2
+    if kk==1, pcvar = pcvarB; stlab = 'centered';
+    else pcvar = pcvarZ; stlab = 'centered+standardized'; end
+    propvar = pcvar/sum(pcvar);
+    % from the matlab tutorial: explained = 100*cpropvar (idata=1)
+    cpropvar = cumsum(propvar);
+    disp('  ');
+    disp(sprintf('Importance of principal components [%s]:',stlab)); 
+    disp('  Std-Dev  : sqrt( eigenvalues of the covariance (or correlation) matrix of X )');
+    disp('  Prop-Var : proportion of variance');
+    disp('  Std-Dev  : cumulative proportion of variance');
+    disp('  ');
+    disp('      PC#    Std-Dev      Var   Prop-Var  Cum-Prop');
+    disp([[1:p]' sqrt(pcvar) pcvar propvar cpropvar]);
+end
 
 % plot components
 figure; nr=5; nc=2;
 for ii=1:p
     subplot(nr,nc,ii); hold on;
-    plot(VB(:,ii),'b.-');
-    plot(VZ(:,ii),'r.-');
-    ylim([-1 1]);
+    plot([0.5 p+0.5],[0 0],'k');
+    h1 = plot(VB(:,ii),'r.-');
+    h2 = plot(VZ(:,ii),'b.-');
+    axis([0 p+1 -1 1]);
     title(sprintf('PC-%i',ii));
     set(gca,'xtick',[1:p],'xticklabel',vlabs,'fontsize',6);
+    if ii==1, legend([h1 h2],'centered','standardized','location','southeast'); end
 end
-subplot(nr,nc,1); legend('centered','standardized','location','southeast');
 orient tall; wysiwyg;
 
 %==========================================================================

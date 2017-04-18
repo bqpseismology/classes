@@ -2,7 +2,7 @@
 % lab_pca.m
 % Carl Tape, GEOS 627, Inverse Problems and Parameter Estimation
 %
-% Principal Component Analysis of diets in Europe.
+% Principal Component Analysis of protein consumption in Europe.
 %
 
 clc, clear, close all
@@ -13,7 +13,7 @@ load_pca_data;
 xinds = [1:p];    
 
 % scatterplot matrix: uncentered, unstandardized
-figure, gplotmatrix(X,[],[],[],[],[],[],[],vars,vars), 
+figure, gplotmatrix(X,[],[],[],[],[],[],[],vlabslong,vlabslong), 
 
 % START YOUR ANALYSIS HERE
 

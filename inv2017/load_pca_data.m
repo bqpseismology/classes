@@ -7,11 +7,11 @@ if ~exist('ddir','var'), ddir = './data/'; end
 X = load([ddir 'protein_matlab.dat']);      
 
 % columns (variables):
-vars = {'RedMeat','WhiteMeat','Eggs','Milk','Fish','Cereals','Starch','Nuts','Fr&Veg'};
+vlabslong = {'RedMeat','WhiteMeat','Eggs','Milk','Fish','Cereals','Starch','Nuts','Fr&Veg'};
 vlabs = {'RM','WM','EG','MK','FI','CL','ST','NT','FV'};
 
 % rows (observation points):
-names = {'Albania','Austria','Belgium','Bulgaria','Czechoslovakia',...
+dlabslong = {'Albania','Austria','Belgium','Bulgaria','Czechoslovakia',...
            'Denmark','E_Germany','Finland','France','Greece','Hungary',...
            'Ireland','Italy','Netherlands','Norway','Poland','Portugal',...
            'Romania','Spain','Sweden','Switzerland','UK','USSR','W_Germany','Yugoslavia'};
