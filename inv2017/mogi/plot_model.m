@@ -1,4 +1,4 @@
-function [xvec,yvec] = plot_model(D)
+function [xvec,yvec] = plot_model(D,bonefig)
 %PLOT_MODEL plot an interferogram both as an unwrapped image and wrapped phase image
 
 SAMPLE = 1100;
@@ -15,9 +15,10 @@ F2 = wrap(D/10)/5.66*4*pi;
 
 bimagesc = false;       % plot with imagesc (=true) or pcolor (=false)
 nanclr = 0.6*[1 1 1];   % NaN color (imagesc=0 only)
-bonefig = true;         % =true for one figure; =false for two figures
 
-if bonefig, figure; end
+% =true for one figure; =false for two figures
+if nargin==1, bonefig = true; end
+if bonefig==true; figure; end
 
 for kk=1:2
 
