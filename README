@@ -1,23 +1,32 @@
 classes
-a private github repository within the organization uafseismo
+a public github repository within the organization uafseismo
 Repository for two classes at University of Alaska Fairbanks by Carl Tape:
-   GEOS 626 Applied Seismology
-   GEOS 627 Inverse Problems and Parameter Estimation
+   seismo  : GEOS 626 Applied Seismology
+   inverse : GEOS 627 Inverse Problems and Parameter Estimation
 contact: Carl Tape (ctape@alaska.edu)
-
-UAF students can obtain these materials via git checkout of a local version of the repository, as instructed in the class notes.
-
-The repository can be obtained form github with this command:
-git clone https://GITHUBUSERNAME@github.com/uafseismo/classes.git classes
-You need to have (1) a github account and (2) permission to read the repository.
-
-Related private repos:
-https://github.com/uafseismo/GEOTOOLS  
-
-Related public repos (required by some scripts in GEOTOOLS):
-https://github.com/carltape/compearth  
-https://github.com/geoscience-community-codes/GISMO  
 
 Course webpages:
 GEOS 626: http://www.giseis.alaska.edu/input/carl/teaching/seis/aseis.html  
-GEOS 627: http://www.giseis.alaska.edu/input/carl/teaching/inverse/inv.html  
+GEOS 627: http://www.giseis.alaska.edu/input/carl/teaching/inverse/inv.html 
+
+The repository can be obtained form github with this command:
+git clone https://github.com/uafseismo/classes.git
+
+Dependencies:
+
+inverse
++ Matlab
++ Several examples require the matlab toolbox that comes with the textbook by Aster, Borchers, and Thurber, Parameter Estimation and Inverse Problems.
+
+seismo
++ Matlab
++ Several examples require access to waveform databases that are only visible at UAF.
++ Several examples require the Matlab Waveform Toolbox:
+  https://github.com/geoscience-community-codes/GISMO  
++ Some exercises require utilities within the private github repository
+  https://github.com/uafseismo/GEOTOOLS  
+  UAF students can obtain this repository via instructions from class.
++ Some scripts in GEOTOOLS require the public repository compearth
+  https://github.com/carltape/compearth  
+
+====
